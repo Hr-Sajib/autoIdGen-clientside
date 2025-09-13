@@ -1,3 +1,4 @@
+import Navbar from "@/app/components/Navbar";
 import { ReactNode } from "react";
 
 export default function layout({ children }: { children: ReactNode }) {
@@ -5,6 +6,7 @@ export default function layout({ children }: { children: ReactNode }) {
         <>
             <header>
                 {/* Navbar */}
+                <Navbar/>
             </header>
             <main>{children}</main>
             <footer>

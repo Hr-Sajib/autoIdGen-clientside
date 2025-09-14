@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card } from "@/components/ui/card"
 
-export default function TemplateSetupPage() {
-  const [instituteName, setInstituteName] = useState("")
+export default function CompanyTemplateSetupPage() {
+  const [companyName, setCompanyName] = useState("")
   const [cardType, setCardType] = useState("")
   const [address, setAddress] = useState("")
   const [selectedColor, setSelectedColor] = useState("#1e3a8a")
@@ -64,12 +64,12 @@ export default function TemplateSetupPage() {
             {/* Form Section */}
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Institute Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Company Name</label>
                 <Input
                   type="text"
-                  placeholder="Type Institute Name"
-                  value={instituteName}
-                  onChange={(e) => setInstituteName(e.target.value)}
+                  placeholder="Type Company Name"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
                   className="w-full"
                 />
               </div>
@@ -107,7 +107,7 @@ export default function TemplateSetupPage() {
                         d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                       />
                     </svg>
-                    Institution Logo
+                    Company Logo
                   </Button>
                 </div>
                 <div>
@@ -141,9 +141,9 @@ export default function TemplateSetupPage() {
               </div>
 
               <Card className="p-6 bg-white">
-                <div className="bg-white rounded-lg shadow-lg overflow-hidden max-w-sm mx-auto">
+                <div className="bg-white rounded-lg shadow-lg overflow-hidden max-w-md mx-auto">
                   <img
-                    src="/student-id-card-template-with-photo-placeholder.jpg"
+                    src="/company-id-card-template-with-photo-placeholder.jpg"
                     alt="ID Card Preview"
                     className="w-full h-auto"
                   />

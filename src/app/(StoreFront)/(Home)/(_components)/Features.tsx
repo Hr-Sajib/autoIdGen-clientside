@@ -109,7 +109,7 @@ const Features: React.FC = () => {
             Everything you need to create professional ID cards without the hassle
           </p>
         </div>
-        <div className="flex flex-col md:flex-row items-start justify-center gap-12">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-12">
           <FeatureCard
             imageSrc={aiIcon}
             title="AI Photo Processing"

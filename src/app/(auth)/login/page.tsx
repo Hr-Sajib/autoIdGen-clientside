@@ -84,6 +84,7 @@ const AutoIDGenLogin: React.FC = () => {
             Log In
           </Button>
         </form>
+           <p className="text-center mt-6">Don&#39;t have any account? <Link href="/sign-up" className="text-[#4A61E4] font-semibold">create account</Link></p>
       </div>
     </div>
   );

@@ -21,7 +21,7 @@ const TemplateSelection: React.FC = () => {
   };
 
   return (
-    <div className="py-16 px-4">
+    <div className="py-16">
       <div className="">
         {/* Section Header */}
         <div className="text-center pb-16 relative">

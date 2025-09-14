@@ -33,7 +33,7 @@ export default function Navbar() {
         {/* Mobile layout */}
         <div className="flex flex-col md:hidden py-4 space-y-4">
           {/* Top - Links */}
-          <div className="flex justify-center space-x-4 lg:space-x-6 text-[clamp(14px,5vw,18px)]">
+          <div className="flex justify-center space-x-8 text-[clamp(12px,2vw,14px)]">
             <a href="#features" className="hover:opacity-80">Features</a>
             <a href="#how-it-works" className="hover:opacity-80">How It Works</a>
             <a href="#contact" className="hover:opacity-80">Contact Us</a>

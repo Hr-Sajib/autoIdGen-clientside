@@ -1,3 +1,4 @@
+import AutoIDGenFooter from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { ReactNode } from "react";
 
@@ -9,9 +10,9 @@ export default function layout({ children }: { children: ReactNode }) {
                 <Navbar/>
             </header>
             <main>{children}</main>
-            <footer>
                 {/* Footer */}
-            </footer>
+                <AutoIDGenFooter/>
+            
         </>
     );
 }

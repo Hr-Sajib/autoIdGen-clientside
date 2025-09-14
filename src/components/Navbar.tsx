@@ -24,9 +24,9 @@ export default function Navbar() {
 
           {/* Right - Button */}
           <div>
-            <button className="bg-white text-[#4A61E4] py-4 px-6 rounded-2xl font-medium hover:bg-gray-100 transition">
+            <Link href="/login" className="bg-white text-[#4A61E4] py-4 px-6 rounded-2xl font-medium hover:bg-gray-100 transition">
               Log In
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -45,9 +45,9 @@ export default function Navbar() {
               <span><BiIdCard size={30} /></span>
               <span className="text-[20px]">AutoIDGen</span>
             </Link>
-            <button className="bg-white text-blue-600 px-4 py-1 rounded-lg font-medium hover:bg-gray-100 transition">
+            <Link href="/login" className="bg-white text-blue-600 px-4 py-1 rounded-lg font-medium hover:bg-gray-100 transition">
               Log In
-            </button>
+            </Link>
           </div>
         </div>
       </div>

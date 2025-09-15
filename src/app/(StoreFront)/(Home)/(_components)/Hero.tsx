@@ -1,8 +1,8 @@
 // "use client";
 
 import Image from "next/image";
-import HeroImage from '@/../public/image/HeroImage.png'
-import TextureForHero from '@/../public/image/Texture for hero.png'
+import HeroImage from '@/../public/images/HeroImage.png'
+import TextureForHero from '@/../public/images/TextureForHero.png'
 import HeroButtons from "./HeroButtons";
 
 export default function HeroSection() {
@@ -25,13 +25,13 @@ export default function HeroSection() {
         </p>
 
         {/* Buttons */}
-      
-<HeroButtons />
+
+        <HeroButtons />
 
         {/* People Image */}
         <div className="mt-16 flex justify-center relative">
           <Image
-            src={HeroImage} 
+            src={HeroImage}
             alt="People holding ID cards"
             width={1600}
             height={500}
@@ -43,7 +43,7 @@ export default function HeroSection() {
 
       {/* Decorative fade effect at bottom */}
       <div className="absolute bottom-0 translate-y-1/2 mx-auto inset-x-0 h-24 ">
-        <Image fill src={TextureForHero} alt="Texture"/>
+        <Image fill src={TextureForHero} alt="Texture" />
       </div>
     </section>
   );

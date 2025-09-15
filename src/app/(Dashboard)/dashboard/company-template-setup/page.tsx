@@ -1,197 +1,179 @@
 "use client"
-
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import React, { useState } from "react"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Card } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 
 export default function CompanyTemplateSetupPage() {
-  const [companyName, setCompanyName] = useState("")
-  const [cardType, setCardType] = useState("")
-  const [address, setAddress] = useState("")
-  const [selectedColor, setSelectedColor] = useState("#1e3a8a")
+  const router = useRouter()
+  const [form, setForm] = useState({
+    companyName: "",
+    idCardType: "",
+    address: "",
+    logoUrl: "",
+    signatureUrl: "",
+    profileUrl: "https://via.placeholder.com/100", // demo profile
+    bgColor: "#0f172a", // default dark blue
+  })
 
-  const colorOptions = [
-    "#000000", // Black
-    "#059669", // Green
-    "#3b82f6", // Blue
-    "#06b6d4", // Cyan
-    "#10b981", // Emerald
-    "#8b5cf6", // Purple
-  ]
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value })
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+    if (e.target.files && e.target.files[0]) {
+      const fileUrl = URL.createObjectURL(e.target.files[0])
+      setForm({ ...form, [field]: fileUrl })
+    }
+  }
+
+  const handleContinue = () => {
+    router.push("/dashboard/student-information")
+  }
+
+  const colors = ["#0f172a", "#0ea5e9", "#3b82f6", "#06b6d4", "#9333ea", "#ec4899"]
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">A</span>
-                </div>
-                <span className="font-semibold text-blue-600">AutoIDGen</span>
-              </div>
+    <div className="flex flex-col md:flex-row justify-between gap-10 p-8">
+      {/* ===== Left Form Section ===== */}
+      <div className="flex-1 max-w-md space-y-6">
+        <h2 className="text-xl font-bold">ID Card Template Setup</h2>
 
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"
-                  />
-                </svg>
-                Dashboard
-              </div>
-            </div>
+        <div className="space-y-4">
+          <Input
+            name="companyName"
+            value={form.companyName}
+            onChange={handleChange}
+            placeholder="Type Company Name"
+          />
+          <Input
+            name="idCardType"
+            value={form.idCardType}
+            onChange={handleChange}
+            placeholder="Type Student/Employee"
+          />
+          <Input
+            name="address"
+            value={form.address}
+            onChange={handleChange}
+            placeholder="Type Address"
+          />
 
-            <div className="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center">
-              <span className="text-white font-semibold">R</span>
-            </div>
+          {/* Upload Buttons */}
+          <div className="flex gap-4">
+            <label className="cursor-pointer">
+              <span className="px-4 py-2 border rounded-lg shadow-sm hover:bg-gray-50 flex items-center gap-2">
+                ⬆️ Institution Logo
+              </span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleFileChange(e, "logoUrl")}
+                className="hidden"
+              />
+            </label>
+
+            <label className="cursor-pointer">
+              <span className="px-4 py-2 border rounded-lg shadow-sm hover:bg-gray-50 flex items-center gap-2">
+                ✍️ Signature
+              </span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleFileChange(e, "signatureUrl")}
+                className="hidden"
+              />
+            </label>
           </div>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-6 py-8">
-        <div className="max-w-6xl mx-auto">
-          <h1 className="text-2xl font-bold text-gray-900 mb-8">ID Card Template Setup</h1>
-
-          <div className="grid lg:grid-cols-2 gap-8">
-            {/* Form Section */}
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Company Name</label>
-                <Input
-                  type="text"
-                  placeholder="Type Company Name"
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
-                  className="w-full"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">ID card Type</label>
-                <Input
-                  type="text"
-                  placeholder="Type Student/Employee"
-                  value={cardType}
-                  onChange={(e) => setCardType(e.target.value)}
-                  className="w-full"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
-                <Textarea
-                  placeholder="Type Address"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  className="w-full h-24 resize-none"
-                />
-              </div>
-
-              {/* Upload Sections */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Button variant="outline" className="w-full h-12 border-dashed bg-transparent">
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                      />
-                    </svg>
-                    Company Logo
-                  </Button>
-                </div>
-                <div>
-                  <Button variant="outline" className="w-full h-12 border-dashed bg-transparent">
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                      />
-                    </svg>
-                    Signature
-                  </Button>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-4 pt-4">
-                <Button variant="outline" className="flex-1 bg-transparent">
-                  Preview
-                </Button>
-                <Button className="flex-1 bg-blue-600 hover:bg-blue-700">Next</Button>
-              </div>
-            </div>
-
-            {/* Preview Section */}
-            <div className="space-y-6">
-              <div className="text-right">
-                <span className="text-sm font-medium text-gray-700">Preview</span>
-              </div>
-
-              <Card className="p-6 bg-white">
-                <div className="bg-white rounded-lg shadow-lg overflow-hidden max-w-md mx-auto">
-                  <img
-                    src="/company-id-card-template-with-photo-placeholder.jpg"
-                    alt="ID Card Preview"
-                    className="w-full h-auto"
-                  />
-                </div>
-              </Card>
-
-              {/* Color Selection */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">Select photo Background Color</label>
-                <div className="flex gap-2">
-                  {colorOptions.map((color) => (
-                    <button
-                      key={color}
-                      onClick={() => setSelectedColor(color)}
-                      className={`w-8 h-8 rounded-full border-2 ${
-                        selectedColor === color ? "border-gray-400" : "border-gray-200"
-                      }`}
-                      style={{ backgroundColor: color }}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              {/* Profile Icon */}
-              <div className="flex justify-end">
-                <div className="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-semibold">R</span>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="flex gap-4">
+          <Button variant="secondary" disabled={!form.companyName || !form.idCardType}>
+            Preview
+          </Button>
+          <Button onClick={handleContinue}>Next</Button>
         </div>
-      </main>
+      </div>
 
-      {/* Footer */}
-      <footer className="fixed bottom-4 left-4">
-        <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
-          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013 3v1"
+      {/* ===== Right Preview Section ===== */}
+      <div className="flex flex-col items-center gap-4">
+        <h3 className="text-lg font-semibold">Preview</h3>
+
+        {/* Card Preview */}
+        <div className="w-64 h-[400px] bg-white rounded-xl shadow-lg overflow-hidden relative border">
+          {/* Header wave shape */}
+          <div
+            className="h-24 relative flex items-center justify-center"
+            style={{ backgroundColor: form.bgColor }}
+          >
+            {form.logoUrl && (
+              <img
+                src={form.logoUrl}
+                alt="Logo"
+                className="absolute top-3 left-3 w-12 h-12 object-cover"
+              />
+            )}
+            <h1 className="text-white text-xs font-bold text-center px-4">
+              {form.companyName || "Company Name"}
+            </h1>
+          </div>
+
+          {/* Profile */}
+          <div className="flex flex-col items-center -mt-10">
+            <img
+              src={form.profileUrl}
+              alt="Profile"
+              className="w-20 h-20 rounded-full border-4 border-white shadow"
             />
-          </svg>
-          Sign Out
-        </Button>
-      </footer>
+            <h2 className="mt-2 text-sm font-bold text-gray-800">Mark Marshal</h2>
+            <p className="text-xs text-gray-500">{form.idCardType || "Student"}</p>
+          </div>
+
+          {/* Details */}
+          <div className="px-6 mt-4 text-xs text-gray-700 space-y-1">
+            <p>
+              <span className="font-semibold">Department:</span> CSE
+            </p>
+            <p>
+              <span className="font-semibold">Roll:</span> 123
+            </p>
+            <p>
+              <span className="font-semibold">Blood Group:</span> B+
+            </p>
+            <p>
+              <span className="font-semibold">Date of Birth:</span> 12-12-2000
+            </p>
+            <p>
+              <span className="font-semibold">Phone:</span> +8801234XXXX
+            </p>
+          </div>
+
+          {/* Footer */}
+          <div className="absolute bottom-3 w-full px-4 flex flex-col items-center">
+            {form.signatureUrl && (
+              <img
+                src={form.signatureUrl}
+                alt="Signature"
+                className="w-16 h-8 object-contain mb-1"
+              />
+            )}
+            <p className="text-[10px] text-gray-500">Principal Signature</p>
+          </div>
+        </div>
+
+        {/* Color Picker */}
+        <div className="flex gap-2">
+          <p className="text-xs text-gray-500">Select photo Background Color</p>
+          {colors.map((c) => (
+            <button
+              key={c}
+              onClick={() => setForm({ ...form, bgColor: c })}
+              className="w-6 h-6 rounded-full border"
+              style={{ backgroundColor: c }}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

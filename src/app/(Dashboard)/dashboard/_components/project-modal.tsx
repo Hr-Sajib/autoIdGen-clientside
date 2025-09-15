@@ -14,7 +14,7 @@ interface CreateProjectModalProps {
 }
 
 export function CreateProjectModal({ isOpen, onClose, onSubmit }: CreateProjectModalProps) {
-    const router = useRouter()
+  const router = useRouter()
   const [projectName, setProjectName] = useState("")
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -23,7 +23,7 @@ export function CreateProjectModal({ isOpen, onClose, onSubmit }: CreateProjectM
       onSubmit(projectName.trim())
       setProjectName("")
       onClose()
-        router.push('/dashboard/select-card')
+      router.push('/dashboard/select-card')
     }
   }
 

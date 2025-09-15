@@ -71,9 +71,9 @@ import React from 'react';
 
 // Placeholder imports for your local image files
 // Please replace these paths with the actual paths to your images
-import aiIcon from '@/../public/image/ai_feature.svg';
-import keyIcon from '@/../public/image/key_feature.svg';
-import jpgIcon from '@/../public/image/jpg_feature.svg';
+import aiIcon from '@/../public/images/ai_feature.svg';
+import keyIcon from '@/../public/images/key_feature.svg';
+import jpgIcon from '@/../public/images/jpg_feature.svg';
 import Image from 'next/image';
 import { StaticImageData } from 'next/image';
 

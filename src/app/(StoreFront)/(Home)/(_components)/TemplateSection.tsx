@@ -1,11 +1,9 @@
-
-
-
 "use client";
+
 import Image from 'next/image';
 import React from 'react';
-import studentIdCard from "@/../public/image/Student ID Card.svg"
-import portraitCard from "@/../public/image/Employee Landscape.svg"
+import studentIdCard from "@/../public/images/StudentIDCard.svg"
+import portraitCard from "@/../public/images/EmployeeLandscape.svg"
 
 const TemplateSelection: React.FC = () => {
   // Using placeholder images - replace with your actual imports

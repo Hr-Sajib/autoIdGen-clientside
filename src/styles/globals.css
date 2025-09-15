@@ -140,3 +140,8 @@
 .animate-scaleIn {
   animation: scaleIn 0.25s ease-out;
 }
+
+
+html {
+  scroll-behavior: smooth;
+}

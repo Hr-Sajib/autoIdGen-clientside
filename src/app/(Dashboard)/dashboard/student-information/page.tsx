@@ -23,7 +23,6 @@ export default function InstituteTemplateSetupPage() {
     signatureUrl: "",
     bgColor: "#0f172a", // default dark navy
   })
-  const [quantity, setQuantity] = useState("")
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))

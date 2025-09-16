@@ -153,6 +153,7 @@ and
             Create Account
           </Button>
         </form>
+        <p className="text-center mt-6">Already have an account? <Link href="/login" className="text-[#4A61E4] font-semibold">Log In</Link></p>
       </div>
     </div>
   );

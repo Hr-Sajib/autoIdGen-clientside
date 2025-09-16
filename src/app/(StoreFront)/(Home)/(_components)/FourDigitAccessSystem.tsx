@@ -18,7 +18,7 @@ const FourDigitAccessSystem: React.FC = () => {
     <div className="mb-10 px-4 sm:px-8 md:px-16 lg:px-20 py-6 sm:py-8 md:py-10 rounded-xl 
 shadow-[0_8px_25px_-5px_rgba(79,70,229,0.08)] 
 hover:shadow-[0_8px_25px_-5px_rgba(79,70,229,0.18)] 
-hover:cursor-pointer inline-block w-full max-w-3xl mx-auto">
+ inline-block w-full max-w-3xl mx-auto">
   <div className="text-[clamp(9px,1.5vw,18px)] text-gray-800 font-medium mb-8 sm:mb-12">
     Your Unique Batch code
   </div>
@@ -34,11 +34,10 @@ hover:cursor-pointer inline-block w-full max-w-3xl mx-auto">
       {/* Button */}
       <div className="absolute -bottom-1 z-10">
        <button 
-      className="text-white border-none rounded-xl px-4 md:px-8  py-2 md:py-4 font-semibold cursor-pointer 
+      className="text-white border-none rounded-xl px-4 md:px-10  py-2 md:py-4 font-semibold cursor-pointer 
                  shadow-[0_8px_25px_-5px_rgba(74,97,228,0.3)] 
                  hover:shadow-[0_8px_25px_-5px_rgba(74,97,228,0.4)] 
-                 hover:-translate-y-1 active:translate-y-0 
-                 transition-all duration-200"
+                 "
       style={{ backgroundColor: '#4A61E4' }}
     >
       <div className="leading-tight text-[clamp(8px,1.5vw,16px)] font-medium">

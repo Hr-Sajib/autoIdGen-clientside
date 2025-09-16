@@ -99,7 +99,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, imageSrc 
 
 const Features: React.FC = () => {
   return (
-    <div className="py-10 bg-white p-4">
+    <div id='features' className="py-10 bg-white p-4">
       <div className="mx-auto max-w-7xl py-12">
         <div className="text-center mb-12">
           <h2 className="text-[clamp(25px,2.5vw,30px)] font-bold text-[#4A61E4] mb-2">

@@ -10,6 +10,12 @@ import { CardQuantityModal } from "../_components/quantity-modal"
 export default function InstituteTemplateSetupPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [formData, setFormData] = useState({
+    department: "",
+    rollNumber: "",
+    bloodGroup: "",
+    dateOfBirth: "",
+    phone: "",
+    studentName: "",
     instituteName: "",
     idCardType: "",
     address: "",
@@ -32,7 +38,7 @@ export default function InstituteTemplateSetupPage() {
     reader.readAsDataURL(file)
   }
 
-  const handleGenerateProject = (quantity: string) => {
+  const handleGenerateProject = (quantity: number) => {
     console.log("Creating project:", quantity)
     // Here you would typically handle the project creation logic
   }
@@ -232,7 +238,7 @@ export default function InstituteTemplateSetupPage() {
         </main>
       </div>
 
-      <CardQuantityModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={handleGenerateProject} />
+      <CardQuantityModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onGenerate={handleGenerateProject} />
     </>
   )
 }

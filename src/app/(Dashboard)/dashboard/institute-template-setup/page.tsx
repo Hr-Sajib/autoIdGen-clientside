@@ -2,8 +2,9 @@
 import React, { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import CardPreview from "../_components/CardPreview"
+// import CardPreview from "../_components/CardPreview"
 import { useRouter } from "next/navigation"
+import StudentCard from "@/components/layout/cards/StudentCard"
 
 export default function InstituteTemplateSetupPage() {
   const router = useRouter()
@@ -98,14 +99,15 @@ export default function InstituteTemplateSetupPage() {
 
       {/* ===== Right Preview Section ===== */}
       <div>
-        <CardPreview
+        {/* <CardPreview
           instituteName={form.instituteName}
           idCardType={form.idCardType}
           logoUrl={form.logoUrl}
           signatureUrl={form.signatureUrl}
           profileUrl={form.profileUrl}
           bgColor={form.bgColor}
-        />
+        /> */}
+        <StudentCard />
 
         {/* Color Picker */}
         <div className="flex gap-2 mt-4">

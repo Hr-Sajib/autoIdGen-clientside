@@ -3,6 +3,7 @@ import React, { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
+import EmployeeCard from "@/components/layout/cards/EmployeCard"
 
 export default function CompanyTemplateSetupPage() {
   const router = useRouter()
@@ -96,12 +97,10 @@ export default function CompanyTemplateSetupPage() {
       </div>
 
       {/* ===== Right Preview Section ===== */}
-      <div className="flex flex-col items-center gap-4">
+      {/* <div className="flex flex-col items-center gap-4">
         <h3 className="text-lg font-semibold">Preview</h3>
 
-        {/* Card Preview */}
         <div className="w-64 h-[400px] bg-white rounded-xl shadow-lg overflow-hidden relative border">
-          {/* Header wave shape */}
           <div
             className="h-24 relative flex items-center justify-center"
             style={{ backgroundColor: form.bgColor }}
@@ -118,7 +117,6 @@ export default function CompanyTemplateSetupPage() {
             </h1>
           </div>
 
-          {/* Profile */}
           <div className="flex flex-col items-center -mt-10">
             <img
               src={form.profileUrl}
@@ -129,7 +127,6 @@ export default function CompanyTemplateSetupPage() {
             <p className="text-xs text-gray-500">{form.idCardType || "Student"}</p>
           </div>
 
-          {/* Details */}
           <div className="px-6 mt-4 text-xs text-gray-700 space-y-1">
             <p>
               <span className="font-semibold">Department:</span> CSE
@@ -148,7 +145,6 @@ export default function CompanyTemplateSetupPage() {
             </p>
           </div>
 
-          {/* Footer */}
           <div className="absolute bottom-3 w-full px-4 flex flex-col items-center">
             {form.signatureUrl && (
               <img
@@ -161,7 +157,6 @@ export default function CompanyTemplateSetupPage() {
           </div>
         </div>
 
-        {/* Color Picker */}
         <div className="flex gap-2">
           <p className="text-xs text-gray-500">Select photo Background Color</p>
           {colors.map((c) => (
@@ -173,7 +168,8 @@ export default function CompanyTemplateSetupPage() {
             />
           ))}
         </div>
-      </div>
+      </div> */}
+      <EmployeeCard />
     </div>
   )
 }

@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import LogOutButton from "@/app/(Dashboard)/dashboard/_components/buttons/LogOutButton"
 
 interface SidebarProps {
     onToggle?: (isCollapsed: boolean) => void
@@ -128,6 +129,7 @@ export function Sidebar({ onToggle }: SidebarProps) {
                                 Sign Out
                             </span>
                         </Button>
+                        <LogOutButton/>
                     </div>
                 </div>
             </aside>

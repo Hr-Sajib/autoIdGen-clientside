@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "../styles/globals.css";
 import StoreProvider from "./StoreProvider";
+import { Toaster } from "sonner";
 
 // Geist Sans
 // const geistSans = Geist({
@@ -38,7 +39,8 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${inter.className} antialiased`}
       >
-        <StoreProvider>
+        <StoreProvider >
+          <Toaster position="top-right"/>
           {children}
         </StoreProvider>
       </body>

@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { BiIdCard } from "react-icons/bi";
+import { toast } from "sonner"; // or your toast lib
+import { useRegisterMutation } from "@/lib/feature/Auth/authApi";
 
 const AutoIDGenSignup: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,9 +19,50 @@ const AutoIDGenSignup: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [agree, setAgree] = useState(false);
 
-  const payload = { fullName, email, password, confirmPassword, agree };
-//   console.log(payload);
+  console.log({fullName, email, password, confirmPassword, agree});
+//  return;
+  const [register, { isLoading }] = useRegisterMutation(); // ✅ mutation hook
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!agree) {
+      toast.error("You must agree to Terms & Privacy Policy");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match!");
+      return;
+    }
+
+    const userName = fullName.trim().split(" ")[0] || fullName;
+
+    try {
+      const payload = { userName, email, password };
+      const res = await register(payload).unwrap();
+
+      toast.success("Account created successfully!");
+      console.log("Signup success:", res);
+
+      // Optional: Redirect after success
+      window.location.href = "/login";
+    } catch (error: unknown) {
+          console.error("signup error:", error);
+          if (
+            typeof error === "object" &&
+            error !== null &&
+            "data" in error &&
+            typeof (error as { data?: { message?: string } }).data?.message === "string"
+          ) {
+            toast.error(
+              (error as { data?: { message?: string } }).data?.message
+            );
+          } else {
+            toast.error("Something went wrong!");
+          }
+        }
+  };
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center p-4">
@@ -42,7 +85,7 @@ const AutoIDGenSignup: React.FC = () => {
         </h1>
 
         {/* Form */}
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={handleSubmit}>
           {/* Full Name */}
           <div className="space-y-2">
             <Label htmlFor="name" className="text-sm font-medium text-black">
@@ -55,6 +98,7 @@ const AutoIDGenSignup: React.FC = () => {
               onChange={(e) => setFullName(e.target.value)}
               placeholder="Type your Full Name"
               className="h-12 px-4 bg-gray-100/80 rounded-lg"
+              required
             />
           </div>
 
@@ -70,6 +114,7 @@ const AutoIDGenSignup: React.FC = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Type Your Email"
               className="h-12 px-4 bg-gray-100/80 rounded-lg"
+              required
             />
           </div>
 
@@ -89,6 +134,7 @@ const AutoIDGenSignup: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Type Password"
                 className="h-12 px-4 pr-12 bg-gray-100/80 rounded-lg"
+                required
               />
               <button
                 type="button"
@@ -116,6 +162,7 @@ const AutoIDGenSignup: React.FC = () => {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Type Confirm password"
                 className="h-12 px-4 pr-12 bg-gray-100/80 rounded-lg"
+                required
               />
               <button
                 type="button"
@@ -137,11 +184,7 @@ const AutoIDGenSignup: React.FC = () => {
               className="w-4 h-4 rounded border-gray-300"
             />
             <Label htmlFor="terms" className="text-xs text-gray-600">
-              I have read and agreed to the{" "}
-                Terms of Service
-and
-                Privacy Policy
-              
+              I have read and agreed to the Terms of Service and Privacy Policy
             </Label>
           </div>
 
@@ -149,11 +192,20 @@ and
           <Button
             type="submit"
             className="w-full h-12 bg-[#4A61E4] hover:bg-blue-700/70 text-white font-semibold rounded-lg text-base"
+            disabled={isLoading}
           >
-            Create Account
+            {isLoading ? "Creating..." : "Create Account"}
           </Button>
         </form>
-        <p className="text-center mt-6">Already have an account? <Link href="/login" className="text-[#4A61E4] font-semibold">Log In</Link></p>
+        <p className="text-center mt-6">
+          Already have an account?{" "}
+          <Link
+            href="/login"
+            className="text-[#4A61E4] font-semibold"
+          >
+            Log In
+          </Link>
+        </p>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
+
 // //? before dynamic 
-// // src/components/EmployeeCard.tsx
+
 // "use client";
 // import React from "react";
 // import { QRCodeCanvas } from "qrcode.react";
@@ -107,7 +108,6 @@
 // export default EmployeeCard;
 
 
-
 "use client";
 import React from "react";
 import { QRCodeCanvas } from "qrcode.react";
@@ -115,7 +115,16 @@ import background from "@/../public/image/shapes/studentId/potrait_id_card_bg.sv
 import Image from "next/image";
 
 interface EmployeeCardProps {
+
   name?: string;
+  address?: string;
+  idCardType?: string;
+  employeeName?: string;
+  logoUrl?: string;
+  signatureUrl?: string;
+  profileUrl?: string;
+  bgColor?: string;
+  qrData?: string;
   department?: string;
   employeeId?: string;
   bloodGroup?: string;
@@ -158,6 +167,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
     >
       <div className="relative z-10 w-full h-full flex flex-col justify-start">
 
+
         {/* Institution Info */}
         <div className="flex items-center ml-[33%]  mt-[3%] md:mt-[4%] w-[60%]">
           <Image
@@ -178,10 +188,12 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
             <p className="text-center text-gray-300 text-[5px] md:text-[7px] lg:text-[12px] xl:text-[14px] mt-1">
               {companyAddress}
             </p>
+
           </div>
         </div>
 
         {/* Employee ID Label */}
+
         <p className="absolute top-[3%] left-[12%] md:left-[10%] lg:left-[12%] text-[4px] md:text-[8px] lg:text-[11px] xl:text-[12px] text-gray-500 border border-gray-500 px-1 py-0.5 rounded text-center">
           Employee ID
         </p>
@@ -206,12 +218,14 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
         {/* Details */}
         <div className="absolute top-[41%] md:top-[47%] left-[35%] md:left-[38%] w-[50%] flex justify-center text-white text-[6px] md:text-[8px] lg:text-[14px] xl:text-[16px]">
           <div className="w-4/12 pr-1 md:pr-2 lg:pr-2 xl:pr-2 space-y-0.5">
+
             <p>Department</p>
             <p>Employee ID</p>
             <p>Blood Group</p>
             <p>Date Of Birth</p>
             <p>Phone</p>
           </div>
+
           <div className="w-7/12 pl-1 md:pl-2 lg:pl-2 xl:pl-2 text-left space-y-0.5">
             <p>: {department}</p>
             <p>: {employeeId}</p>
@@ -220,6 +234,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
             <p>: {phone}</p>
           </div>
         </div>
+
 
         {/* Principal Signature */}
         <div className="absolute bottom-[3%] md:bottom-[3%] left-[10%] md:left-[9%] lg:left-[10%] text-center">
@@ -249,6 +264,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
             fgColor="#000000"
             level="H"
           />
+
         </div>
       </div>
     </div>

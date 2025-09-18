@@ -1,110 +1,110 @@
-// //? before dynamic 
-// // src/components/EmployeeCard.tsx
-"use client";
-import React from "react";
-import { QRCodeCanvas } from "qrcode.react";
-import background from "@/../public/image/shapes/studentId/potrait_id_card_bg.svg"; // ✅ imported bg
-import Image from "next/image";
+// // //? before dynamic 
+// // // src/components/EmployeeCard.tsx
+// "use client";
+// import React from "react";
+// import { QRCodeCanvas } from "qrcode.react";
+// import background from "@/../public/image/shapes/studentId/potrait_id_card_bg.svg"; // ✅ imported bg
+// import Image from "next/image";
 
-const EmployeeCard: React.FC = () => {
-  const qrData = `${"ABC Group of Industries"}/Sales/1233/B+/+65-2131-XXXX`;
+// const EmployeeCard: React.FC = () => {
+//   const qrData = `${"ABC Group of Industries"}/Sales/1233/B+/+65-2131-XXXX`;
 
-  return (
-    <div
-      className="relative w-[600px] h-[350px] rounded-lg overflow-hidden shadow-lg"
-      style={{
-        backgroundImage: `url(${background.src})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
-      <div className="relative z-10 w-full h-full flex flex-col justify-start">
-        {/* Institution Info */}
-        <div className="flex items-center ml-[200px] mt-6 w-[350px]">
-          <Image
-            src="https://i.postimg.cc/hthwhxwy/uni-logo.avif"
-            alt="Company Logo"
-            width={50}
-            height={50}
-            className="rounded-md object-contain bg-white"
-          />
-          <div className="w-full">
-            <p className="text-white text-[16px] font-bold text-center">
-              ABC Group of Industries
-            </p>
-            <p className="text-center text-gray-300 text-[10px] mt-1">
-              Dummy address 21A/B mine union point, Singapore
-            </p>
-          </div>
-        </div>
+//   return (
+//     <div
+//       className="relative w-[600px] h-[350px] rounded-lg overflow-hidden shadow-lg"
+//       style={{
+//         backgroundImage: `url(${background.src})`,
+//         backgroundSize: "cover",
+//         backgroundPosition: "center",
+//       }}
+//     >
+//       <div className="relative z-10 w-full h-full flex flex-col justify-start">
+//         {/* Institution Info */}
+//         <div className="flex items-center ml-[200px] mt-6 w-[350px]">
+//           <Image
+//             src="https://i.postimg.cc/hthwhxwy/uni-logo.avif"
+//             alt="Company Logo"
+//             width={50}
+//             height={50}
+//             className="rounded-md object-contain bg-white"
+//           />
+//           <div className="w-full">
+//             <p className="text-white text-[16px] font-bold text-center">
+//               ABC Group of Industries
+//             </p>
+//             <p className="text-center text-gray-300 text-[10px] mt-1">
+//               Dummy address 21A/B mine union point, Singapore
+//             </p>
+//           </div>
+//         </div>
 
-        {/* Employee ID Label */}
-        <p className="absolute top-4 left-[80px] text-[9px] text-gray-500 border border-gray-500 px-1.5 py-0.5 rounded text-center">
-          Employee ID
-        </p>
+//         {/* Employee ID Label */}
+//         <p className="absolute top-4 left-[80px] text-[9px] text-gray-500 border border-gray-500 px-1.5 py-0.5 rounded text-center">
+//           Employee ID
+//         </p>
 
-        {/* Person Image */}
-        <div className="absolute top-[70px] left-[28px]">
-          <Image
-            src="https://i.postimg.cc/Y0ydK27n/person.jpg"
-            alt="Employee Photo"
-            width={170}
-            height={170}
-            className="w-[170px] h-[170px] rounded-full border-[6px] border-white object-cover object-center"
-          />
-        </div>
+//         {/* Person Image */}
+//         <div className="absolute top-[70px] left-[28px]">
+//           <Image
+//             src="https://i.postimg.cc/Y0ydK27n/person.jpg"
+//             alt="Employee Photo"
+//             width={170}
+//             height={170}
+//             className="w-[170px] h-[170px] rounded-full border-[6px] border-white object-cover object-center"
+//           />
+//         </div>
 
-        {/* Name */}
-        <p className="absolute top-[110px] left-[35px] right-0 text-center text-[22px] font-bold text-cyan-400">
-          John Marshal
-        </p>
+//         {/* Name */}
+//         <p className="absolute top-[110px] left-[35px] right-0 text-center text-[22px] font-bold text-cyan-400">
+//           John Marshal
+//         </p>
 
-        {/* Details */}
-        <div className="absolute top-[165px] left-[230px] w-[260px] text-[12.5px]  text-white flex justify-center">
-          <div className="w-4/12 space-y-0.5 pr-2">
-            <p>Department</p>
-            <p>Employee ID</p>
-            <p>Blood Group</p>
-                <p>Date Of Birth</p>
-            <p>Phone</p>
-          </div>
-          <div className="w-7/12 space-y-0.5 pl-2 text-left">
-            <p>: Sales</p>
-            <p>: 1233</p>
-            <p>: B+</p>
-             <p>: 12-12-2000</p>
-            <p>: +65-2131-XXXX</p>
-          </div>
-        </div>
+//         {/* Details */}
+//         <div className="absolute top-[165px] left-[230px] w-[260px] text-[12.5px]  text-white flex justify-center">
+//           <div className="w-4/12 space-y-0.5 pr-2">
+//             <p>Department</p>
+//             <p>Employee ID</p>
+//             <p>Blood Group</p>
+//                 <p>Date Of Birth</p>
+//             <p>Phone</p>
+//           </div>
+//           <div className="w-7/12 space-y-0.5 pl-2 text-left">
+//             <p>: Sales</p>
+//             <p>: 1233</p>
+//             <p>: B+</p>
+//              <p>: 12-12-2000</p>
+//             <p>: +65-2131-XXXX</p>
+//           </div>
+//         </div>
 
-        {/* Principal Signature */}
-        <div className="absolute bottom-[20px] left-[80px] text-center">
-          <Image
-            src="https://i.postimg.cc/TYfbfv1Q/principal-Sign.png"
-            alt="Chairman Signature"
-            width={80}
-            height={40}
-            className="object-contain"
-          />
-          <p className="m-0 text-[10px]">Chairman Signature</p>
-        </div>
+//         {/* Principal Signature */}
+//         <div className="absolute bottom-[20px] left-[80px] text-center">
+//           <Image
+//             src="https://i.postimg.cc/TYfbfv1Q/principal-Sign.png"
+//             alt="Chairman Signature"
+//             width={80}
+//             height={40}
+//             className="object-contain"
+//           />
+//           <p className="m-0 text-[10px]">Chairman Signature</p>
+//         </div>
 
-        {/* QR Code */}
-        <div className="absolute bottom-[50px] left-[530px] -translate-x-1/2 border-[3px] border-white rounded">
-          <QRCodeCanvas
-            value={qrData}
-            size={55}
-            bgColor="#ffffff"
-            fgColor="#000000"
-            level="H"
-          />
-        </div>
-      </div>
-    </div>
-  );
-};
+//         {/* QR Code */}
+//         <div className="absolute bottom-[50px] left-[530px] -translate-x-1/2 border-[3px] border-white rounded">
+//           <QRCodeCanvas
+//             value={qrData}
+//             size={55}
+//             bgColor="#ffffff"
+//             fgColor="#000000"
+//             level="H"
+//           />
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
-export default EmployeeCard;
+// export default EmployeeCard;
 
 
 
@@ -219,3 +219,135 @@ export default EmployeeCard;
 // };
 
 // export default EmployeeCard;
+
+
+
+// src/components/EmployeeCard.tsx
+"use client";
+import React from "react";
+import { QRCodeCanvas } from "qrcode.react";
+import background from "@/../public/image/shapes/studentId/potrait_id_card_bg.svg";
+import Image from "next/image";
+
+interface EmployeeCardProps {
+  companyName: string;
+  address: string;
+  idCardType: string;
+  logoUrl?: string;
+  signatureUrl?: string;
+  profileUrl?: string;
+  employeeName: string;
+  department: string;
+  employeeId: string;
+  bloodGroup: string;
+  dob: string;
+  phone: string;
+  qrData: string;
+  bgColor?: string;
+}
+
+const EmployeeCard: React.FC<EmployeeCardProps> = ({
+  companyName,
+  address,
+  idCardType,
+  logoUrl,
+  signatureUrl,
+  profileUrl = "https://i.postimg.cc/Y0ydK27n/person.jpg",
+  employeeName,
+  department,
+  employeeId,
+  bloodGroup,
+  dob,
+  phone,
+  qrData,
+}) => {
+  return (
+    <div
+      className="relative w-[600px] h-[350px] rounded-lg overflow-hidden shadow-lg"
+      style={{
+        backgroundImage: `url(${background.src})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <div className="relative z-10 w-full h-full flex flex-col justify-start">
+        {/* Company Info */}
+        <div className="flex items-center ml-[200px] mt-6 w-[350px]">
+          {logoUrl && (
+            <Image
+              src={logoUrl}
+              alt="Company Logo"
+              width={50}
+              height={50}
+              className="rounded-md object-contain bg-white"
+            />
+          )}
+          <div className="w-full">
+            <p className="text-white text-[16px] font-bold text-center">{companyName}</p>
+            <p className="text-center text-gray-300 text-[10px] mt-1">{address}</p>
+          </div>
+        </div>
+
+        {/* Employee ID Label */}
+        <p className="absolute top-4 left-[80px] text-[9px] text-gray-500 border border-gray-500 px-1.5 py-0.5 rounded text-center">
+          {idCardType}
+        </p>
+
+        {/* Employee Photo */}
+        <div className="absolute top-[70px] left-[28px]">
+          <Image
+            src={profileUrl}
+            alt="Employee Photo"
+            width={170}
+            height={170}
+            className="w-[170px] h-[170px] rounded-full border-[6px] border-white object-cover object-center"
+          />
+        </div>
+
+        {/* Employee Name */}
+        <p className="absolute top-[110px] left-[35px] right-0 text-center text-[22px] font-bold text-cyan-400">
+          {employeeName}
+        </p>
+
+        {/* Details */}
+        <div className="absolute top-[165px] left-[230px] w-[260px] text-[12.5px]  text-white flex justify-center">
+          <div className="w-4/12 space-y-0.5 pr-2">
+            <p>Department</p>
+            <p>Employee ID</p>
+            <p>Blood Group</p>
+            <p>Date Of Birth</p>
+            <p>Phone</p>
+          </div>
+          <div className="w-7/12 space-y-0.5 pl-2 text-left">
+            <p>: {department}</p>
+            <p>: {employeeId}</p>
+            <p>: {bloodGroup}</p>
+            <p>: {dob}</p>
+            <p>: {phone}</p>
+          </div>
+        </div>
+
+        {/* Signature */}
+        {signatureUrl && (
+          <div className="absolute bottom-[20px] left-[80px] text-center">
+            <Image
+              src={signatureUrl}
+              alt="Chairman Signature"
+              width={80}
+              height={40}
+              className="object-contain"
+            />
+            <p className="m-0 text-[10px]">Chairman Signature</p>
+          </div>
+        )}
+
+        {/* QR Code */}
+        <div className="absolute bottom-[50px] left-[530px] -translate-x-1/2 border-[3px] border-white rounded">
+          <QRCodeCanvas value={qrData} size={55} bgColor="#ffffff" fgColor="#000000" level="H" />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default EmployeeCard;

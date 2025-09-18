@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import CardPreview from "../_components/CardPreview"
 import { CardQuantityModal } from "../_components/quantity-modal"
+import { DashboardHeader } from "../_components/dashboard-header"
+import StudentCard from "@/components/layout/cards/StudentCard"
 
 export default function InstituteTemplateSetupPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -44,43 +46,8 @@ export default function InstituteTemplateSetupPage() {
 
   return (
     <>
-      <div className="min-h-screen bg-white">
-        {/* Header */}
-        <header className="bg-white border-b border-gray-200">
-          <div className="px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center">
-                    <span className="text-white text-xs font-bold">A</span>
-                  </div>
-                  <span className="font-semibold text-blue-600">AutoIDGen</span>
-                </div>
-
-                <div className="hidden md:flex items-center gap-2 text-sm text-gray-600">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"
-                    />
-                  </svg>
-                  Dashboard
-                </div>
-              </div>
-
-              {/* Mobile menu icon */}
-              <div className="md:hidden">
-                <Button variant="ghost" size="sm">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  </svg>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </header>
+      <div className="min-h-screen bg-background">
+        <DashboardHeader />
 
         {/* Main Content */}
         <main className="container mx-auto px-6 py-8">
@@ -94,35 +61,25 @@ export default function InstituteTemplateSetupPage() {
                   <div>
                     <label className="block text-base font-medium text-gray-800 mb-2">
                       Student Name
-                      <svg className="inline w-4 h-4 ml-1 align-middle" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                        />
-                      </svg>
                     </label>
                     <Input
                       type="text"
                       placeholder="Type Student Name"
                       value={formData.studentName}
                       onChange={(e) => handleInputChange("studentName", e.target.value)}
-                      className="w-full bg-gray-50"
+                      className="w-full bg-gray-100 py-6 px-4 rounded-lg"
                     />
                   </div>
                   <div>
                     <label className="block text-base font-medium text-gray-800 mb-2">
                       Department
-                      <svg className="inline w-4 h-4 ml-1 align-middle" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                        />
-                      </svg>
                     </label>
                     <Input
                       type="text"
                       placeholder="Type Department"
                       value={formData.department}
                       onChange={(e) => handleInputChange("department", e.target.value)}
-                      className="w-full bg-gray-50"
+                      className="w-full bg-gray-100 py-6 px-4 rounded-lg"
                     />
                   </div>
                 </div>
@@ -130,35 +87,25 @@ export default function InstituteTemplateSetupPage() {
                   <div>
                     <label className="block text-base font-medium text-gray-800 mb-2">
                       Roll / Serial Number
-                      <svg className="inline w-4 h-4 ml-1 align-middle" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                        />
-                      </svg>
                     </label>
                     <Input
                       type="text"
                       placeholder="Type Roll/Serial Number"
                       value={formData.rollNumber}
                       onChange={(e) => handleInputChange("rollNumber", e.target.value)}
-                      className="w-full bg-gray-50"
+                      className="w-full bg-gray-100 py-6 px-4 rounded-lg"
                     />
                   </div>
                   <div>
                     <label className="block text-base font-medium text-gray-800 mb-2">
                       Blood Group
-                      <svg className="inline w-4 h-4 ml-1 align-middle" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                        />
-                      </svg>
                     </label>
                     <Input
                       type="text"
                       placeholder="Type Blood Group"
                       value={formData.bloodGroup}
                       onChange={(e) => handleInputChange("bloodGroup", e.target.value)}
-                      className="w-full bg-gray-50"
+                      className="w-full bg-gray-100 py-6 px-4 rounded-lg"
                     />
                   </div>
                 </div>
@@ -166,58 +113,69 @@ export default function InstituteTemplateSetupPage() {
                   <div>
                     <label className="block text-base font-medium text-gray-800 mb-2">
                       Date of Birth
-                      <svg className="inline w-4 h-4 ml-1 align-middle" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                        />
-                      </svg>
                     </label>
                     <Input
                       type="text"
                       placeholder="Type Date of Birth"
                       value={formData.dateOfBirth}
                       onChange={(e) => handleInputChange("dateOfBirth", e.target.value)}
-                      className="w-full bg-gray-50"
+                      className="w-full bg-gray-100 py-6 px-4 rounded-lg"
                     />
                   </div>
                   <div>
                     <label className="block text-base font-medium text-gray-800 mb-2">
                       Phone
-                      <svg className="inline w-4 h-4 ml-1 align-middle" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                        />
-                      </svg>
                     </label>
                     <Input
                       type="tel"
                       placeholder="Type Phone Number"
                       value={formData.phone}
                       onChange={(e) => handleInputChange("phone", e.target.value)}
-                      className="w-full bg-gray-50"
+                      className="w-full bg-gray-100 py-6 px-4 rounded-lg"
                     />
                   </div>
                 </div>
-                <div className="flex gap-4 mt-6">
-                  <Button disabled className="flex-1 bg-gray-300 hover:bg-gray-300 text-gray-500 cursor-not-allowed">Preview</Button>
-                  <Button onClick={() => setIsModalOpen(true)} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">Next</Button>
+                <div className="flex gap-4 mt-8">
+                  <Button disabled className="flex-1 bg-gray-300 hover:bg-gray-300 text-gray-500 cursor-not-allowed p-4 text-md">Preview</Button>
+                  <Button onClick={() => setIsModalOpen(true)} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white p-4 text-md">Next</Button>
                 </div>
               </div>
 
               {/* Right Preview Section */}
               <div className="space-y-6">
-                <div className="text-right">
+                {/* <div className="text-right">
                   <span className="text-sm font-medium text-gray-700">Preview</span>
-                </div>
+                </div> */}
 
-                <Card className="p-6 bg-white">
-                  <CardPreview
+                <Card className="p-6 bg-white border-none">
+                  {/* <CardPreview
                     instituteName={formData.instituteName}
                     idCardType={formData.idCardType}
                     logoUrl={formData.logoUrl}
                     signatureUrl={formData.signatureUrl}
                     bgColor={formData.bgColor}
-                  />
+                  /> */}
+                  <div className="w-full mx-auto">
+                    <StudentCard
+                      instituteName="{form.instituteName}"
+                      address="{form.address}"
+                      idCardType="{form.idCardType}"
+                      studentName="{form.instituteName}"
+                      department="{form.department}"
+                      roll="{form.roll}"
+                      bloodGroup="{form.bloodGroup}"
+                      dob="{form.dob}"
+                      phone="{form.phone}"
+                      // logoUrl="{form.logoUrl}"
+                      // signatureUrl="{form.signatureUrl}"
+                      // profileUrl="{form.profileUrl}"
+                      logoUrl="https://i.postimg.cc/hthwhxwy/uni-logo.avif"
+                      signatureUrl="https://i.postimg.cc/TYfbfv1Q/principal-Sign.png"
+                      profileUrl="https://i.postimg.cc/Y0ydK27n/person.jpg"
+                      bgColor="{form.bgColor}"
+                      qrData="{form.qrData}"
+                    />
+                  </div>
                 </Card>
 
                 {/* Color Selection */}

@@ -83,6 +83,7 @@ export function EditModal({ isOpen, onClose, onSubmit, initialData }: EditModalP
               name="name"
               value={formData.name}
               onChange={handleChange}
+              className="bg-gray-100"
             />
           </div>
 
@@ -95,6 +96,7 @@ export function EditModal({ isOpen, onClose, onSubmit, initialData }: EditModalP
               name="department"
               value={formData.department}
               onChange={handleChange}
+              className="bg-gray-100"
             />
           </div>
 
@@ -107,6 +109,7 @@ export function EditModal({ isOpen, onClose, onSubmit, initialData }: EditModalP
               name="roll"
               value={formData.roll}
               onChange={handleChange}
+              className="bg-gray-100"
             />
           </div>
 
@@ -119,6 +122,7 @@ export function EditModal({ isOpen, onClose, onSubmit, initialData }: EditModalP
               name="bloodGroup"
               value={formData.bloodGroup}
               onChange={handleChange}
+              className="bg-gray-100"
             />
           </div>
 
@@ -131,6 +135,7 @@ export function EditModal({ isOpen, onClose, onSubmit, initialData }: EditModalP
               name="dob"
               value={formData.dob}
               onChange={handleChange}
+              className="bg-gray-100"
             />
           </div>
 
@@ -143,6 +148,7 @@ export function EditModal({ isOpen, onClose, onSubmit, initialData }: EditModalP
               name="phone"
               value={formData.phone}
               onChange={handleChange}
+              className="bg-gray-100"
             />
           </div>
 

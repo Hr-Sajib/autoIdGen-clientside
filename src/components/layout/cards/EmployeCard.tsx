@@ -108,6 +108,12 @@
 // export default EmployeeCard;
 
 
+
+
+
+
+
+
 "use client";
 import React from "react";
 import { QRCodeCanvas } from "qrcode.react";
@@ -157,7 +163,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
       className="relative min-w-[262px]  h-[153px]
                  md:min-w-[370px] md:h-[210px]
                  lg:min-w-[600px] lg:h-[350px]
-                 xl:min-w-[700px] xl:h-[408px] rounded
+                 xl:min-w-[650px] xl:h-[408px] rounded
                  md:rounded-lg overflow-hidden shadow-lg"
       style={{
         backgroundImage: `url(${background.src})`,

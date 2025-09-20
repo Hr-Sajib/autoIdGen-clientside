@@ -349,6 +349,19 @@ export default function InstituteTemplateSetupPage() {
                   className="h-14 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder:text-gray-500"
                 />
               </div>
+              {/* Whose Sign */}
+              <div className="space-y-2">
+                <label className="text-base font-medium text-gray-700">
+                  Whose sign
+                </label>
+                <Input
+                  name="whoseSign"
+                  value={form.whoseSign}
+                  onChange={handleChange}
+                  placeholder="Whose sign"
+                  className="h-14 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder:text-gray-500"
+                />
+              </div>
 
               {/* Upload Buttons */}
               <div className="space-y-4">

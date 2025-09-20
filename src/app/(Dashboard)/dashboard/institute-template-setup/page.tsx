@@ -229,8 +229,6 @@
 
 
 
-
-
 "use client"
 import React, { useState } from "react"
 import { Input } from "@/components/ui/input"
@@ -239,6 +237,7 @@ import { useRouter } from "next/navigation"
 import StudentCard from "@/components/layout/cards/StudentCard"
 import { DashboardHeader } from "../_components/dashboard-header"
 import { LucideSignature, LucideUpload, LucideUser2 } from "lucide-react"
+import EmployeeCard from "@/components/layout/cards/EmployeCard"
 
 export default function InstituteTemplateSetupPage() {
   const router = useRouter()
@@ -256,7 +255,10 @@ export default function InstituteTemplateSetupPage() {
     profileUrl: "https://via.placeholder.com/100",
     bgColor: "#0f172a",
     qrData: "CSE/1233/B+/12122000/+65-2131-XXXX",
+    whoseSign: ''
   })
+
+  const [cardOrientation, setCardOrientation] = useState("horizontal") // horizontal (student) or vertical (employee)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -270,6 +272,8 @@ export default function InstituteTemplateSetupPage() {
   }
 
   const handleContinue = () => {
+    // Store the card orientation preference for the next page
+    sessionStorage.setItem('cardOrientation', cardOrientation)
     router.push("/dashboard/student-information")
   }
 
@@ -279,7 +283,7 @@ export default function InstituteTemplateSetupPage() {
     <div className="min-h-screen bg-white">
       <DashboardHeader />
       
-      <div className=" px-6 py-12">
+      <div className="px-6 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           {/* Left Form Section */}
           <div className="space-y-8">
@@ -328,6 +332,33 @@ export default function InstituteTemplateSetupPage() {
                   value={form.address}
                   onChange={handleChange}
                   placeholder="Type Address"
+                  className="h-14 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder:text-gray-500"
+                />
+              </div>
+
+              {/* Whose Sign */}
+              <div className="space-y-2">
+                <label className="text-base font-medium text-gray-700">
+                  Whose sign
+                </label>
+                <Input
+                  name="whoseSign"
+                  value={form.whoseSign}
+                  onChange={handleChange}
+                  placeholder="Whose sign"
+                  className="h-14 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder:text-gray-500"
+                />
+              </div>
+              {/* Whose Sign */}
+              <div className="space-y-2">
+                <label className="text-base font-medium text-gray-700">
+                  Whose sign
+                </label>
+                <Input
+                  name="whoseSign"
+                  value={form.whoseSign}
+                  onChange={handleChange}
+                  placeholder="Whose sign"
                   className="h-14 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder:text-gray-500"
                 />
               </div>
@@ -388,28 +419,81 @@ export default function InstituteTemplateSetupPage() {
           {/* Right Preview Section */}
           <div className="flex flex-col items-center justify-start">
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 text-center">
+              <h2 className="text-2xl font-bold text-gray-900 text-center mb-4">
                 Preview
               </h2>
+              
+              {/* Orientation Toggle */}
+              <div className="flex justify-center mb-6">
+                <div className="bg-gray-100 p-1 rounded-lg flex">
+                  <button
+                    onClick={() => setCardOrientation("horizontal")}
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                      cardOrientation === "horizontal"
+                        ? "bg-white text-gray-900 shadow-sm"
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    Horizontal
+                  </button>
+                  <button
+                    onClick={() => setCardOrientation("vertical")}
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                      cardOrientation === "vertical"
+                        ? "bg-white text-gray-900 shadow-sm"
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    Vertical
+                  </button>
+                </div>
+              </div>
             </div>
 
             <div className="mb-6">
-              <StudentCard
-                instituteName={form.instituteName || "Eastern Mine Awesome Beautiful School & College, Singapore"}
-                address={form.address || "21A/B mine union point, Singapore"}
-                idCardType={form.idCardType || "Student"}
-                studentName="Mark Marshal"
-                department="CSE"
-                roll="1233"
-                bloodGroup="B+"
-                dob="12-12-2000"
-                phone="+65-2131-XXXX"
-                logoUrl={form.logoUrl}
-                signatureUrl={form.signatureUrl}
-                profileUrl={form.profileUrl}
-                bgColor={form.bgColor}
-                qrData={form.qrData}
-              />
+              {cardOrientation === "vertical" ? (
+                // Vertical - Show Employee Card
+                <EmployeeCard
+                  name="Mark Marshal"
+                  companyName={form.instituteName || "Eastern Mine School & College"}
+                  address={form.address || "21A/B mine union point, Singapore"}
+                  idCardType={form.idCardType || "Student ID"}
+                  employeeName="Mark Marshal"
+                  department="CSE"
+                  employeeId="1233"
+                  bloodGroup="B+"
+                  dob="12-12-2000"
+                  phone="+65-2131-XXXX"
+                  logoUrl={form.logoUrl}
+                  signatureUrl={form.signatureUrl}
+                  profileUrl={form.profileUrl}
+                  bgColor={form.bgColor}
+                  qrData={form.qrData}
+                  whoseSign={form.whoseSign || "Principal"}
+                  personImage={form.profileUrl}
+                  logo={form.logoUrl}
+                  signature={form.signatureUrl}
+                />
+              ) : (
+                // Horizontal - Show Student Card
+                <StudentCard
+                  instituteName={form.instituteName || "Eastern Mine Awesome Beautiful School & College, Singapore"}
+                  address={form.address || "21A/B mine union point, Singapore"}
+                  idCardType={form.idCardType || "Student"}
+                  studentName="Mark Marshal"
+                  department="CSE"
+                  roll="1233"
+                  bloodGroup="B+"
+                  dob="12-12-2000"
+                  phone="+65-2131-XXXX"
+                  logoUrl={form.logoUrl}
+                  signatureUrl={form.signatureUrl}
+                  profileUrl={form.profileUrl}
+                  bgColor={form.bgColor}
+                  qrData={form.qrData}
+                  whoseSign={form.whoseSign || "Principal"}
+                />
+              )}
             </div>
 
             {/* Color Picker */}

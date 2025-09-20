@@ -141,6 +141,9 @@ interface EmployeeCardProps {
   personImage?: string;
   logo?: string;
   signature?: string;
+  whoseSign?:string;
+
+
 }
 
 const EmployeeCard: React.FC<EmployeeCardProps> = ({
@@ -155,6 +158,9 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
   personImage = "https://i.postimg.cc/Y0ydK27n/person.jpg",
   logo = "https://i.postimg.cc/hthwhxwy/uni-logo.avif",
   signature = "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png",
+  whoseSign,
+  idCardType,
+  address
 }) => {
   const qrData = `${companyName}/${department}/${employeeId}/${bloodGroup}/${dob}/${phone}`;
 
@@ -192,7 +198,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
               {companyName}
             </p>
             <p className="text-center text-gray-300 text-[5px] md:text-[7px] lg:text-[12px] xl:text-[14px] mt-1">
-              {companyAddress}
+              {address}
             </p>
 
           </div>
@@ -201,7 +207,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
         {/* Employee ID Label */}
 
         <p className="absolute top-[3%] left-[12%] md:left-[10%] lg:left-[12%] text-[4px] md:text-[8px] lg:text-[11px] xl:text-[12px] text-gray-500 border border-gray-500 px-1 py-0.5 rounded text-center">
-          Employee ID
+          {idCardType}
         </p>
 
         {/* Person Image */}
@@ -256,7 +262,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
                        xl:w-[90px] xl:h-[45px]"
           />
           <p className="text-[4px] md:text-[7px] lg:text-[10px] xl:text-[12px] m-0">
-            Chairman Signature
+            {whoseSign} Signature
           </p>
         </div>
 

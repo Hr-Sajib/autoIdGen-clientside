@@ -1,17 +1,6 @@
-// "use client";
-
-// export default function Error({ error, reset }: { error: Error; reset: () => void }) {
-//   return (
-//     <div>
-//       <h2>Something went wrong!</h2>
-//       <p>{error.message}</p>
-//       <button onClick={() => reset()}>Try again</button>
-//     </div>
-//   );
-// }
-
-
 "use client";
+import Image from "next/image";
+import ErrorImage from "@/../public/images/error_id_card.png";
 
 export default function Error({
   error,
@@ -21,15 +10,31 @@ export default function Error({
   reset: () => void;
 }) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
-      <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
-        <h2 className="text-2xl font-bold text-red-600 mb-4">
-          ⚠️ Something went wrong!
-        </h2>
-        <p className="text-gray-700 mb-6 break-words">{error.message}</p>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-6">
+      <div className="text-center">
+       
+
+        {/* Error image */}
+        <div className="flex justify-center mb-6">
+          <Image
+            src={ErrorImage}
+            alt="Error illustration"
+            width={600}
+            height={400}
+            className="rounded-lg object-cover"
+            priority
+          />
+        </div>
+
+        {/* Error message */}
+        <p className="text-gray-600 mb-6 break-words text-sm sm:text-base">
+          {error.message}
+        </p>
+
+        {/* Retry button */}
         <button
-          onClick={() => reset()}
-          className="px-6 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors duration-200"
+          onClick={reset}
+          className="px-6 py-2 bg-blue-600/60 text-white font-medium rounded-lg hover:bg-blue-700/80 focus:ring-2 focus:ring-red-400 focus:outline-none transition-colors duration-200"
         >
           Try Again
         </button>

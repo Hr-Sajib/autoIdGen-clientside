@@ -170,6 +170,7 @@ import EmpIDCard from '@/components/layout/cards/EmployeCard';
 import React from 'react';
 import Error from '@/app/error';
 
+
 const page = () => {
   return (
     <div>

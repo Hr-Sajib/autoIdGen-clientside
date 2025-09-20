@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
@@ -8,10 +8,12 @@ import { DashboardHeader } from "../_components/dashboard-header"
 import EmployeeCard from "@/components/layout/cards/EmployeCard"
 import { CardQuantityModal } from "../_components/quantity-modal"
 import { useRouter } from "next/navigation"
+import StudentCard from "@/components/layout/cards/StudentCard"
 
 export default function EmployeeInformationPage() {
   const router = useRouter()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [cardOrientation, setCardOrientation] = useState("vertical")
 
   const [formData, setFormData] = useState({
     employeeName: "",
@@ -31,6 +33,15 @@ export default function EmployeeInformationPage() {
     qrData: "",
   })
 
+
+
+  useEffect(() => {
+    const savedOrientation = sessionStorage.getItem('cardOrientation')
+    if (savedOrientation) {
+      setCardOrientation(savedOrientation)
+    }
+  }, [])
+  
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
@@ -142,7 +153,7 @@ export default function EmployeeInformationPage() {
               </div>
 
               {/* Preview Section */}
-              <div className="space-y-6">
+              {/* <div className="space-y-6">
                 <Card className="p-6 bg-white">
                   <EmployeeCard
                     companyName="{form.instituteName}"
@@ -173,6 +184,87 @@ export default function EmployeeInformationPage() {
                       onClick={() => handleInputChange("bgColor", color)}
                     />
                   ))}
+                </div>
+              </div> */}
+
+
+              {/* Right Preview Section */}
+              <div className="space-y-6">
+                <div className="text-center mb-4">
+                  <span className="text-lg font-semibold text-gray-800">
+                    Preview ({cardOrientation === "vertical" ? "Vertical" : "Horizontal"} Layout)
+                  </span>
+                </div>
+
+                <Card className="p-6 bg-white border-none shadow-lg">
+                  <div className="w-full mx-auto flex justify-center">
+                    <div className={cardOrientation === "vertical" ? "scale-90" : "scale-100"}>
+                      {cardOrientation === "vertical" ? (
+                        <EmployeeCard
+                          name={formData.employeeName || "Mark Marshal"}
+                          companyName={formData.companyName}
+                          address={formData.address}
+                          idCardType={formData.idCardType}
+                          employeeName={formData.employeeName || "Mark Marshal"}
+                          department={formData.department || "CSE"}
+                          employeeId={formData.rollNumber || "1233"}
+                          bloodGroup={formData.bloodGroup || "B+"}
+                          dob={formData.dateOfBirth || "12-12-2000"}
+                          phone={formData.phone || "+65-2131-XXXX"}
+                          logoUrl={formData.logoUrl || "https://i.postimg.cc/hthwhxwy/uni-logo.avif"}
+                          signatureUrl={formData.signatureUrl || "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png"}
+                          profileUrl={formData.profileUrl}
+                          bgColor={formData.bgColor}
+                          qrData={formData.qrData}
+                          personImage={formData.profileUrl}
+                          logo={formData.logoUrl || "https://i.postimg.cc/hthwhxwy/uni-logo.avif"}
+                          signature={formData.signatureUrl || "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png"}
+                          // Pass custom labels to the card component
+                          
+                        />
+                      ) : (
+                        <StudentCard
+                          instituteName={formData.companyName}
+                          address={formData.address}
+                          idCardType={formData.idCardType}
+                          studentName={formData.employeeName || "Mark Marshal"}
+                          department={formData.department || "CSE"}
+                          roll={formData.rollNumber || "1233"}
+                          bloodGroup={formData.bloodGroup || "B+"}
+                          dob={formData.dateOfBirth || "12-12-2000"}
+                          phone={formData.phone || "+65-2131-XXXX"}
+                          logoUrl={formData.logoUrl || "https://i.postimg.cc/hthwhxwy/uni-logo.avif"}
+                          signatureUrl={formData.signatureUrl || "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png"}
+                          profileUrl={formData.profileUrl}
+                          bgColor={formData.bgColor}
+                          qrData={formData.qrData}
+                          // Pass custom labels to the card component
+        
+                        />
+                      )}
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Color Selection */}
+                <div className="space-y-2">
+                  <p className="text-center text-sm font-medium text-gray-600">
+                    Select photo Background Color
+                  </p>
+                  <div className="flex justify-center gap-2">
+                    {["#0f172a", "#10b981", "#3b82f6", "#06b6d4", "#a855f7", "#ec4899"].map((color) => (
+                      <button
+                        key={color}
+                        className={`w-8 h-8 rounded-full border-2 transition-all ${
+                          formData.bgColor === color 
+                            ? 'border-gray-800 scale-110' 
+                            : 'border-gray-200 hover:border-gray-400'
+                        }`}
+                        style={{ backgroundColor: color }}
+                        onClick={() => handleInputChange("bgColor", color)}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

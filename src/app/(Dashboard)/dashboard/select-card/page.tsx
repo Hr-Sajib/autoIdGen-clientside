@@ -150,6 +150,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { useRouter, useSearchParams } from "next/navigation"
 import { DashboardHeader } from "../_components/dashboard-header"
+import Image from "next/image"
 
 export default function SelectCardPage() {
   const [selectedCard, setSelectedCard] = useState<string | null>("student")
@@ -179,11 +180,11 @@ export default function SelectCardPage() {
   const handleContinue = () => {
     if (selectedCard === "student") {
       router.push(
-        `/dashboard/institute-template-setup?project=${encodeURIComponent(projectName || "")}`
+        `/dashboard/institute-template-setup?project=${projectName || ""}&type=student`
       )
     } else if (selectedCard === "employee") {
       router.push(
-        `/dashboard/company-template-setup?project=${encodeURIComponent(projectName || "")}`
+        `/dashboard/company-template-setup?project=${projectName || ""}&type=employee`
       )
     }
   }
@@ -212,9 +213,11 @@ export default function SelectCardPage() {
               <div className="text-center pb-0">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">{card.title}</h3>
                 <div className="bg-white rounded-lg p-4 shadow-sm">
-                  <img
+                  <Image
                     src={card.image || "/placeholder.svg"}
                     alt={card.title}
+                    width={400}
+                    height={400}
                     className="w-full h-96 object-contain rounded"
                   />
                 </div>
@@ -267,11 +270,13 @@ export default function SelectCardPage() {
             {selectedCard && (
               <Card className="p-4">
                 <div className="bg-white rounded-lg p-4 shadow-sm">
-                  <img
+                  <Image
                     src={
                       cardTypes.find((c) => c.id === selectedCard)?.image || "/placeholder.svg"
                     }
-                    alt={cardTypes.find((c) => c.id === selectedCard)?.title}
+                    alt={cardTypes.find((c) => c.id === selectedCard)?.title || "Card Image"}
+                    width={400}
+                    height={400}
                     className="w-full h-48 object-contain rounded"
                   />
                 </div>

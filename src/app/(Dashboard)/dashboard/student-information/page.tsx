@@ -1448,6 +1448,7 @@ export default function InstituteTemplateSetupPage() {
     studentName: "Name", // Static field - cannot be changed
     department: "Department",
     rollNumber: "Roll Number",
+    employeeId: "Employee ID",
     bloodGroup: "Blood Group",
     dateOfBirth: "Date of Birth",
     phone: "Phone"
@@ -1540,7 +1541,7 @@ export default function InstituteTemplateSetupPage() {
           "value": formData.department
         },
         {
-          "fieldName": customLabels.rollNumber,
+          "fieldName": customLabels.rollNumber || customLabels.employeeId,
           "value": formData.rollNumber
         },
         {

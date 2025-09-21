@@ -318,6 +318,7 @@ interface EmployeeCardProps {
     studentName: string;
     department: string;
     rollNumber: string;
+    employeeId: string;  
     bloodGroup: string;
     dateOfBirth: string;
     phone: string;
@@ -343,6 +344,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
     studentName: "Name",
     department: "Department",
     rollNumber: "Employee ID",
+    employeeId: "Employee ID",
     bloodGroup: "Blood Group",
     dateOfBirth: "Date of Birth",
     phone: "Phone"
@@ -406,14 +408,14 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
         {/* Name */}
         <p className="absolute top-[28%] md:top-[30%] left-[2%] md:left-[7%] right-0 text-center font-bold
                       text-[10px] md:text-[17px] lg:text-[22px] xl:text-[26px] text-cyan-400">
-          {name}
+          {name|| customLabels.studentName || "John Marshal"}
         </p>
 
         {/* Details */}
         <div className="absolute top-[41%] md:top-[47%] left-[35%] md:left-[38%] w-[50%] flex justify-center text-white text-[6px] md:text-[8px] lg:text-[14px] xl:text-[16px]">
           <div className="w-4/12 pr-1 md:pr-2 lg:pr-2 xl:pr-2 space-y-0.5">
             <p>{customLabels.department}</p>
-            <p>{customLabels.rollNumber}</p>
+            <p>{customLabels?.employeeId || customLabels.rollNumber}</p>
             <p>{customLabels.bloodGroup}</p>
             <p>{customLabels.dateOfBirth}</p>
             <p>{customLabels.phone}</p>

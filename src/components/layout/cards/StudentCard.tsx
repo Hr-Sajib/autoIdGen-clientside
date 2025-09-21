@@ -104,9 +104,12 @@
 
 // export default StudentCard;
 
-
-
 // src/components/StudentCard.tsx
+
+
+
+
+
 "use client";
 import React from "react";
 import Image from "next/image";
@@ -128,6 +131,7 @@ interface StudentCardProps {
   phone: string;
   qrData: string;
   bgColor?: string;
+  whoseSign?: string;
 }
 
 const StudentCard: React.FC<StudentCardProps> = ({
@@ -145,6 +149,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
   phone,
   qrData,
   bgColor,
+  whoseSign
 }) => {
   return (
     <div
@@ -168,13 +173,15 @@ const StudentCard: React.FC<StudentCardProps> = ({
               alt="School Logo"
               width={60}
               height={60}
-              className="rounded-md bg-white object-contain shadow-md"
+              className="rounded-md object-cover w-[60px] h-[60px] bg-white shadow-md"
             />
           )}
           <p className="text-center pt-1 text-[15px] font-bold text-white max-w-[300px]">
             {instituteName}
           </p>
-          <p className="mt-1 text-center text-[12px] text-gray-200">{address}</p>
+          <p className="mt-1 text-center text-[12px] text-gray-200">
+            {address}
+          </p>
 
           {/* ID Type */}
           <p className="absolute top-[140px] rounded border border-gray-300 px-2 py-[2px] text-[11px] text-gray-100 bg-black/30">
@@ -221,7 +228,13 @@ const StudentCard: React.FC<StudentCardProps> = ({
 
         {/* QR Code */}
         <div className="absolute bottom-[60px] left-1/2 -translate-x-1/2">
-          <QRCodeCanvas value={qrData} size={55} bgColor="#fff" fgColor="#000" level="H" />
+          <QRCodeCanvas
+            value={qrData}
+            size={55}
+            bgColor="#fff"
+            fgColor="#000"
+            level="H"
+          />
         </div>
 
         {/* Principal Signature */}
@@ -234,7 +247,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
               height={45}
               className="object-contain"
             />
-            <p className="text-[9px] text-black">Principal Signature</p>
+            <p className="text-[9px] text-black">{whoseSign} Signature</p>
           </div>
         )}
       </div>

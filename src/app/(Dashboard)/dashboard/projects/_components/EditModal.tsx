@@ -8,7 +8,14 @@ import { X } from "lucide-react"
 interface EditModalProps {
   isOpen: boolean
   onClose: () => void
-  onSubmit: (formData: any) => void
+  onSubmit: (formData: {
+    name: string
+    department: string
+    roll: string
+    bloodGroup: string
+    dob: string
+    phone: string
+  }) => void
   initialData?: {
     name?: string
     department?: string

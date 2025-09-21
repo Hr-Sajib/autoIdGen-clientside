@@ -55,7 +55,16 @@ export default function ViewDetailsPage() {
     setEditModalOpen(true)
   }
 
-  const handleUpdate = (formData: any) => {
+  type StudentUpdate = {
+    name: string
+    department: string
+    roll: string
+    bloodGroup: string
+    dob: string
+    phone: string
+  }
+
+  const handleUpdate = (formData: StudentUpdate) => {
     setStudents((prev) =>
       prev.map((s) =>
         s.roll === selectedStudent?.roll && s.batchCode === selectedStudent?.batchCode

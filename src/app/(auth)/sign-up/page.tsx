@@ -19,6 +19,8 @@ const AutoIDGenSignup: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [agree, setAgree] = useState(false);
 
+  console.log({fullName, email, password, confirmPassword, agree});
+//  return;
   const [register, { isLoading }] = useRegisterMutation(); // ✅ mutation hook
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -45,10 +47,21 @@ const AutoIDGenSignup: React.FC = () => {
 
       // Optional: Redirect after success
       window.location.href = "/login";
-    } catch (error: any) {
-      console.error("Signup error:", error);
-      toast.error(error?.data?.message || error?.message || "Something went wrong!");
-    }
+    } catch (error: unknown) {
+          console.error("signup error:", error);
+          if (
+            typeof error === "object" &&
+            error !== null &&
+            "data" in error &&
+            typeof (error as { data?: { message?: string } }).data?.message === "string"
+          ) {
+            toast.error(
+              (error as { data?: { message?: string } }).data?.message
+            );
+          } else {
+            toast.error("Something went wrong!");
+          }
+        }
   };
 
   return (

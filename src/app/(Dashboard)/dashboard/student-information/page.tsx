@@ -1,16 +1,40 @@
+
+
+
+
+
+
+
+
+
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
+import { Pencil } from "lucide-react"
 import CardPreview from "../_components/CardPreview"
 import { CardQuantityModal } from "../_components/quantity-modal"
 import { DashboardHeader } from "../_components/dashboard-header"
 import StudentCard from "@/components/layout/cards/StudentCard"
+import EmployeeCard from "@/components/layout/cards/EmployeCard"
 
 export default function InstituteTemplateSetupPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [cardOrientation, setCardOrientation] = useState("horizontal")
+  const [editingField, setEditingField] = useState<string | null>(null)
+  
+  // Add state for custom labels
+  const [customLabels, setCustomLabels] = useState({
+    studentName: "Student Name",
+    department: "Department",
+    rollNumber: "Roll Number",
+    bloodGroup: "Blood Group",
+    dateOfBirth: "Date of Birth",
+    phone: "Phone"
+  })
+
   const [formData, setFormData] = useState({
     department: "",
     rollNumber: "",
@@ -18,16 +42,30 @@ export default function InstituteTemplateSetupPage() {
     dateOfBirth: "",
     phone: "",
     studentName: "",
-    instituteName: "",
-    idCardType: "",
-    address: "",
+    instituteName: "Eastern Mine School & College",
+    idCardType: "Student",
+    address: "21A/B mine union point, Singapore",
     logoUrl: "",
     signatureUrl: "",
-    bgColor: "#0f172a", // default dark navy
+    profileUrl: "https://i.postimg.cc/Y0ydK27n/person.jpg",
+    bgColor: "#0f172a",
+    qrData: "CSE/1233/B+/12122000/+65-2131-XXXX",
+    whoseSign: "Principal"
   })
+
+  useEffect(() => {
+    const savedOrientation = sessionStorage.getItem('cardOrientation')
+    if (savedOrientation) {
+      setCardOrientation(savedOrientation)
+    }
+  }, [])
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const handleLabelChange = (field: string, value: string) => {
+    setCustomLabels((prev) => ({ ...prev, [field]: value }))
   }
 
   const handleFileUpload = (field: string, file: File | null) => {
@@ -41,7 +79,6 @@ export default function InstituteTemplateSetupPage() {
 
   const handleGenerateProject = (quantity: number) => {
     console.log("Creating project:", quantity)
-    // Here you would typically handle the project creation logic
   }
 
   return (
@@ -49,7 +86,6 @@ export default function InstituteTemplateSetupPage() {
       <div className="min-h-screen bg-background">
         <DashboardHeader />
 
-        {/* Main Content */}
         <main className="container mx-auto px-6 py-8">
           <div className="max-w-full mx-auto">
             <h1 className="text-2xl font-bold text-gray-900 mb-8">Contact Info Selection</h1>
@@ -59,9 +95,35 @@ export default function InstituteTemplateSetupPage() {
               <div>
                 <div className="grid grid-cols-2 gap-5 mb-4">
                   <div>
-                    <label className="block text-base font-medium text-gray-800 mb-2">
-                      Student Name
-                    </label>
+                    <div className="flex items-center gap-2 mb-2">
+                      {editingField === 'studentName' ? (
+                        <Input
+                          type="text"
+                          value={customLabels.studentName}
+                          onChange={(e) => handleLabelChange("studentName", e.target.value)}
+                          onBlur={() => setEditingField(null)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') setEditingField(null)
+                          }}
+                          autoFocus
+                          className="h-8"
+                        />
+                      ) : (
+                        <>
+                          <label className="block text-base font-medium text-gray-800">
+                            {customLabels.studentName}
+                          </label>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6"
+                            onClick={() => setEditingField('studentName')}
+                          >
+                            <Pencil className="h-3 w-3" />
+                          </Button>
+                        </>
+                      )}
+                    </div>
                     <Input
                       type="text"
                       placeholder="Type Student Name"
@@ -71,9 +133,35 @@ export default function InstituteTemplateSetupPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-base font-medium text-gray-800 mb-2">
-                      Department
-                    </label>
+                    <div className="flex items-center gap-2 mb-2">
+                      {editingField === 'department' ? (
+                        <Input
+                          type="text"
+                          value={customLabels.department}
+                          onChange={(e) => handleLabelChange("department", e.target.value)}
+                          onBlur={() => setEditingField(null)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') setEditingField(null)
+                          }}
+                          autoFocus
+                          className="h-8"
+                        />
+                      ) : (
+                        <>
+                          <label className="block text-base font-medium text-gray-800">
+                            {customLabels.department}
+                          </label>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6"
+                            onClick={() => setEditingField('department')}
+                          >
+                            <Pencil className="h-3 w-3" />
+                          </Button>
+                        </>
+                      )}
+                    </div>
                     <Input
                       type="text"
                       placeholder="Type Department"
@@ -83,11 +171,38 @@ export default function InstituteTemplateSetupPage() {
                     />
                   </div>
                 </div>
+                
                 <div className="grid grid-cols-2 gap-5 mb-4">
                   <div>
-                    <label className="block text-base font-medium text-gray-800 mb-2">
-                      Roll / Serial Number
-                    </label>
+                    <div className="flex items-center gap-2 mb-2">
+                      {editingField === 'rollNumber' ? (
+                        <Input
+                          type="text"
+                          value={customLabels.rollNumber}
+                          onChange={(e) => handleLabelChange("rollNumber", e.target.value)}
+                          onBlur={() => setEditingField(null)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') setEditingField(null)
+                          }}
+                          autoFocus
+                          className="h-8"
+                        />
+                      ) : (
+                        <>
+                          <label className="block text-base font-medium text-gray-800">
+                            {customLabels.rollNumber}
+                          </label>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6"
+                            onClick={() => setEditingField('rollNumber')}
+                          >
+                            <Pencil className="h-3 w-3" />
+                          </Button>
+                        </>
+                      )}
+                    </div>
                     <Input
                       type="text"
                       placeholder="Type Roll/Serial Number"
@@ -97,9 +212,35 @@ export default function InstituteTemplateSetupPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-base font-medium text-gray-800 mb-2">
-                      Blood Group
-                    </label>
+                    <div className="flex items-center gap-2 mb-2">
+                      {editingField === 'bloodGroup' ? (
+                        <Input
+                          type="text"
+                          value={customLabels.bloodGroup}
+                          onChange={(e) => handleLabelChange("bloodGroup", e.target.value)}
+                          onBlur={() => setEditingField(null)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') setEditingField(null)
+                          }}
+                          autoFocus
+                          className="h-8"
+                        />
+                      ) : (
+                        <>
+                          <label className="block text-base font-medium text-gray-800">
+                            {customLabels.bloodGroup}
+                          </label>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6"
+                            onClick={() => setEditingField('bloodGroup')}
+                          >
+                            <Pencil className="h-3 w-3" />
+                          </Button>
+                        </>
+                      )}
+                    </div>
                     <Input
                       type="text"
                       placeholder="Type Blood Group"
@@ -109,11 +250,38 @@ export default function InstituteTemplateSetupPage() {
                     />
                   </div>
                 </div>
+                
                 <div className="grid grid-cols-2 gap-5 mb-4">
                   <div>
-                    <label className="block text-base font-medium text-gray-800 mb-2">
-                      Date of Birth
-                    </label>
+                    <div className="flex items-center gap-2 mb-2">
+                      {editingField === 'dateOfBirth' ? (
+                        <Input
+                          type="text"
+                          value={customLabels.dateOfBirth}
+                          onChange={(e) => handleLabelChange("dateOfBirth", e.target.value)}
+                          onBlur={() => setEditingField(null)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') setEditingField(null)
+                          }}
+                          autoFocus
+                          className="h-8"
+                        />
+                      ) : (
+                        <>
+                          <label className="block text-base font-medium text-gray-800">
+                            {customLabels.dateOfBirth}
+                          </label>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6"
+                            onClick={() => setEditingField('dateOfBirth')}
+                          >
+                            <Pencil className="h-3 w-3" />
+                          </Button>
+                        </>
+                      )}
+                    </div>
                     <Input
                       type="text"
                       placeholder="Type Date of Birth"
@@ -123,9 +291,35 @@ export default function InstituteTemplateSetupPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-base font-medium text-gray-800 mb-2">
-                      Phone
-                    </label>
+                    <div className="flex items-center gap-2 mb-2">
+                      {editingField === 'phone' ? (
+                        <Input
+                          type="text"
+                          value={customLabels.phone}
+                          onChange={(e) => handleLabelChange("phone", e.target.value)}
+                          onBlur={() => setEditingField(null)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') setEditingField(null)
+                          }}
+                          autoFocus
+                          className="h-8"
+                        />
+                      ) : (
+                        <>
+                          <label className="block text-base font-medium text-gray-800">
+                            {customLabels.phone}
+                          </label>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6"
+                            onClick={() => setEditingField('phone')}
+                          >
+                            <Pencil className="h-3 w-3" />
+                          </Button>
+                        </>
+                      )}
+                    </div>
                     <Input
                       type="tel"
                       placeholder="Type Phone Number"
@@ -135,6 +329,7 @@ export default function InstituteTemplateSetupPage() {
                     />
                   </div>
                 </div>
+                
                 <div className="flex gap-4 mt-8">
                   <Button disabled className="flex-1 bg-gray-300 hover:bg-gray-300 text-gray-500 cursor-not-allowed p-4 text-md">Preview</Button>
                   <Button onClick={() => setIsModalOpen(true)} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white p-4 text-md">Next</Button>
@@ -143,51 +338,83 @@ export default function InstituteTemplateSetupPage() {
 
               {/* Right Preview Section */}
               <div className="space-y-6">
-                {/* <div className="text-right">
-                  <span className="text-sm font-medium text-gray-700">Preview</span>
-                </div> */}
+                <div className="text-center mb-4">
+                  <span className="text-lg font-semibold text-gray-800">
+                    Preview ({cardOrientation === "vertical" ? "Vertical" : "Horizontal"} Layout)
+                  </span>
+                </div>
 
-                <Card className="p-6 bg-white border-none">
-                  {/* <CardPreview
-                    instituteName={formData.instituteName}
-                    idCardType={formData.idCardType}
-                    logoUrl={formData.logoUrl}
-                    signatureUrl={formData.signatureUrl}
-                    bgColor={formData.bgColor}
-                  /> */}
-                  <div className="w-full mx-auto">
-                    <StudentCard
-                      instituteName="{form.instituteName}"
-                      address="{form.address}"
-                      idCardType="{form.idCardType}"
-                      studentName="{form.instituteName}"
-                      department="{form.department}"
-                      roll="{form.roll}"
-                      bloodGroup="{form.bloodGroup}"
-                      dob="{form.dob}"
-                      phone="{form.phone}"
-                      // logoUrl="{form.logoUrl}"
-                      // signatureUrl="{form.signatureUrl}"
-                      // profileUrl="{form.profileUrl}"
-                      logoUrl="https://i.postimg.cc/hthwhxwy/uni-logo.avif"
-                      signatureUrl="https://i.postimg.cc/TYfbfv1Q/principal-Sign.png"
-                      profileUrl="https://i.postimg.cc/Y0ydK27n/person.jpg"
-                      bgColor="{form.bgColor}"
-                      qrData="{form.qrData}"
-                    />
+                <Card className="p-6 bg-white border-none shadow-lg">
+                  <div className="w-full mx-auto flex justify-center">
+                    <div className={cardOrientation === "vertical" ? "scale-90" : "scale-100"}>
+                      {cardOrientation === "vertical" ? (
+                        <EmployeeCard
+                          name={formData.studentName || "Mark Marshal"}
+                          companyName={formData.instituteName}
+                          address={formData.address}
+                          idCardType={formData.idCardType}
+                          employeeName={formData.studentName || "Mark Marshal"}
+                          department={formData.department || "CSE"}
+                          employeeId={formData.rollNumber || "1233"}
+                          bloodGroup={formData.bloodGroup || "B+"}
+                          dob={formData.dateOfBirth || "12-12-2000"}
+                          phone={formData.phone || "+65-2131-XXXX"}
+                          logoUrl={formData.logoUrl || "https://i.postimg.cc/hthwhxwy/uni-logo.avif"}
+                          signatureUrl={formData.signatureUrl || "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png"}
+                          profileUrl={formData.profileUrl}
+                          bgColor={formData.bgColor}
+                          qrData={formData.qrData}
+                          whoseSign={formData.whoseSign}
+                          personImage={formData.profileUrl}
+                          logo={formData.logoUrl || "https://i.postimg.cc/hthwhxwy/uni-logo.avif"}
+                          signature={formData.signatureUrl || "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png"}
+                          // Pass custom labels to the card component
+                          
+                        />
+                      ) : (
+                        <StudentCard
+                          instituteName={formData.instituteName}
+                          address={formData.address}
+                          idCardType={formData.idCardType}
+                          studentName={formData.studentName || "Mark Marshal"}
+                          department={formData.department || "CSE"}
+                          roll={formData.rollNumber || "1233"}
+                          bloodGroup={formData.bloodGroup || "B+"}
+                          dob={formData.dateOfBirth || "12-12-2000"}
+                          phone={formData.phone || "+65-2131-XXXX"}
+                          logoUrl={formData.logoUrl || "https://i.postimg.cc/hthwhxwy/uni-logo.avif"}
+                          signatureUrl={formData.signatureUrl || "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png"}
+                          profileUrl={formData.profileUrl}
+                          bgColor={formData.bgColor}
+                          qrData={formData.qrData}
+                          whoseSign={formData.whoseSign}
+                          // Pass custom labels to the card component
+        
+                        />
+                      )}
+                    </div>
                   </div>
                 </Card>
 
                 {/* Color Selection */}
-                <div className="flex justify-center gap-2">
-                  {["#0f172a", "#22c55e", "#06b6d4", "#8b5cf6", "#ec4899"].map((color) => (
-                    <button
-                      key={color}
-                      className="w-6 h-6 rounded-full border"
-                      style={{ backgroundColor: color }}
-                      onClick={() => handleInputChange("bgColor", color)}
-                    />
-                  ))}
+                <div className="space-y-2">
+                  <p className="text-center text-sm font-medium text-gray-600">
+                    Select photo Background Color
+                  </p>
+                  <div className="flex justify-center gap-2">
+                    {["#0f172a", "#10b981", "#3b82f6", "#06b6d4", "#a855f7", "#ec4899"].map((color) => (
+                      <button
+                        key={color}
+                        className={`w-8 h-8 rounded-full border-2 transition-all ${
+                          formData.bgColor === color 
+                            ? 'border-gray-800 scale-110' 
+                            : 'border-gray-200 hover:border-gray-400'
+                        }`}
+                        style={{ backgroundColor: color }}
+                        onClick={() => handleInputChange("bgColor", color)}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

@@ -168,12 +168,16 @@
 import StudentCard from '@/components/layout/cards/StudentCard';
 import EmpIDCard from '@/components/layout/cards/EmployeCard';
 import React from 'react';
+import Error from '@/app/error';
+
 
 const page = () => {
   return (
     <div>
       {/* <StudentCard/>
       <EmpIDCard/> */}
+      {/* hello */}
+      {/* <Error/> */}
     </div>
   );
 };

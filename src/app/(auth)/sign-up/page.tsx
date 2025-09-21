@@ -47,7 +47,7 @@ const AutoIDGenSignup: React.FC = () => {
       window.location.href = "/login";
     } catch (error: any) {
       console.error("Signup error:", error);
-      toast.error(error?.data?.message || "Something went wrong!");
+      toast.error(error?.data?.message || error?.message || "Something went wrong!");
     }
   };
 

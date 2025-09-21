@@ -50,10 +50,11 @@ const AutoIDGenLogin: React.FC = () => {
       } else {
         toast.error("Login failed: Token missing.");
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Login error:", error);
+      const err = error as { data?: { message?: string } };
       toast.error(
-        error?.data?.message || "Login failed. Please check your credentials."
+        err.data?.message || "Login failed. Please check your credentials."
       );
     }
   };

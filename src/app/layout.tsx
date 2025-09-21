@@ -43,7 +43,7 @@ export default function RootLayout({
         className={`${inter.variable} ${inter.className} antialiased`}
       >
         <StoreProvider >
-          <Toaster position="top-right"/>
+          <Toaster position="top-right" duration={1000}/>
           {children}
         </StoreProvider>
       </body>

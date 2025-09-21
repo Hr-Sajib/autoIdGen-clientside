@@ -1,0 +1,244 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card } from "@/components/ui/card"
+import EmployeeCard from "@/components/layout/cards/EmployeCard"
+import { useRouter } from "next/navigation"
+import StudentCard from "@/components/layout/cards/StudentCard"
+import { UserDashboardHeader } from "./UserDashboardHeader"
+
+export default function EmployeeInformationPage() {
+  const router = useRouter()
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [cardOrientation, setCardOrientation] = useState("horizontal") // "horizontal" or "vertical"
+
+  const [formData, setFormData] = useState({
+    employeeName: "",
+    department: "",
+    rollNumber: "",
+    bloodGroup: "",
+    dateOfBirth: "",
+    phone: "",
+    cardQuantity: "",
+    companyName: "",
+    idCardType: "Employee",
+    address: "",
+    logoUrl: "",
+    signatureUrl: "",
+    profileUrl: "https://via.placeholder.com/100",
+    bgColor: "#0f172a",
+    qrData: "",
+  })
+
+
+
+  useEffect(() => {
+    const savedOrientation = sessionStorage.getItem('cardOrientation')
+    if (savedOrientation) {
+      setCardOrientation(savedOrientation)
+    }
+  }, [])
+  
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const handleFileUpload = (field: string, file: File | null) => {
+    if (!file) return
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setFormData((prev) => ({ ...prev, [field]: reader.result as string }))
+    }
+    reader.readAsDataURL(file)
+  }
+
+  const handleGenerateCards = (quantity: number) => {
+    console.log("Generating cards:", quantity)
+    // here you can post formData to backend or save
+    router.push("/dashboard/company-template-setup")
+  }
+
+  const colors = ["#0f172a", "#22c55e", "#06b6d4", "#8b5cf6", "#ec4899"]
+
+  return (
+    <>
+      <div className="min-h-screen bg-background">
+        <UserDashboardHeader />
+
+        <main className="container mx-auto px-6 py-8">
+          <div className="max-w-full mx-auto">
+            <h1 className="text-2xl font-bold text-gray-900 mb-8">Employee Info Selection</h1>
+
+            <div className="grid lg:grid-cols-2 gap-8">
+              {/* Form Section */}
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <Input
+                    placeholder="Employee Name"
+                    value={formData.employeeName}
+                    onChange={(e) => handleInputChange("employeeName", e.target.value)}
+                  />
+                  <Input
+                    placeholder="Department"
+                    value={formData.department}
+                    onChange={(e) => handleInputChange("department", e.target.value)}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <Input
+                    placeholder="Roll / Serial Number"
+                    value={formData.rollNumber}
+                    onChange={(e) => handleInputChange("rollNumber", e.target.value)}
+                  />
+                  <Input
+                    placeholder="Blood Group"
+                    value={formData.bloodGroup}
+                    onChange={(e) => handleInputChange("bloodGroup", e.target.value)}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <Input
+                    placeholder="Date of Birth"
+                    value={formData.dateOfBirth}
+                    onChange={(e) => handleInputChange("dateOfBirth", e.target.value)}
+                  />
+                  <Input
+                    placeholder="Phone Number"
+                    value={formData.phone}
+                    onChange={(e) => handleInputChange("phone", e.target.value)}
+                  />
+                </div>
+
+                {/* File Uploads */}
+                <div className="flex gap-4">
+                  <label className="cursor-pointer">
+                    <span className="px-4 py-2 border rounded-lg shadow-sm hover:bg-gray-50">⬆️ Logo</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => handleFileUpload("logoUrl", e.target.files?.[0] || null)}
+                    />
+                  </label>
+                  <label className="cursor-pointer">
+                    <span className="px-4 py-2 border rounded-lg shadow-sm hover:bg-gray-50">👤 Profile</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => handleFileUpload("profileUrl", e.target.files?.[0] || null)}
+                    />
+                  </label>
+                  <label className="cursor-pointer">
+                    <span className="px-4 py-2 border rounded-lg shadow-sm hover:bg-gray-50">✍️ Signature</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => handleFileUpload("signatureUrl", e.target.files?.[0] || null)}
+                    />
+                  </label>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-4 mt-6">
+                  <Button variant="outline" className="flex-1">Previous</Button>
+                  <Button onClick={() => setIsModalOpen(true)} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">Next</Button>
+                </div>
+              </div>
+
+           
+
+              {/* Right Preview Section */}
+              <div className="space-y-6">
+                <div className="text-center mb-4">
+                  <span className="text-lg font-semibold text-gray-800">
+                    Preview ({cardOrientation === "vertical" ? "Vertical" : "Horizontal"} Layout)
+                  </span>
+                </div>
+
+                <Card className="p-6 bg-white border-none shadow-lg">
+                  <div className="w-full mx-auto flex justify-center">
+                    <div className={cardOrientation === "vertical" ? "scale-90" : "scale-100"}>
+                      {cardOrientation === "vertical" ? (
+                        <EmployeeCard
+                          name={formData.employeeName || "Mark Marshal"}
+                          companyName={formData.companyName}
+                          address={formData.address}
+                          idCardType={formData.idCardType}
+                          employeeName={formData.employeeName || "Mark Marshal"}
+                          department={formData.department || "CSE"}
+                          employeeId={formData.rollNumber || "1233"}
+                          bloodGroup={formData.bloodGroup || "B+"}
+                          dob={formData.dateOfBirth || "12-12-2000"}
+                          phone={formData.phone || "+65-2131-XXXX"}
+                          logoUrl={formData.logoUrl || "https://i.postimg.cc/hthwhxwy/uni-logo.avif"}
+                          signatureUrl={formData.signatureUrl || "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png"}
+                          profileUrl={formData.profileUrl}
+                          bgColor={formData.bgColor}
+                          qrData={formData.qrData}
+                          personImage={formData.profileUrl}
+                          logo={formData.logoUrl || "https://i.postimg.cc/hthwhxwy/uni-logo.avif"}
+                          signature={formData.signatureUrl || "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png"}
+                          // Pass custom labels to the card component
+                          
+                        />
+                      ) : (
+                        <StudentCard
+                          instituteName={formData.companyName}
+                          address={formData.address}
+                          idCardType={formData.idCardType}
+                          studentName={formData.employeeName || "Mark Marshal"}
+                          department={formData.department || "CSE"}
+                          roll={formData.rollNumber || "1233"}
+                          bloodGroup={formData.bloodGroup || "B+"}
+                          dob={formData.dateOfBirth || "12-12-2000"}
+                          phone={formData.phone || "+65-2131-XXXX"}
+                          logoUrl={formData.logoUrl || "https://i.postimg.cc/hthwhxwy/uni-logo.avif"}
+                          signatureUrl={formData.signatureUrl || "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png"}
+                          profileUrl={formData.profileUrl}
+                          bgColor={formData.bgColor}
+                          qrData={formData.qrData}
+                          // Pass custom labels to the card component
+        
+                        />
+                      )}
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Color Selection */}
+                <div className="space-y-2">
+                  <p className="text-center text-sm font-medium text-gray-600">
+                    Select photo Background Color
+                  </p>
+                  <div className="flex justify-center gap-2">
+                    {["#0f172a", "#10b981", "#3b82f6", "#06b6d4", "#a855f7", "#ec4899"].map((color) => (
+                      <button
+                        key={color}
+                        className={`w-8 h-8 rounded-full border-2 transition-all ${
+                          formData.bgColor === color 
+                            ? 'border-gray-800 scale-110' 
+                            : 'border-gray-200 hover:border-gray-400'
+                        }`}
+                        style={{ backgroundColor: color }}
+                        onClick={() => handleInputChange("bgColor", color)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+
+      
+    </>
+  )
+}
+

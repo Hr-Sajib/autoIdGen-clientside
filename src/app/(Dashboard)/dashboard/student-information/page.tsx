@@ -15,7 +15,7 @@
 //   const [isModalOpen, setIsModalOpen] = useState(false)
 //   const [cardOrientation, setCardOrientation] = useState("horizontal")
 //   const [editingField, setEditingField] = useState<string | null>(null)
-  
+
 //   // Add state for custom labels
 //   const [customLabels, setCustomLabels] = useState({
 //     studentName: "Student Name",
@@ -162,7 +162,7 @@
 //                     />
 //                   </div>
 //                 </div>
-                
+
 //                 <div className="grid grid-cols-2 gap-5 mb-4">
 //                   <div>
 //                     <div className="flex items-center gap-2 mb-2">
@@ -241,7 +241,7 @@
 //                     />
 //                   </div>
 //                 </div>
-                
+
 //                 <div className="grid grid-cols-2 gap-5 mb-4">
 //                   <div>
 //                     <div className="flex items-center gap-2 mb-2">
@@ -320,7 +320,7 @@
 //                     />
 //                   </div>
 //                 </div>
-                
+
 //                 <div className="flex gap-4 mt-8">
 //                   <Button disabled className="flex-1 bg-gray-300 hover:bg-gray-300 text-gray-500 cursor-not-allowed p-4 text-md">Preview</Button>
 //                   <Button onClick={() => setIsModalOpen(true)} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white p-4 text-md">Next</Button>
@@ -360,7 +360,7 @@
 //                           logo={formData.logoUrl || "https://i.postimg.cc/hthwhxwy/uni-logo.avif"}
 //                           signature={formData.signatureUrl || "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png"}
 //                           // Pass custom labels to the card component
-                          
+
 //                         />
 //                       ) : (
 //                         <StudentCard
@@ -380,7 +380,7 @@
 //                           qrData={formData.qrData}
 //                           whoseSign={formData.whoseSign}
 //                           // Pass custom labels to the card component
-        
+
 //                         />
 //                       )}
 //                     </div>
@@ -437,7 +437,7 @@
 //   const [isModalOpen, setIsModalOpen] = useState(false)
 //   const [cardOrientation, setCardOrientation] = useState("horizontal")
 //   const [editingField, setEditingField] = useState<string | null>(null)
-  
+
 //   // Add state for custom labels
 //   const [customLabels, setCustomLabels] = useState({
 //     studentName: "Student Name",
@@ -473,13 +473,13 @@
 //     try {
 //       // Get formData from sessionStorage
 //       const sessionFormData = sessionStorage.getItem('formData')
-      
+
 //       if (sessionFormData) {
 //         const parsedData = JSON.parse(sessionFormData)
-        
+
 //         // Set card orientation from session data
 //         setCardOrientation(parsedData.cardOrientation || "horizontal")
-        
+
 //         // Update formData with sessionStorage data
 //         setFormData(prev => ({
 //           ...prev,
@@ -684,7 +684,7 @@
 //                     />
 //                   </div>
 //                 </div>
-                
+
 //                 <div className="grid grid-cols-2 gap-5 mb-4">
 //                   <div>
 //                     <div className="flex items-center gap-2 mb-2">
@@ -763,7 +763,7 @@
 //                     />
 //                   </div>
 //                 </div>
-                
+
 //                 <div className="grid grid-cols-2 gap-5 mb-4">
 //                   <div>
 //                     <div className="flex items-center gap-2 mb-2">
@@ -842,7 +842,7 @@
 //                     />
 //                   </div>
 //                 </div>
-                
+
 //                 <div className="flex gap-4 mt-8">
 //                   <Button disabled className="flex-1 bg-gray-300 hover:bg-gray-300 text-gray-500 cursor-not-allowed p-4 text-md">Preview</Button>
 //                   <Button onClick={() => setIsModalOpen(true)} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white p-4 text-md">Next</Button>
@@ -915,7 +915,7 @@
 //   const [isModalOpen, setIsModalOpen] = useState(false)
 //   const [cardOrientation, setCardOrientation] = useState("horizontal")
 //   const [editingField, setEditingField] = useState<string | null>(null)
-  
+
 //   // Add state for custom labels - Name field is static, others are editable
 //   const [customLabels, setCustomLabels] = useState({
 //     studentName: "Name", // Static field - cannot be changed
@@ -951,13 +951,13 @@
 //     try {
 //       // Get formData from sessionStorage
 //       const sessionFormData = sessionStorage.getItem('formData')
-      
+
 //       if (sessionFormData) {
 //         const parsedData = JSON.parse(sessionFormData)
-        
+
 //         // Set card orientation from session data
 //         setCardOrientation(parsedData.cardOrientation || "horizontal")
-        
+
 //         // Update formData with sessionStorage data
 //         setFormData(prev => ({
 //           ...prev,
@@ -1030,10 +1030,10 @@
 //         }
 //       ]
 //     }
-    
+
 //     console.log("Creating project with quantity:", quantity)
 //     console.log("Response format:", JSON.stringify(response, null, 2))
-    
+
 //     // You can send this response to your API or handle it as needed
 //     // Example: await submitFormData(response, quantity)
 //   }
@@ -1178,7 +1178,7 @@
 //                     />
 //                   </div>
 //                 </div>
-                
+
 //                 <div className="grid grid-cols-2 gap-5 mb-4">
 //                   <div>
 //                     <div className="flex items-center gap-2 mb-2">
@@ -1259,7 +1259,7 @@
 //                     />
 //                   </div>
 //                 </div>
-                
+
 //                 <div className="grid grid-cols-2 gap-5 mb-4">
 //                   <div>
 //                     <div className="flex items-center gap-2 mb-2">
@@ -1340,13 +1340,13 @@
 //                     />
 //                   </div>
 //                 </div>
-                
+
 //                 {/* Add/Remove Field Section */}
 //                 {/* <div className="mb-6 p-4 bg-gray-50 rounded-lg">
 //                   <h3 className="text-md font-semibold text-gray-800 mb-3">Customize Form Fields</h3>
 //                   <p className="text-sm text-gray-600 mb-3">Click the pencil icon next to any field label to rename it. The &quot;Name&quot; field cannot be changed.</p>
-                  
-            
+
+
 //                   <div className="grid grid-cols-2 gap-2 text-xs">
 //                     <div className="flex items-center gap-2">
 //                       <span className="w-2 h-2 bg-green-500 rounded-full"></span>
@@ -1358,7 +1358,7 @@
 //                     </div>
 //                   </div>
 //                 </div> */}
-                
+
 //                 <div className="flex gap-4 mt-8">
 //                   <Button disabled className="flex-1 bg-gray-300 hover:bg-gray-300 text-gray-500 cursor-not-allowed p-4 text-md">Preview</Button>
 //                   <Button onClick={() => setIsModalOpen(true)} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white p-4 text-md">Next</Button>
@@ -1426,14 +1426,17 @@ import { CardQuantityModal } from "../_components/quantity-modal"
 import { DashboardHeader } from "../_components/dashboard-header"
 import StudentCard from "@/components/layout/cards/StudentCard"
 import EmployeeCard from "@/components/layout/cards/EmployeCard"
+import { useCreateProjectMutation } from "@/lib/feature/Project/projectApi";
+import { RootState } from "@/lib/store";
+import { useSelector } from "react-redux";
 interface FormData {
   responseFormat: {
     name: string;
     payload: {
-        fieldName: string;
-        value: string;
+      fieldName: string;
+      value: string;
     }[];
-}; // Replace 'any' with the actual type of 'response'
+  }; // Replace 'any' with the actual type of 'response'
   projectQuantity: number;
   // other properties...
 }
@@ -1442,7 +1445,7 @@ export default function InstituteTemplateSetupPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [cardOrientation, setCardOrientation] = useState("horizontal")
   const [editingField, setEditingField] = useState<string | null>(null)
-  
+
   // Add state for custom labels - Name field is static, others are editable
   const [customLabels, setCustomLabels] = useState({
     studentName: "Name", // Static field - cannot be changed
@@ -1473,18 +1476,22 @@ export default function InstituteTemplateSetupPage() {
     type: "student"
   })
 
+  // ✅ Hook for creating project
+  const [createProject, { isLoading, isError, data, error }] =
+    useCreateProjectMutation();
+
   // Load data from sessionStorage on component mount
   useEffect(() => {
     try {
       // Get formData from sessionStorage
       const sessionFormData = sessionStorage.getItem('formData')
-      
+
       if (sessionFormData) {
         const parsedData = JSON.parse(sessionFormData)
-        
+
         // Set card orientation from session data
         setCardOrientation(parsedData.cardOrientation || "horizontal")
-        
+
         // Update formData with sessionStorage data
         setFormData(prev => ({
           ...prev,
@@ -1530,69 +1537,105 @@ export default function InstituteTemplateSetupPage() {
     reader.readAsDataURL(file)
   }
 
-  const handleGenerateProject = (quantity: number) => {
-    // Generate response in required format
-    const response = {
-      "name": formData.studentName,
-      "payload": [
-        {
-          "fieldName": customLabels.department,
-          "value": formData.department
-        },
-        {
-          "fieldName": customLabels.rollNumber,
-          "value": formData.rollNumber
-        },
-        {
-          "fieldName": customLabels.bloodGroup,
-          "value": formData.bloodGroup
-        },
-        {
-          "fieldName": customLabels.dateOfBirth,
-          "value": formData.dateOfBirth
-        },
-        {
-          "fieldName": customLabels.phone,
-          "value": formData.phone
-        }
-      ]
-    }
-    
-    console.log("Creating project with quantity:", quantity)
-    console.log("Response format:", JSON.stringify(response, null, 2))
-    
-    // Store both response and quantity in sessionStorage
+  // const handleGenerateProject = (quantity: number) => {
+
+  //   const response = {
+  //     "name": formData.studentName,
+  //     "payload": [
+  //       {
+  //         "fieldName": customLabels.department,
+  //         "value": formData.department
+  //       },
+  //       {
+  //         "fieldName": customLabels.rollNumber,
+  //         "value": formData.rollNumber
+  //       },
+  //       {
+  //         "fieldName": customLabels.bloodGroup,
+  //         "value": formData.bloodGroup
+  //       },
+  //       {
+  //         "fieldName": customLabels.dateOfBirth,
+  //         "value": formData.dateOfBirth
+  //       },
+  //       {
+  //         "fieldName": customLabels.phone,
+  //         "value": formData.phone
+  //       }
+  //     ]
+  //   }
+
+  //   console.log("Creating project with quantity:", quantity)
+  //   console.log("Response format:", JSON.stringify(response, null, 2))
+
+
+  //   try {
+
+  //     const existingFormData = sessionStorage.getItem('formData')
+  //     let updatedFormData: FormData = {
+  //       responseFormat: {
+  //         name: "",
+  //         payload: []
+  //       },
+  //       projectQuantity: 0
+  //     }
+
+  //     if (existingFormData) {
+  //       updatedFormData = JSON.parse(existingFormData)
+  //     }
+
+
+  //     updatedFormData.responseFormat = response
+  //     updatedFormData.projectQuantity = quantity
+
+
+  //     sessionStorage.setItem('formData', JSON.stringify(updatedFormData))
+
+  //     console.log("Saved to sessionStorage:", updatedFormData)
+
+  //   } catch (error) {
+  //     console.error("Error saving to sessionStorage:", error)
+  //   }
+
+  // }
+
+    const { user } = useSelector(
+      (state: RootState) => state.auth
+    );
+
+  // ✅ Final function to call API
+  const handleGenerateProject = async (quantity: number) => {
     try {
-      // Get existing formData from sessionStorage
-      const existingFormData = sessionStorage.getItem('formData')
-      let updatedFormData: FormData = {
-        responseFormat: {
-          name: "",
-          payload: []
-        },
-        projectQuantity: 0
+      if (!user || !user.userId) {
+        console.error("❌ User is not logged in or userId is missing.");
+        return;
       }
-      
-      if (existingFormData) {
-        updatedFormData = JSON.parse(existingFormData)
-      }
-      
-      // Add the new data
-      updatedFormData.responseFormat = response
-      updatedFormData.projectQuantity = quantity
-      
-      // Save back to sessionStorage
-      sessionStorage.setItem('formData', JSON.stringify(updatedFormData))
-      
-      console.log("Saved to sessionStorage:", updatedFormData)
-      
-    } catch (error) {
-      console.error("Error saving to sessionStorage:", error)
+      const payload = {
+        userId: user.userId, // TODO: replace with logged-in user's id
+        projectName: `${formData.instituteName} ID Project`,
+        templateId: "68b7582aaa0bc46f0acfb675", // TODO: replace with selected template id
+        institutionName: formData.instituteName,
+        cardType: formData.idCardType,
+        address: formData.address,
+        contactPhone: formData.phone,
+        institutionLogoUrl:
+          formData.logoUrl ||
+          "https://i.ibb.co.com/Y765FrW0/education-logo-and-minimal-school-badge-design-template-vector.jpg",
+        institutionSignUrl: formData.signatureUrl || "https://i.ibb.co.com/vxmHjprY/signpic.png",
+        signRoleName: formData.whoseSign,
+        additionalFields: ["Class", "Section", "Roll"], // you can build from customLabels if dynamic
+        cardQuantity: quantity,
+      };
+
+      console.log("Sending payload:", payload);
+
+      await createProject(payload).unwrap();
+
+      console.log("✅ Project created!");
+    } catch (err) {
+      console.error("❌ Failed to create project:", err);
     }
-    
-    // You can send this response to your API or handle it as needed
-    // Example: await submitFormData(response, quantity)
-  }
+  };
 
   // Dynamic card rendering based on type and orientation from session storage
   const renderCard = () => {
@@ -1734,7 +1777,7 @@ export default function InstituteTemplateSetupPage() {
                     />
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-5 mb-4">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
@@ -1815,7 +1858,7 @@ export default function InstituteTemplateSetupPage() {
                     />
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-5 mb-4">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
@@ -1896,7 +1939,7 @@ export default function InstituteTemplateSetupPage() {
                     />
                   </div>
                 </div>
-                
+
                 {/* Add/Remove Field Section */}
                 {/* <div className="mb-6 p-4 bg-gray-50 rounded-lg">
                   <h3 className="text-md font-semibold text-gray-800 mb-3">Customize Form Fields</h3>
@@ -1914,7 +1957,7 @@ export default function InstituteTemplateSetupPage() {
                     </div>
                   </div>
                 </div> */}
-                
+
                 <div className="flex gap-4 mt-8">
                   <Button disabled className="flex-1 bg-gray-300 hover:bg-gray-300 text-gray-500 cursor-not-allowed p-4 text-md">Preview</Button>
                   <Button onClick={() => setIsModalOpen(true)} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white p-4 text-md">Next</Button>

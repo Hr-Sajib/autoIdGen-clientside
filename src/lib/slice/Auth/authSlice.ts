@@ -54,6 +54,7 @@ import {jwtDecode} from "jwt-decode";
 
 // 🔹 localStorage থেকে token get করা
 const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+console.log("Initial token from localStorage:", token);
 
 // 🔹 যদি token থাকে, decode করে user বের করা
 const userFromStorage = token ? jwtDecode<TUser>(token) : null;

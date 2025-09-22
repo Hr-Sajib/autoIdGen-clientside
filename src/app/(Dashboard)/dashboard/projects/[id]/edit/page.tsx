@@ -4,8 +4,8 @@ import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Edit2, LucideEdit, Trash2 } from "lucide-react"
-import { EditModal } from "./_components/EditModal"
-import { DashboardHeader } from "../_components/dashboard-header"
+import { DashboardHeader } from "../../../_components/dashboard-header"
+import { EditModal } from "../../_components/EditModal"
 
 interface Student {
   batchCode: string

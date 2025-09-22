@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["i.postimg.cc", "via.placeholder.com"],
+    domains: ["i.postimg.cc", "via.placeholder.com", 'i.ibb.co.com'],
     // OR you can use remotePatterns for more flexibility
     // remotePatterns: [
     //   {

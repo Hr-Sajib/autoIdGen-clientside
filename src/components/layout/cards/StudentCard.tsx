@@ -98,7 +98,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
         {/* Student Photo */}
         <div className="absolute top-[145px] left-1/2 -translate-x-1/2 w-[160px] h-[160px] rounded-full border-[6px] border-[#2E9DA6] bg-white overflow-hidden">
           <Image
-            src={profileUrl || "https://via.placeholder.com/100"}
+            src={profileUrl || "https://i.ibb.co.com/ZzcCMzNx/3.webp"}
             alt="Student"
             fill
             className="object-cover object-center"

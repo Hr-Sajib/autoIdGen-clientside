@@ -294,7 +294,7 @@ export default function CompanyTemplateSetupPage() {
     phone: "",
     logoUrl: "",
     signatureUrl: "",
-    profileUrl: "https://via.placeholder.com/100",
+    profileUrl: "https://i.ibb.co.com/ZzcCMzNx/3.webp",
     bgColor: "#0f172a",
     qrData: "CSE/1233/B+/12122000/+65-2131-XXXX",
     whoseSign: '',

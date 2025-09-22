@@ -788,7 +788,7 @@ export default function EmployeeInformationPage() {
     companyName: "",
     idCardType: "Employee",
     address: "",
-    profileUrl: "https://via.placeholder.com/100",
+    profileUrl: "https://i.ibb.co.com/ZzcCMzNx/3.webp",
     bgColor: "#0f172a",
     qrData: "",
   })
@@ -883,7 +883,7 @@ export default function EmployeeInformationPage() {
     setImageSrc(null)
     setFormData((prev) => ({
       ...prev,
-      profileUrl: "https://via.placeholder.com/100",
+      profileUrl: "https://i.ibb.co.com/ZzcCMzNx/3.webp",
     }))
   }
 

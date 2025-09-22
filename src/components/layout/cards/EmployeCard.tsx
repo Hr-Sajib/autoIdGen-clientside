@@ -334,7 +334,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
   phone = "+65-2131-XXXX",
   companyName = "ABC Group of Industries",
   companyAddress = "Dummy address 21A/B mine union point, Singapore",
-  personImage = "https://i.ibb.co.com/8J0C0Ph/484508907-643383828437987-5139746355470782214-n.jpg",
+  personImage = "https://i.ibb.co.com/ZzcCMzNx/3.webp",
   logo = "https://i.postimg.cc/hthwhxwy/uni-logo.avif",
   signature = "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png",
   whoseSign,

@@ -354,7 +354,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
 
   return (
     <div
-      className="relative min-w-[262px]  h-[153px]
+      className="calibri relative min-w-[262px]  h-[153px]
                  md:min-w-[370px] md:h-[210px]
                  lg:min-w-[600px] lg:h-[350px]
                  xl:min-w-[650px] xl:h-[408px] rounded

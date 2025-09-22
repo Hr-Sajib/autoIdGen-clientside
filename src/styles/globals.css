@@ -145,3 +145,7 @@
 html {
   scroll-behavior: smooth;
 }
+.calibri {
+  font-family: "Calibri", Arial, sans-serif;
+  font-weight: 900;
+}

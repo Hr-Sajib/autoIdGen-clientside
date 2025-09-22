@@ -799,7 +799,7 @@ export default function EmployeeInformationPage() {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<CroppedAreaPixels | null>(null)
   const [showCropper, setShowCropper] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
-  const [cardOrientation, setCardOrientation] = useState("horizontal")
+  const [cardOrientation, setCardOrientation] = useState("vertical")
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
 
   // Webcam states

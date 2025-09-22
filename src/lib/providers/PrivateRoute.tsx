@@ -10,7 +10,7 @@ type Props = {
 
 const PrivateRoute = ({ children }: Props) => {
   const router = useRouter();
-  const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     if (!isAuthenticated) {

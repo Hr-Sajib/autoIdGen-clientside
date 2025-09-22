@@ -1421,7 +1421,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { Pencil } from "lucide-react"
-import CardPreview from "../_components/CardPreview"
 import { CardQuantityModal } from "../_components/quantity-modal"
 import { DashboardHeader } from "../_components/dashboard-header"
 import StudentCard from "@/components/layout/cards/StudentCard"
@@ -1429,17 +1428,6 @@ import EmployeeCard from "@/components/layout/cards/EmployeCard"
 import { useCreateProjectMutation } from "@/lib/feature/Project/projectApi";
 import { RootState } from "@/lib/store";
 import { useSelector } from "react-redux";
-interface FormData {
-  responseFormat: {
-    name: string;
-    payload: {
-      fieldName: string;
-      value: string;
-    }[];
-  }; // Replace 'any' with the actual type of 'response'
-  projectQuantity: number;
-  // other properties...
-}
 
 export default function InstituteTemplateSetupPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -1477,7 +1465,7 @@ export default function InstituteTemplateSetupPage() {
   })
 
   // ✅ Hook for creating project
-  const [createProject, { isLoading, isError, data, error }] =
+  const [createProject] =
     useCreateProjectMutation();
 
   // Load data from sessionStorage on component mount
@@ -1528,14 +1516,14 @@ export default function InstituteTemplateSetupPage() {
     setCustomLabels((prev) => ({ ...prev, [field]: value }))
   }
 
-  const handleFileUpload = (field: string, file: File | null) => {
-    if (!file) return
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      setFormData((prev) => ({ ...prev, [field]: reader.result as string }))
-    }
-    reader.readAsDataURL(file)
-  }
+  // const handleFileUpload = (field: string, file: File | null) => {
+  //   if (!file) return
+  //   const reader = new FileReader()
+  //   reader.onloadend = () => {
+  //     setFormData((prev) => ({ ...prev, [field]: reader.result as string }))
+  //   }
+  //   reader.readAsDataURL(file)
+  // }
 
   // const handleGenerateProject = (quantity: number) => {
 

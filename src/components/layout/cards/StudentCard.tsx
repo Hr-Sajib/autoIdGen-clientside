@@ -305,7 +305,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
   dob,
   phone,
   qrData,
-  bgColor,
+  // bgColor,
   whoseSign,
   customLabels = {
     studentName: "Name",

@@ -3,18 +3,21 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { LucideCopy, LucideEdit, Trash2 } from "lucide-react"
+import { LucideCopy, LucideFolderOpen, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
-import { useGetMyProjectQuery } from "@/lib/feature/Project/projectApi"
+import { useDeleteProjectMutation, useGetMyProjectQuery } from "@/lib/feature/Project/projectApi"
+import { Project } from "@/types/inedx"
 
 export function ProjectOverview() {
   const { data, isLoading, isError } = useGetMyProjectQuery(undefined)
   const [copiedId, setCopiedId] = useState<string | null>(null)
-  console.log(data)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+
+  const [deleteProject] = useDeleteProjectMutation()
 
   // API gives { success, message, data: [...] }
-const projects = data?.data ?? []
+  const projects = data?.data ?? []
   console.log("Projects data:", projects)
   const handleCopy = async (text: string, id: string) => {
     try {
@@ -24,6 +27,21 @@ const projects = data?.data ?? []
       setTimeout(() => setCopiedId(null), 2000)
     } catch (err) {
       console.error("Failed to copy text: ", err)
+    }
+  }
+
+  const handleDelete = async (id: string) => {
+    const confirmDelete = confirm("Are you sure you want to delete this project?")
+    if (!confirmDelete) return
+
+    try {
+      setDeletingId(id)
+      await deleteProject(id).unwrap()
+      setDeletingId(null)
+    } catch (err) {
+      console.error("Failed to delete project:", err)
+      setDeletingId(null)
+      alert("Failed to delete project. Please try again.")
     }
   }
 
@@ -72,7 +90,7 @@ const projects = data?.data ?? []
               </tr>
             </thead>
             <tbody>
-              {projects.map((project: any) => (
+              {projects.map((project: Project) => (
                 <tr key={project._id} className="border-b border-border hover:bg-muted/50">
                   <td className="py-4 px-4 font-medium text-foreground">{project.projectName}</td>
                   <td className="py-4 px-4 text-foreground">{project.institutionName}</td>
@@ -85,7 +103,7 @@ const projects = data?.data ?? []
                         variant="ghost"
                         size="sm"
                         className="h-8 w-8 p-0"
-                        onClick={() => handleCopy(project.batchId, project._id)}
+                        onClick={() => handleCopy(project.batchId.toString(), project._id)}
                       >
                         {copiedId === project._id ? (
                           <span className="text-green-600 text-xs">✔</span>
@@ -100,12 +118,18 @@ const projects = data?.data ?? []
                       {/* Edit icon */}
                       <Link href={`/dashboard/projects/${project._id}/edit`}>
                         <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                          <LucideEdit />
+                          <LucideFolderOpen />
                         </Button>
                       </Link>
                       {/* Delete icon */}
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                        <Trash2 />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                        onClick={() => handleDelete(project._id)}
+                        disabled={deletingId === project._id}
+                      >
+                        <Trash2 className={deletingId === project._id ? "animate-pulse" : ""} />
                       </Button>
                     </div>
                   </td>

@@ -61,7 +61,7 @@ export default function EmployeeInformationPage() {
     router.push("/dashboard/company-template-setup")
   }
 
-  const colors = ["#0f172a", "#22c55e", "#06b6d4", "#8b5cf6", "#ec4899"]
+  // const colors = ["#0f172a", "#22c55e", "#06b6d4", "#8b5cf6", "#ec4899"]
 
   return (
     <>

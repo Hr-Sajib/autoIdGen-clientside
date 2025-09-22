@@ -7,7 +7,7 @@
 import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
-import { LucideSignature, LucideUpload, LucideUser2 } from "lucide-react"
+import { LucideSignature, LucideUpload } from "lucide-react"
 
 import StudentCard from "@/components/layout/cards/StudentCard"
 import EmployeeCard from "@/components/layout/cards/EmployeCard"

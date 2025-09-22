@@ -1,13 +1,20 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
+import { DashboardHeader } from "../_components/dashboard-header"
+import EmployeeCard from "@/components/layout/cards/EmployeCard"
+import { CardQuantityModal } from "../_components/quantity-modal"
 import { useRouter } from "next/navigation"
+import StudentCard from "@/components/layout/cards/StudentCard"
 
-export default function EmployeeContactPage() {
-    const router = useRouter()
+export default function EmployeeInformationPage() {
+  const router = useRouter()
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [cardOrientation, setCardOrientation] = useState("vertical")
+
   const [formData, setFormData] = useState({
     employeeName: "",
     department: "",
@@ -16,276 +23,259 @@ export default function EmployeeContactPage() {
     dateOfBirth: "",
     phone: "",
     cardQuantity: "",
+    companyName: "",
+    idCardType: "Employee",
+    address: "",
+    logoUrl: "",
+    signatureUrl: "",
+    profileUrl: "https://via.placeholder.com/100",
+    bgColor: "#0f172a",
+    qrData: "",
   })
+
+
+
+  useEffect(() => {
+    const savedOrientation = sessionStorage.getItem('cardOrientation')
+    if (savedOrientation) {
+      setCardOrientation(savedOrientation)
+    }
+  }, [])
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
-  const handleSubmit = () => {
-    console.log("Submitting form data:", formData)
-    router.push('/dashboard/template-setup')
+  const handleFileUpload = (field: string, file: File | null) => {
+    if (!file) return
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setFormData((prev) => ({ ...prev, [field]: reader.result as string }))
+    }
+    reader.readAsDataURL(file)
   }
 
+  const handleGenerateCards = (quantity: number) => {
+    console.log("Generating cards:", quantity)
+    // here you can post formData to backend or save
+    router.push("/dashboard/company-template-setup")
+  }
+
+  // const colors = ["#0f172a", "#22c55e", "#06b6d4", "#8b5cf6", "#ec4899"]
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">A</span>
-                </div>
-                <span className="font-semibold text-blue-600">AutoIDGen</span>
-              </div>
+    <>
+      <div className="min-h-screen bg-background">
+        <DashboardHeader />
 
-              <div className="hidden md:flex items-center gap-2 text-sm text-gray-600">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"
-                  />
-                </svg>
-                Dashboard
-              </div>
-            </div>
+        <main className="container mx-auto px-6 py-8">
+          <div className="max-w-full mx-auto">
+            <h1 className="text-2xl font-bold text-gray-900 mb-8">Employee Info Selection</h1>
 
-            {/* Mobile menu icon */}
-            <div className="md:hidden">
-              <Button variant="ghost" size="sm">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </Button>
-            </div>
-
-            {/* Desktop profile */}
-            <div className="hidden md:block">
-              <div className="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-semibold">R</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="container mx-auto px-6 py-8">
-        <div className="max-w-6xl mx-auto">
-          <h1 className="text-2xl font-bold text-gray-900 mb-8">Contact Info Selection</h1>
-
-          <div className="grid lg:grid-cols-2 gap-8">
-            {/* Form Section */}
-            <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Employee Name
-                    <svg className="inline w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                      />
-                    </svg>
-                  </label>
+            <div className="grid lg:grid-cols-2 gap-8">
+              {/* Form Section */}
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
                   <Input
-                    type="text"
-                    placeholder="Type Employee Name"
+                    placeholder="Employee Name"
                     value={formData.employeeName}
                     onChange={(e) => handleInputChange("employeeName", e.target.value)}
-                    className="w-full"
                   />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Department
-                    <svg className="inline w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                      />
-                    </svg>
-                  </label>
                   <Input
-                    type="text"
-                    placeholder="Type Department"
+                    placeholder="Department"
                     value={formData.department}
                     onChange={(e) => handleInputChange("department", e.target.value)}
-                    className="w-full"
                   />
                 </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Roll / Serial Number
-                    <svg className="inline w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                      />
-                    </svg>
-                  </label>
+                <div className="grid grid-cols-2 gap-4">
                   <Input
-                    type="text"
-                    placeholder="Type Roll/Serial Number"
+                    placeholder="Roll / Serial Number"
                     value={formData.rollNumber}
                     onChange={(e) => handleInputChange("rollNumber", e.target.value)}
-                    className="w-full"
                   />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Blood Group
-                    <svg className="inline w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                      />
-                    </svg>
-                  </label>
                   <Input
-                    type="text"
-                    placeholder="Type Blood Group"
+                    placeholder="Blood Group"
                     value={formData.bloodGroup}
                     onChange={(e) => handleInputChange("bloodGroup", e.target.value)}
-                    className="w-full"
                   />
                 </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Date of Birth
-                    <svg className="inline w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                      />
-                    </svg>
-                  </label>
+                <div className="grid grid-cols-2 gap-4">
                   <Input
-                    type="text"
-                    placeholder="Type Date of Birth"
+                    placeholder="Date of Birth"
                     value={formData.dateOfBirth}
                     onChange={(e) => handleInputChange("dateOfBirth", e.target.value)}
-                    className="w-full"
                   />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Phone
-                    <svg className="inline w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                      />
-                    </svg>
-                  </label>
                   <Input
-                    type="tel"
-                    placeholder="Type Phone Number"
+                    placeholder="Phone Number"
                     value={formData.phone}
                     onChange={(e) => handleInputChange("phone", e.target.value)}
-                    className="w-full"
                   />
+                </div>
+
+                {/* File Uploads */}
+                <div className="flex gap-4">
+                  <label className="cursor-pointer">
+                    <span className="px-4 py-2 border rounded-lg shadow-sm hover:bg-gray-50">⬆️ Logo</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => handleFileUpload("logoUrl", e.target.files?.[0] || null)}
+                    />
+                  </label>
+                  <label className="cursor-pointer">
+                    <span className="px-4 py-2 border rounded-lg shadow-sm hover:bg-gray-50">👤 Profile</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => handleFileUpload("profileUrl", e.target.files?.[0] || null)}
+                    />
+                  </label>
+                  <label className="cursor-pointer">
+                    <span className="px-4 py-2 border rounded-lg shadow-sm hover:bg-gray-50">✍️ Signature</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => handleFileUpload("signatureUrl", e.target.files?.[0] || null)}
+                    />
+                  </label>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-4 mt-6">
+                  <Button variant="outline" className="flex-1">Previous</Button>
+                  <Button onClick={() => setIsModalOpen(true)} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">Next</Button>
                 </div>
               </div>
 
-              {/* Mobile Card Quantity */}
-              <div className="md:hidden">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Card Quantity</label>
-                <Input
-                  type="number"
-                  placeholder="Type Card Quantity"
-                  value={formData.cardQuantity}
-                  onChange={(e) => handleInputChange("cardQuantity", e.target.value)}
-                  className="w-full"
-                />
-              </div>
+              {/* Preview Section */}
+              {/* <div className="space-y-6">
+                <Card className="p-6 bg-white">
+                  <EmployeeCard
+                    companyName="{form.instituteName}"
+                    address="{form.address}"
+                    idCardType="{form.idCardType}"
+                    employeeName="{form.instituteName}"
+                    department="{form.department}"
+                    employeeId="{form.roll}"
+                    bloodGroup="{form.bloodGroup}"
+                    dob="{form.dob}"
+                    phone="{form.phone}"
+                    // logoUrl="{form.logoUrl}"
+                    // signatureUrl="{form.signatureUrl}"
+                    // profileUrl="{form.profileUrl}"
+                    logoUrl="https://i.postimg.cc/hthwhxwy/uni-logo.avif"
+                    signatureUrl="https://i.postimg.cc/TYfbfv1Q/principal-Sign.png"
+                    profileUrl="https://i.postimg.cc/Y0ydK27n/person.jpg"
+                    bgColor="{form.bgColor}"
+                    qrData="{form.qrData}" />
+                </Card>
 
-              {/* Action Buttons */}
-              <div className="flex gap-4 pt-4">
-                <Button variant="outline" className="flex-1 bg-transparent">
-                  Previous
-                </Button>
-                <Button onClick={handleSubmit} className="flex-1 bg-blue-600 hover:bg-blue-700">
-                  Next
-                </Button>
-              </div>
-            </div>
-
-            {/* Preview Section */}
-            <div className="space-y-6">
-              <div className="text-right">
-                <span className="text-sm font-medium text-gray-700">Preview</span>
-              </div>
-
-              <Card className="p-6 bg-white">
-                <div className="bg-white rounded-lg shadow-lg overflow-hidden max-w-sm mx-auto">
-                  <img
-                    src="/student-id-card-template-with-photo-placeholder.jpg"
-                    alt="ID Card Preview"
-                    className="w-full h-auto"
-                  />
+                <div className="flex justify-center gap-2">
+                  {colors.map((color) => (
+                    <button
+                      key={color}
+                      className="w-6 h-6 rounded-full border"
+                      style={{ backgroundColor: color }}
+                      onClick={() => handleInputChange("bgColor", color)}
+                    />
+                  ))}
                 </div>
-              </Card>
+              </div> */}
 
-              {/* Color Selection */}
-              <div className="flex justify-center gap-2">
-                <div className="w-6 h-6 bg-blue-600 rounded-full"></div>
-                <div className="w-6 h-6 bg-green-500 rounded-full"></div>
-                <div className="w-6 h-6 bg-cyan-500 rounded-full"></div>
-                <div className="w-6 h-6 bg-purple-500 rounded-full"></div>
-                <div className="w-6 h-6 bg-pink-500 rounded-full"></div>
-              </div>
 
-              {/* Profile Icon */}
-              <div className="flex justify-end">
-                <div className="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-semibold">R</span>
+              {/* Right Preview Section */}
+              <div className="space-y-6">
+                <div className="text-center mb-4">
+                  <span className="text-lg font-semibold text-gray-800">
+                    Preview ({cardOrientation === "vertical" ? "Vertical" : "Horizontal"} Layout)
+                  </span>
+                </div>
+
+                <Card className="p-6 bg-white border-none shadow-lg">
+                  <div className="w-full mx-auto flex justify-center">
+                    <div className={cardOrientation === "vertical" ? "scale-90" : "scale-100"}>
+                      {cardOrientation === "vertical" ? (
+                        <EmployeeCard
+                          name={formData.employeeName || "Mark Marshal"}
+                          companyName={formData.companyName}
+                          address={formData.address}
+                          idCardType={formData.idCardType}
+                          employeeName={formData.employeeName || "Mark Marshal"}
+                          department={formData.department || "CSE"}
+                          employeeId={formData.rollNumber || "1233"}
+                          bloodGroup={formData.bloodGroup || "B+"}
+                          dob={formData.dateOfBirth || "12-12-2000"}
+                          phone={formData.phone || "+65-2131-XXXX"}
+                          logoUrl={formData.logoUrl || "https://i.postimg.cc/hthwhxwy/uni-logo.avif"}
+                          signatureUrl={formData.signatureUrl || "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png"}
+                          profileUrl={formData.profileUrl}
+                          bgColor={formData.bgColor}
+                          qrData={formData.qrData}
+                          personImage={formData.profileUrl}
+                          logo={formData.logoUrl || "https://i.postimg.cc/hthwhxwy/uni-logo.avif"}
+                          signature={formData.signatureUrl || "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png"}
+                        // Pass custom labels to the card component
+
+                        />
+                      ) : (
+                        <StudentCard
+                          instituteName={formData.companyName}
+                          address={formData.address}
+                          idCardType={formData.idCardType}
+                          studentName={formData.employeeName || "Mark Marshal"}
+                          department={formData.department || "CSE"}
+                          roll={formData.rollNumber || "1233"}
+                          bloodGroup={formData.bloodGroup || "B+"}
+                          dob={formData.dateOfBirth || "12-12-2000"}
+                          phone={formData.phone || "+65-2131-XXXX"}
+                          logoUrl={formData.logoUrl || "https://i.postimg.cc/hthwhxwy/uni-logo.avif"}
+                          signatureUrl={formData.signatureUrl || "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png"}
+                          profileUrl={formData.profileUrl}
+                          bgColor={formData.bgColor}
+                          qrData={formData.qrData}
+                        // Pass custom labels to the card component
+
+                        />
+                      )}
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Color Selection */}
+                <div className="space-y-2">
+                  <p className="text-center text-sm font-medium text-gray-600">
+                    Select photo Background Color
+                  </p>
+                  <div className="flex justify-center gap-2">
+                    {["#0f172a", "#10b981", "#3b82f6", "#06b6d4", "#a855f7", "#ec4899"].map((color) => (
+                      <button
+                        key={color}
+                        className={`w-8 h-8 rounded-full border-2 transition-all ${formData.bgColor === color
+                            ? 'border-gray-800 scale-110'
+                            : 'border-gray-200 hover:border-gray-400'
+                          }`}
+                        style={{ backgroundColor: color }}
+                        onClick={() => handleInputChange("bgColor", color)}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
 
-      {/* Footer */}
-      <footer className="fixed bottom-4 left-4">
-        <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
-          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013 3v1"
-            />
-          </svg>
-          Sign Out
-        </Button>
-      </footer>
-    </div>
+      <CardQuantityModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onGenerate={handleGenerateCards}
+      />
+    </>
   )
 }

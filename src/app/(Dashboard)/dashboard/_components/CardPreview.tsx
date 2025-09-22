@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image"
 import React from "react"
 
 interface CardPreviewProps {
@@ -30,7 +31,9 @@ export default function CardPreview({
           style={{ backgroundColor: bgColor }}
         >
           {logoUrl && (
-            <img
+            <Image
+              width={100}
+              height={100}
               src={logoUrl}
               alt="Logo"
               className="absolute top-3 left-3 w-12 h-12 object-cover"
@@ -43,7 +46,9 @@ export default function CardPreview({
 
         {/* Profile */}
         <div className="flex flex-col items-center -mt-10">
-          <img
+          <Image
+            width={100}
+            height={100}
             src={profileUrl}
             alt="Profile"
             className="w-20 h-20 rounded-full border-4 border-white shadow"
@@ -74,7 +79,9 @@ export default function CardPreview({
         {/* Footer */}
         <div className="absolute bottom-3 w-full px-4 flex flex-col items-center">
           {signatureUrl && (
-            <img
+            <Image
+              width={100}
+              height={100}
               src={signatureUrl}
               alt="Signature"
               className="w-16 h-8 object-contain mb-1"

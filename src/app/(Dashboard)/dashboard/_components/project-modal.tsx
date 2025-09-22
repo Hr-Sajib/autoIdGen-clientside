@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { use, useState } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { X } from "lucide-react"
@@ -17,15 +17,28 @@ export function CreateProjectModal({ isOpen, onClose, onSubmit }: CreateProjectM
   const router = useRouter()
   const [projectName, setProjectName] = useState("")
 
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault()
+  //   if (projectName.trim()) {
+  //     onSubmit(projectName.trim())
+  //     setProjectName("")
+  //     onClose()
+  //     router.push('/dashboard/select-card')
+  //   }
+  // }
+
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (projectName.trim()) {
-      onSubmit(projectName.trim())
-      setProjectName("")
-      onClose()
-      router.push('/dashboard/select-card')
-    }
+  e.preventDefault()
+  if (projectName.trim()) {
+    const finalName = projectName.trim()
+    onSubmit(finalName)
+    setProjectName("")
+    onClose()
+
+    // ✅ Pass project name via query param
+    router.push(`/dashboard/select-card?projectName=${encodeURIComponent(finalName)}`)
   }
+}
 
   if (!isOpen) return null
 

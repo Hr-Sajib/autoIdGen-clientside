@@ -165,13 +165,15 @@
 
 // export default IDCard;
 
-import IDCard from '@/components/layout/cards/StudentCard';
 import React from 'react';
 
 const page = () => {
   return (
     <div>
-      <IDCard/>
+      {/* <StudentCard/>
+      <EmpIDCard/> */}
+      {/* hello */}
+      {/* <Error/> */}
     </div>
   );
 };

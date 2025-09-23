@@ -1439,6 +1439,7 @@ export default function InstituteTemplateSetupPage() {
     studentName: "Name", // Static field - cannot be changed
     department: "Department",
     rollNumber: "Roll Number",
+    employeeId: "Employee ID",
     bloodGroup: "Blood Group",
     dateOfBirth: "Date of Birth",
     phone: "Phone"
@@ -1772,7 +1773,7 @@ export default function InstituteTemplateSetupPage() {
                       {editingField === 'rollNumber' ? (
                         <Input
                           type="text"
-                          value={customLabels.rollNumber}
+                          value={customLabels.rollNumber || customLabels.employeeId}
                           onChange={(e) => handleLabelChange("rollNumber", e.target.value)}
                           onBlur={() => setEditingField(null)}
                           onKeyDown={(e) => {
@@ -1784,7 +1785,7 @@ export default function InstituteTemplateSetupPage() {
                       ) : (
                         <>
                           <label className="block text-base font-medium text-gray-800">
-                            {customLabels.rollNumber}
+                            {customLabels.rollNumber || customLabels.employeeId}
                           </label>
                           <Button
                             variant="ghost"
@@ -1800,7 +1801,7 @@ export default function InstituteTemplateSetupPage() {
                     <Input
                       hidden
                       type="text"
-                      placeholder={`Type ${customLabels.rollNumber}`}
+                      placeholder={`Type ${customLabels.rollNumber || customLabels.employeeId}`}
                       value={formData.rollNumber}
                       onChange={(e) => handleInputChange("rollNumber", e.target.value)}
                       className="w-full bg-gray-100 py-6 px-4 rounded-lg"

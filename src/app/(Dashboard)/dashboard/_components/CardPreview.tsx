@@ -16,7 +16,7 @@ export default function CardPreview({
   idCardType,
   logoUrl,
   signatureUrl,
-  profileUrl = "https://via.placeholder.com/100",
+  profileUrl = "https://i.ibb.co.com/ZzcCMzNx/3.webp",
   bgColor,
 }: CardPreviewProps) {
   return (

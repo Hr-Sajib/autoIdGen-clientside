@@ -286,7 +286,7 @@
 // export default EmployeeCard;
 
 
-
+//? working card but change for sajib vai 
 "use client";
 import React from "react";
 import { QRCodeCanvas } from "qrcode.react";
@@ -318,6 +318,7 @@ interface EmployeeCardProps {
     studentName: string;
     department: string;
     rollNumber: string;
+    employeeId: string;  
     bloodGroup: string;
     dateOfBirth: string;
     phone: string;
@@ -333,7 +334,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
   phone = "+65-2131-XXXX",
   companyName = "ABC Group of Industries",
   // companyAddress = "Dummy address 21A/B mine union point, Singapore",
-  personImage = "https://i.postimg.cc/Y0ydK27n/person.jpg",
+  personImage = "https://i.ibb.co.com/ZzcCMzNx/3.webp",
   logo = "https://i.postimg.cc/hthwhxwy/uni-logo.avif",
   signature = "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png",
   whoseSign,
@@ -343,6 +344,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
     studentName: "Name",
     department: "Department",
     rollNumber: "Employee ID",
+    employeeId: "Employee ID",
     bloodGroup: "Blood Group",
     dateOfBirth: "Date of Birth",
     phone: "Phone"
@@ -352,11 +354,12 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
 
   return (
     <div
-      className="relative min-w-[262px]  h-[153px]
+      className="calibri relative min-w-[262px]  h-[153px]
+                 sm:min-w-[290px] sm:h-[180px]
                  md:min-w-[370px] md:h-[210px]
                  lg:min-w-[600px] lg:h-[350px]
-                 xl:min-w-[650px] xl:h-[408px] rounded
-                 md:rounded-lg overflow-hidden shadow-lg"
+                 xl:min-w-[650px] xl:h-[408px] rounded-[3px]
+                 md:rounded lg:rounded-md overflow-hidden shadow-lg"
       style={{
         backgroundImage: `url(${background.src})`,
         backgroundSize: "cover",
@@ -388,7 +391,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
         </div>
 
         {/* Employee ID Label */}
-        <p className="absolute top-[3%] left-[12%] md:left-[10%] lg:left-[12%] text-[4px] md:text-[8px] lg:text-[11px] xl:text-[12px] text-gray-500 border border-gray-500 px-1 py-0.5 rounded text-center">
+        <p className="absolute top-[3%] left-[12%] md:left-[12%] lg:left-[12%] text-[4px] md:text-[8px] lg:text-[11px] xl:text-[12px] text-gray-500 border border-gray-500 px-1 py-0.5 rounded-[3px] md:rounded text-center">
           {idCardType}
         </p>
 
@@ -406,14 +409,14 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
         {/* Name */}
         <p className="absolute top-[28%] md:top-[30%] left-[2%] md:left-[7%] right-0 text-center font-bold
                       text-[10px] md:text-[17px] lg:text-[22px] xl:text-[26px] text-cyan-400">
-          {name}
+          {name|| customLabels.studentName || "John Marshal"}
         </p>
 
         {/* Details */}
-        <div className="absolute top-[41%] md:top-[47%] left-[35%] md:left-[38%] w-[50%] flex justify-center text-white text-[6px] md:text-[8px] lg:text-[14px] xl:text-[16px]">
+        <div className="absolute top-[41%] md:top-[47%] left-[37%] md:left-[38%] w-[50%] flex justify-center text-white text-[6px] md:text-[8px] lg:text-[14px] xl:text-[16px]">
           <div className="w-4/12 pr-1 md:pr-2 lg:pr-2 xl:pr-2 space-y-0.5">
             <p>{customLabels.department}</p>
-            <p>{customLabels.rollNumber}</p>
+            <p>{customLabels?.employeeId || customLabels.rollNumber}</p>
             <p>{customLabels.bloodGroup}</p>
             <p>{customLabels.dateOfBirth}</p>
             <p>{customLabels.phone}</p>
@@ -463,3 +466,319 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
 };
 
 export default EmployeeCard;
+
+
+
+
+
+
+// "use client";
+// import React from "react";
+// import { QRCodeCanvas } from "qrcode.react";
+// import background from "@/../public/image/shapes/studentId/potrait_id_card_bg.svg";
+// import Image from "next/image";
+
+// interface EmployeeCardProps {
+//   name?: string;
+//   address?: string;
+//   idCardType?: string;
+//   employeeName?: string;
+//   logoUrl?: string;
+//   signatureUrl?: string;
+//   profileUrl?: string;
+//   bgColor?: string;
+//   qrData?: string;
+//   department?: string;
+//   employeeId?: string;
+//   bloodGroup?: string;
+//   dob?: string;
+//   phone?: string;
+//   companyName?: string;
+//   companyAddress?: string;
+//   personImage?: string;
+//   logo?: string;
+//   signature?: string;
+//   whoseSign?: string;
+//   customLabels?: {
+//     studentName: string;
+//     department: string;
+//     rollNumber: string;
+//     employeeId: string;  
+//     bloodGroup: string;
+//     dateOfBirth: string;
+//     phone: string;
+//   };
+// }
+
+// const EmployeeCard: React.FC<EmployeeCardProps> = ({
+//   name = "John Marshal",
+//   department = "Sales",
+//   employeeId = "1233",
+//   bloodGroup = "B+",
+//   dob = "12-12-2000",
+//   phone = "+65-2131-XXXX",
+//   companyName = "ABC Group of Industries",
+//   companyAddress = "Dummy address 21A/B mine union point, Singapore",
+//   personImage = "https://i.postimg.cc/Y0ydK27n/person.jpg",
+//   logo = "https://i.postimg.cc/hthwhxwy/uni-logo.avif",
+//   signature = "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png",
+//   whoseSign = "Principal",
+//   idCardType = "Employee",
+//   address,
+//   customLabels = {
+//     studentName: "Name",
+//     department: "Department",
+//     rollNumber: "Employee ID",
+//     employeeId: "Employee ID",
+//     bloodGroup: "Blood Group",
+//     dateOfBirth: "Date of Birth",
+//     phone: "Phone"
+//   }
+// }) => {
+//   const qrData = `${companyName}/${department}/${employeeId}/${bloodGroup}/${dob}/${phone}`;
+
+//   return (
+//     <div
+//       className="relative overflow-hidden shadow-lg"
+//       style={{
+//         width: '1018px',
+//         height: '644px',
+//         fontFamily: "'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif",
+//         background: '#f0f0f0',
+//         margin: 0,
+//         padding: 0
+//       }}
+//     >
+//       <div style={{ margin: '3px' }}>
+//         <div
+//           className="relative overflow-hidden"
+//           style={{
+//             width: '1012px',
+//             height: '638px',
+//             borderRadius: '12px',
+//             boxShadow: '0 4px 12px rgba(0,0,0,0.25)'
+//           }}
+//         >
+//           {/* Background Image */}
+//           <Image
+//             src={background}
+//             alt="Background"
+//             fill
+//             style={{
+//               objectFit: 'cover',
+//               zIndex: 0
+//             }}
+//           />
+          
+//           {/* Content Container */}
+//           <div
+//             className="relative flex flex-col justify-start"
+//             style={{
+//               zIndex: 1,
+//               padding: '10px',
+//               width: '100%',
+//               height: '100%',
+//               boxSizing: 'border-box'
+//             }}
+//           >
+//             {/* Institution Info */}
+//             <div
+//               className="flex items-center"
+//               style={{
+//                 marginLeft: '340px',
+//                 marginTop: '50px',
+//                 width: '600px'
+//               }}
+//             >
+//               <Image
+//                 src={logo}
+//                 alt="Company Logo"
+//                 width={80}
+//                 height={80}
+//                 className="object-contain bg-white"
+//                 style={{
+//                   width: '80px',
+//                   borderRadius: '10px'
+//                 }}
+//               />
+//               <div style={{ width: '100%' }}>
+//                 <p
+//                   style={{
+//                     width: '90%',
+//                     color: 'white',
+//                     fontSize: '26px',
+//                     margin: 0,
+//                     fontWeight: 'bold',
+//                     textAlign: 'center'
+//                   }}
+//                 >
+//                   {companyName}
+//                 </p>
+//                 <p
+//                   style={{
+//                     textAlign: 'center',
+//                     color: 'rgb(180,180,180)',
+//                     fontSize: '16px',
+//                     margin: '10px 0'
+//                   }}
+//                 >
+//                   {address || companyAddress}
+//                 </p>
+//               </div>
+//             </div>
+
+//             {/* ID Card Type Label */}
+//             <p
+//               style={{
+//                 position: 'absolute',
+//                 left: '135px',
+//                 fontSize: '14px',
+//                 width: '100px',
+//                 color: '#8a8c8d',
+//                 border: '1px solid #8a8c8d',
+//                 padding: '2px 6px',
+//                 borderRadius: '4px',
+//                 textAlign: 'center',
+//                 margin: 0
+//               }}
+//             >
+//               {idCardType} ID
+//             </p>
+
+//             {/* Person Image */}
+//             <div
+//               style={{
+//                 position: 'absolute',
+//                 top: '130px',
+//                 left: '36px'
+//               }}
+//             >
+//               <Image
+//                 src={personImage}
+//                 alt="Employee Photo"
+//                 width={300}
+//                 height={300}
+//                 className="object-cover"
+//                 style={{
+//                   height: '300px',
+//                   width: '300px',
+//                   borderRadius: '100%',
+//                   border: '10px solid white'
+//                 }}
+//               />
+//             </div>
+
+//             {/* Name */}
+//             <p
+//               style={{
+//                 position: 'absolute',
+//                 top: '200px',
+//                 left: '60px',
+//                 right: '0px',
+//                 textAlign: 'center',
+//                 fontWeight: 900,
+//                 fontSize: '40px',
+//                 color: '#08ebf3',
+//                 margin: 0
+//               }}
+//             >
+//               {name}
+//             </p>
+
+//             {/* Details Section */}
+//             <div
+//               style={{
+//                 position: 'absolute',
+//                 top: '300px',
+//                 left: '400px',
+//                 width: '400px',
+//                 fontSize: '20px',
+//                 color: 'white',
+//                 display: 'flex',
+//                 justifyContent: 'center'
+//               }}
+//             >
+//               {/* Labels Column */}
+//               <div style={{ width: '30%', paddingRight: '8px' }}>
+//                 <p style={{ margin: '0 0 8px 0' }}>{customLabels.department}</p>
+//                 <p style={{ margin: '0 0 8px 0' }}>{customLabels?.employeeId || customLabels.rollNumber}</p>
+//                 <p style={{ margin: '0 0 8px 0' }}>{customLabels.bloodGroup}</p>
+//                 <p style={{ margin: '0 0 8px 0' }}>{customLabels.dateOfBirth}</p>
+//                 <p style={{ margin: '0 0 8px 0' }}>{customLabels.phone}</p>
+//               </div>
+
+//               {/* Values Column */}
+//               <div style={{ width: '60%', textAlign: 'left', paddingLeft: '8px' }}>
+//                 <p style={{ margin: '0 0 8px 0' }}>:&nbsp;&nbsp;&nbsp;{department}</p>
+//                 <p style={{ margin: '0 0 8px 0' }}>:&nbsp;&nbsp;&nbsp;{employeeId}</p>
+//                 <p style={{ margin: '0 0 8px 0' }}>:&nbsp;&nbsp;&nbsp;{bloodGroup}</p>
+//                 <p style={{ margin: '0 0 8px 0' }}>:&nbsp;&nbsp;&nbsp;{dob}</p>
+//                 <p style={{ margin: '0 0 8px 0' }}>:&nbsp;&nbsp;&nbsp;{phone}</p>
+//               </div>
+//             </div>
+
+//             {/* Signature */}
+//             <div
+//               style={{
+//                 position: 'absolute',
+//                 bottom: '30px',
+//                 left: '95px',
+//                 textAlign: 'center',
+//                 width: '190px'
+//               }}
+//             >
+//               <Image
+//                 src={signature}
+//                 alt="Signature"
+//                 width={190}
+//                 height={70}
+//                 className="object-contain"
+//                 style={{
+//                   height: '70px',
+//                   width: '100%'
+//                 }}
+//               />
+//               <p
+//                 style={{
+//                   margin: 0,
+//                   width: '100%',
+//                   fontSize: '14px',
+//                   color: 'white'
+//                 }}
+//               >
+//                 {whoseSign} Signature
+//               </p>
+//             </div>
+
+//             {/* QR Code */}
+//             <div
+//               style={{
+//                 position: 'absolute',
+//                 bottom: '65px',
+//                 left: '900px',
+//                 borderRadius: '5px',
+//                 border: '5px solid white',
+//                 transform: 'translateX(-50%)'
+//               }}
+//             >
+//               <QRCodeCanvas
+//                 value={qrData}
+//                 size={90}
+//                 className="block"
+//                 style={{
+//                   width: '90px',
+//                   height: '90px'
+//                 }}
+//                 bgColor="#ffffff"
+//                 fgColor="#000000"
+//                 level="H"
+//               />
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default EmployeeCard;

@@ -3,11 +3,11 @@
 import { useState, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { LucideEdit, Trash2, Loader2 } from "lucide-react"
+import { LucideEdit, Trash2, Loader2, LucideDownload } from "lucide-react"
 import { DashboardHeader } from "../../../_components/dashboard-header"
 import { EditCard } from "../../_components/EditCard"
 import { useGetSpecificProjectQuery, useUpdateProjectMutation } from "@/lib/feature/Project/projectApi"
-import { useCreateCardMutation, useGetCardByBatchIdQuery, useUpdateCardMutation } from "@/lib/feature/Card/cardApi"
+import { useCreateCardMutation, useDeleteCardMutation, useGetCardByBatchIdQuery, useUpdateCardMutation } from "@/lib/feature/Card/cardApi"
 import { useParams } from "next/navigation"
 import { Card, CardRow, Project } from "@/types/inedx"
 import { EditProject } from "../../_components/EditProject"
@@ -18,11 +18,13 @@ export default function ViewDetailsPage() {
   const id = params?.id as string
 
   const { data: projectData, isLoading: projectLoading, error: projectError } = useGetSpecificProjectQuery(id)
+  const [updateProject] = useUpdateProjectMutation()
   const project = projectData?.data
 
   const { data: cardData, isLoading: cardLoading } = useGetCardByBatchIdQuery(project?.batchId, { skip: !project?.batchId })
-
-  const [updateProject] = useUpdateProjectMutation()
+  const [createCard] = useCreateCardMutation()
+  const [updateCard] = useUpdateCardMutation()
+  const [deleteCard] = useDeleteCardMutation()
 
   const [cards, setCards] = useState<(CardRow)[]>([])
   const [selectedCard, setSelectedCard] = useState<Card | null>(null)
@@ -87,9 +89,6 @@ export default function ViewDetailsPage() {
     setEditCardModalOpen(true)
   }
 
-  const [createCard] = useCreateCardMutation()
-  const [updateCard] = useUpdateCardMutation()
-
   const handleUpdate = async (formData: Partial<Card>) => {
     try {
       if (selectedCard?._id) {
@@ -105,6 +104,44 @@ export default function ViewDetailsPage() {
     }
   }
 
+  const handleDeleteCard = async (card: Card) => {
+    if (!card._id) return; // safety check
+    try {
+      await deleteCard(card._id).unwrap(); // pass ID directly
+
+      // Remove card from local state to update UI immediately
+      setCards((prev) => prev.filter((c) => c._id !== card._id));
+    } catch (error) {
+      console.error("Failed to delete card", error);
+    }
+  };
+
+const handleDownloadCard = (card: Card) => {
+  if (!card.cardImageUrl) {
+    console.error("No card image available");
+    return;
+  }
+
+  // Open the card image in a new tab
+  const newWindow = window.open(card.cardImageUrl, "_blank");
+  if (newWindow) {
+    newWindow.document.title = `${card.name || card.serialOrRollNumber}-ID-Card`; // sets the tab title
+    // Optional: Create an image element with download attribute
+    const img = newWindow.document.createElement("img");
+    img.src = card.cardImageUrl;
+    img.alt = `${card.name || card.serialOrRollNumber} ID Card`;
+    img.style.maxWidth = "100%";
+    newWindow.document.body.style.margin = "0";
+    newWindow.document.body.style.display = "flex";
+    newWindow.document.body.style.justifyContent = "center";
+    newWindow.document.body.style.alignItems = "center";
+    newWindow.document.body.style.height = "100vh";
+    newWindow.document.body.appendChild(img);
+  } else {
+    console.error("Failed to open new window for card download");
+  }
+};
+
   if (projectLoading) return <div className="p-6">Loading project...</div>
   if (projectError) return <div className="p-6 text-red-500">Failed to load project</div>
 
@@ -115,12 +152,12 @@ export default function ViewDetailsPage() {
         {/* Project Info */}
         {project && (
           <div className="flex items-center gap-6 border rounded-lg p-4 bg-white shadow-sm">
-            <Image 
-            src={project.institutionLogoUrl} 
-            alt="Institution Logo" 
-            width={100}
-            height={100}
-            className="w-16 h-16 object-contain" />
+            <Image
+              src={project.institutionLogoUrl}
+              alt="Institution Logo"
+              width={100}
+              height={100}
+              className="w-16 h-16 object-contain" />
             <div>
               <h2 className="text-xl font-bold">{project.projectName}</h2>
               <p className="text-gray-600">{project.institutionName}</p>
@@ -133,12 +170,12 @@ export default function ViewDetailsPage() {
             </div>
             {project.institutionSignUrl?.signUrl && (
               <div className="ml-auto text-center">
-                <Image 
-                src={project.institutionSignUrl.signUrl} 
-                alt="Sign" 
-                width={100}
-                height={100}
-                className="w-20 h-12 object-contain" />
+                <Image
+                  src={project.institutionSignUrl.signUrl}
+                  alt="Sign"
+                  width={100}
+                  height={100}
+                  className="w-20 h-12 object-contain" />
                 <p className="text-xs text-gray-500">{project.institutionSignUrl.roleName}</p>
               </div>
             )}
@@ -194,8 +231,11 @@ export default function ViewDetailsPage() {
                       <button onClick={() => handleEditCard(card)}>
                         <LucideEdit size={18} className="text-gray-700 hover:text-indigo-600" />
                       </button>
-                      <button>
+                      <button onClick={() => handleDeleteCard(card)}>
                         <Trash2 size={18} className="text-red-500 hover:text-red-700" />
+                      </button>
+                      <button onClick={() => handleDownloadCard(card)}>
+                        <LucideDownload size={18} className="text-gray-700 hover:text-indigo-600" />
                       </button>
                     </td>
                   </tr>

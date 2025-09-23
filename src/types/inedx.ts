@@ -78,11 +78,12 @@ export interface Card {
     fieldName: string;
     fieldValue: string;
   }>;
+  cardImageUrl?: string;
 }
 
 // Optional extension for table rendering
 export type CardRow = Card & {
-  serialStr: string; // serialOrRollNumber as string for display
+  serialStr: string;
   status: "Complete" | "Pending";
   additionalFields: Record<string, string>;
 };

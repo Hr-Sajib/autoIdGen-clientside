@@ -1,6 +1,6 @@
 import baseApi from "@/lib/api/baseApi";
 
-export const projectApi = baseApi.injectEndpoints({
+export const cardApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
 
         createCard: builder.mutation({
@@ -50,13 +50,13 @@ export const projectApi = baseApi.injectEndpoints({
         //     providesTags: ["Card"],
         // }),
 
-        // deleteProject: builder.mutation({
-        //     query: (id) => ({
-        //         url: `/project/${id}`,
-        //         method: "DELETE",
-        //     }),
-        //     invalidatesTags: ["Card"],
-        // })
+        deleteCard: builder.mutation({
+            query: (id) => ({
+                url: `/card/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["Card"],
+        })
     }),
 });
 
@@ -67,5 +67,5 @@ export const {
     // useCreateProjectMutation,
     // useGetMyProjectQuery,
     // useGetSpecificProjectQuery,
-    // useDeleteProjectMutation,
-} = projectApi;
+    useDeleteCardMutation,
+} = cardApi;

@@ -58,7 +58,15 @@ export function EditCard({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onSubmit(form)
+
+    const payload: Partial<Card> = {
+      ...form,
+      _id: form._id || undefined,
+      setBy: "owner",
+    }
+    console.log("Payload:", payload)
+
+    onSubmit(payload)
     onClose()
   }
 

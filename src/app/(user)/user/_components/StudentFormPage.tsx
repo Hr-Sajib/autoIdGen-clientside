@@ -719,7 +719,7 @@ import { Card } from "@/components/ui/card"
 import EmployeeCard from "@/components/layout/cards/EmployeCard"
 import StudentCard from "@/components/layout/cards/StudentCard"
 import { UserDashboardHeader } from "./UserDashboardHeader"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import Cropper from "react-easy-crop"
 import Image from "next/image"
 
@@ -776,6 +776,15 @@ const getCroppedImg = async (
 // ---------------------
 export default function EmployeeInformationPage() {
   const router = useRouter()
+    const searchParams = useSearchParams();
+
+  const role = searchParams.get("role");
+  const batchCode = searchParams.get("batchCode");
+  const rollSerial = searchParams.get("rollSerial");
+  
+  console.log("Role:", role);
+  console.log("Batch Code:", batchCode);
+  console.log("Roll Serial:", rollSerial);
 
   const [formData, setFormData] = useState({
     employeeName: "",

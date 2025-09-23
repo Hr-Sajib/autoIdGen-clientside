@@ -166,14 +166,19 @@
 // export default IDCard;
 
 import React from 'react';
+import ExamplePage from '../../../(user)/user/_components/UserCardWithForm';
+import Error from '@/app/error';
+
+
 
 const page = () => {
   return (
     <div>
       {/* <StudentCard/>
       <EmpIDCard/> */}
-      {/* hello */}
-      {/* <Error/> */}
+      hello
+     {/* <Error error={error}/> */}
+      {/* <ExamplePage/> */}
     </div>
   );
 };

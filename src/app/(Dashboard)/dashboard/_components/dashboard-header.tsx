@@ -4,6 +4,8 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Plus, Home } from "lucide-react"
 import { CreateProjectModal } from "./project-modal"
+import Link from "next/link"
+import { BiIdCard } from "react-icons/bi"
 
 export function DashboardHeader() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -20,10 +22,10 @@ export function DashboardHeader() {
           <div className="flex items-center justify-between">
             {/* Mobile: Show AutoIDGen branding */}
             <div className="md:hidden flex items-center gap-2 ml-12">
-              <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center">
-                <span className="text-white text-xs font-bold">A</span>
-              </div>
-              <span className="font-semibold text-gray-900">AutoIDGen</span>
+              <Link href="/" className="flex items-center text-[#4A61E4] space-x-2 font-bold text-lg">
+            <span><BiIdCard size={30} /></span>
+            <span className="text-[20px]">AutoIDGen</span>
+          </Link>
             </div>
 
             {/* Desktop: Show Dashboard title */}

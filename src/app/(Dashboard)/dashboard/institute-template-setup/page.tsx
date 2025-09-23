@@ -74,7 +74,7 @@
 //                   value={form.instituteName}
 //                   onChange={handleChange}
 //                   placeholder="Type Institute Name"
-//                   className="h-14 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder:text-gray-500"
+//                   className="mt-1 h-14 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder:text-gray-500"
 //                 />
 //               </div>
 
@@ -88,7 +88,7 @@
 //                   value={form.idCardType}
 //                   onChange={handleChange}
 //                   placeholder="Type Student/Employee"
-//                   className="h-14 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder:text-gray-500"
+//                   className="mt-1 h-14 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder:text-gray-500"
 //                 />
 //               </div>
 
@@ -102,7 +102,7 @@
 //                   value={form.address}
 //                   onChange={handleChange}
 //                   placeholder="Type Address"
-//                   className="h-14 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder:text-gray-500"
+//                   className="mt-1 h-14 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder:text-gray-500"
 //                 />
 //               </div>
 
@@ -116,7 +116,7 @@
 //                   value={form.whoseSign}
 //                   onChange={handleChange}
 //                   placeholder="Whose sign"
-//                   className="h-14 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder:text-gray-500"
+//                   className="mt-1 h-14 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder:text-gray-500"
 //                 />
 //               </div>
 
@@ -124,7 +124,7 @@
 //               <div className="space-y-4">
 //                 <div className="flex gap-4">
 //                   <label className="cursor-pointer flex-1">
-//                     <div className="h-14 bg-gray-50 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors">
+//                     <div className="mt-1 h-14 bg-gray-50 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors">
 //                       <LucideUpload size={20} className="text-gray-600" />
 //                       <span className="text-gray-700 text-xl font-medium">Institution Logo</span>
 //                     </div>
@@ -137,7 +137,7 @@
 //                   </label>
 
 //                   <label className="cursor-pointer flex-1">
-//                     <div className="h-14 bg-gray-50 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors">
+//                     <div className="mt-1 h-14 bg-gray-50 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors">
 //                       <LucideSignature size={20} className="text-gray-600" />
 //                       <span className="text-gray-700 text-xl font-medium">Signature</span>
 //                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-gray-400">
@@ -367,7 +367,7 @@ export default function InstituteTemplateSetupPage() {
                   value={form.instituteName}
                   onChange={handleChange}
                   placeholder="Type Institute Name"
-                  className="h-14 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder:text-gray-500"
+                  className="mt-1 h-14 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder:text-gray-500"
                 />
               </div>
 
@@ -381,7 +381,7 @@ export default function InstituteTemplateSetupPage() {
                   value={form.idCardType}
                   onChange={handleChange}
                   placeholder="Type Student/Employee"
-                  className="h-14 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder:text-gray-500"
+                  className="mt-1 h-14 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder:text-gray-500"
                 />
               </div>
 
@@ -395,7 +395,7 @@ export default function InstituteTemplateSetupPage() {
                   value={form.address}
                   onChange={handleChange}
                   placeholder="Type Address"
-                  className="h-14 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder:text-gray-500"
+                  className="mt-1 h-14 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder:text-gray-500"
                 />
               </div>
 
@@ -409,7 +409,7 @@ export default function InstituteTemplateSetupPage() {
                   value={form.whoseSign}
                   onChange={handleChange}
                   placeholder="Whose sign"
-                  className="h-14 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder:text-gray-500"
+                  className="mt-1 h-14 bg-gray-50 border-0 rounded-lg text-gray-900 placeholder:text-gray-500"
                 />
               </div>
 
@@ -417,7 +417,7 @@ export default function InstituteTemplateSetupPage() {
               <div className="space-y-4">
                 <div className="flex gap-4">
                   <label className="cursor-pointer flex-1">
-                    <div className="h-14 bg-gray-50 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors">
+                    <div className="mt-1 h-14 bg-gray-50 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors">
                       <LucideUpload size={20} className="text-gray-600" />
                       <span className="text-gray-700 text-xl font-medium">Institution Logo</span>
                     </div>
@@ -430,7 +430,7 @@ export default function InstituteTemplateSetupPage() {
                   </label>
 
                   <label className="cursor-pointer flex-1">
-                    <div className="h-14 bg-gray-50 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors">
+                    <div className="mt-1 h-14 bg-gray-50 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors">
                       <LucideSignature size={20} className="text-gray-600" />
                       <span className="text-gray-700 text-xl font-medium">Signature</span>
                     </div>

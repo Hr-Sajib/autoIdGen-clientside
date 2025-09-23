@@ -3,57 +3,61 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { LucideCopy, LucideEdit, LucideTrash, Trash2 } from "lucide-react"
+import { LucideCopy, LucideFolderOpen, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
-
-const projects = [
-  {
-    id: 1,
-    name: "Institute Name",
-    cardType: "Student",
-    totalCards: 120,
-    batchCode: "1111",
-    hasExternalLink: true,
-  },
-  {
-    id: 2,
-    name: "Institute Name/Copy",
-    cardType: "Student",
-    totalCards: 120,
-    batchCode: "1111",
-    hasExternalLink: true,
-  },
-  {
-    id: 3,
-    name: "Company Name",
-    cardType: "Employee",
-    totalCards: 85,
-    batchCode: "2222",
-    hasExternalLink: true,
-  },
-]
+import { useDeleteProjectMutation, useGetMyProjectQuery } from "@/lib/feature/Project/projectApi"
+import { Project } from "@/types/inedx"
 
 export function ProjectOverview() {
-  const [copiedId, setCopiedId] = useState<number | null>(null)
+  const { data, isLoading, isError } = useGetMyProjectQuery(undefined)
+  const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  const handleCopy = async (text: string, id: number) => {
+  const [deleteProject] = useDeleteProjectMutation()
+
+  // API gives { success, message, data: [...] }
+  const projects = data?.data ?? []
+  console.log("Projects data:", projects)
+  const handleCopy = async (text: string, id: string) => {
     try {
       await navigator.clipboard.writeText(text)
       setCopiedId(id)
 
-      // Reset "copied" state after 2 seconds
       setTimeout(() => setCopiedId(null), 2000)
     } catch (err) {
       console.error("Failed to copy text: ", err)
     }
   }
 
+  const handleDelete = async (id: string) => {
+    const confirmDelete = confirm("Are you sure you want to delete this project?")
+    if (!confirmDelete) return
+
+    try {
+      setDeletingId(id)
+      await deleteProject(id).unwrap()
+      setDeletingId(null)
+    } catch (err) {
+      console.error("Failed to delete project:", err)
+      setDeletingId(null)
+      alert("Failed to delete project. Please try again.")
+    }
+  }
+
+  if (isLoading) {
+    return <p className="p-6 text-muted-foreground">Loading projects...</p>
+  }
+
+  if (isError) {
+    return <p className="p-6 text-red-500">Failed to load projects</p>
+  }
+
   return (
     <Card className="bg-background border-border">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-xl font-bold text-foreground">All Project</CardTitle>
+          <CardTitle className="text-xl font-bold text-foreground">All Projects</CardTitle>
           <div className="relative">
             <svg
               className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground"
@@ -78,49 +82,30 @@ export function ProjectOverview() {
             <thead>
               <tr className="border-b-2 border-b-blue-600 border-border">
                 <th className="text-left py-3 px-4 font-semibold text-muted-foreground">Project Name</th>
+                <th className="text-left py-3 px-4 font-semibold text-muted-foreground">Institution</th>
                 <th className="text-left py-3 px-4 font-semibold text-muted-foreground">Card Type</th>
-                <th className="text-left py-3 px-4 font-semibold text-muted-foreground">Total Card</th>
+                <th className="text-left py-3 px-4 font-semibold text-muted-foreground">Total Cards</th>
                 <th className="text-left py-3 px-4 font-semibold text-muted-foreground">Batch Code</th>
                 <th className="text-left py-3 px-4 font-semibold text-muted-foreground">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {projects.map((project) => (
-                <tr key={project.id} className="border-b border-border hover:bg-muted/50">
-                  <td className="py-4 px-4">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-foreground">{project.name}</span>
-                      {/* <svg
-                        className="h-4 w-4 text-muted-foreground"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                        />
-                      </svg> */}
-                    </div>
-                  </td>
+              {projects.map((project: Project) => (
+                <tr key={project._id} className="border-b border-border hover:bg-muted/50">
+                  <td className="py-4 px-4 font-medium text-foreground">{project.projectName}</td>
+                  <td className="py-4 px-4 text-foreground">{project.institutionName}</td>
                   <td className="py-4 px-4 text-foreground">{project.cardType}</td>
-                  <td className="py-4 px-4 text-foreground">{project.totalCards}</td>
-                  {/* <td className="py-4 px-4 text-foreground">{project.batchCode}</td> */}
+                  <td className="py-4 px-4 text-foreground">{project.cardQuantity}</td>
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-foreground">{project.batchCode}</span>
-                      {/* <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                        <LucideCopy />
-                      </Button> */}
+                      <span className="font-medium text-foreground">{project.batchId}</span>
                       <Button
                         variant="ghost"
                         size="sm"
                         className="h-8 w-8 p-0"
-                        onClick={() => handleCopy(project.batchCode, project.id)}
+                        onClick={() => handleCopy(project.batchId.toString(), project._id)}
                       >
-                        {copiedId === project.id ? (
+                        {copiedId === project._id ? (
                           <span className="text-green-600 text-xs">✔</span>
                         ) : (
                           <LucideCopy />
@@ -130,20 +115,21 @@ export function ProjectOverview() {
                   </td>
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-2">
-                      {/* Copy icon */}
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                        <LucideCopy />
-                      </Button>
                       {/* Edit icon */}
-                      <Link href={`/dashboard/projects`}>
-                        {/* <Link href={`/dashboard/project/${project.id}/edit`}> */}
+                      <Link href={`/dashboard/projects/${project._id}/edit`}>
                         <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                          <LucideEdit />
+                          <LucideFolderOpen />
                         </Button>
                       </Link>
                       {/* Delete icon */}
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                        <Trash2 />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                        onClick={() => handleDelete(project._id)}
+                        disabled={deletingId === project._id}
+                      >
+                        <Trash2 className={deletingId === project._id ? "animate-pulse" : ""} />
                       </Button>
                     </div>
                   </td>

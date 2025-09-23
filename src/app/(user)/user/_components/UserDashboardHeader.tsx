@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import btn from "@/../public/images/logout_btn.svg"
 import Link from "next/link"
 import Image from "next/image"

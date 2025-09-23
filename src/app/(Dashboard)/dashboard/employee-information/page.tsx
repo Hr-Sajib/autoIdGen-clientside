@@ -378,6 +378,7 @@ export default function EmployeeInformationPage() {
     }
   }, [])
 
+
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }

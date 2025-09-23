@@ -1,7 +1,6 @@
 'use client';
 
 import Container from "@/components/layout/Dashboard/Container";
-import PrivateRoute from "@/lib/providers/PrivateRoute";
 import { ReactNode } from "react";
 
 export default function Layout({ children }: { children: ReactNode }) {

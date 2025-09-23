@@ -17,7 +17,7 @@ const AuthContext = createContext<AuthContextType>({
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
 
-  const [authData, setAuthData] = useState<AuthContextType>({
+  const [authData] = useState<AuthContextType>({
     user: null,
     isAuthenticated: false,
   });

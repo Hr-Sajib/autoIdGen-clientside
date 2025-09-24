@@ -323,6 +323,7 @@ interface EmployeeCardProps {
     dateOfBirth: string;
     phone: string;
   };
+  orientation?: string
 }
 
 const EmployeeCard: React.FC<EmployeeCardProps> = ({
@@ -348,7 +349,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
     bloodGroup: "Blood Group",
     dateOfBirth: "Date of Birth",
     phone: "Phone"
-  }
+  },
 }) => {
   const qrData = `${companyName}/${department}/${employeeId}/${bloodGroup}/${dob}/${phone}`;
 

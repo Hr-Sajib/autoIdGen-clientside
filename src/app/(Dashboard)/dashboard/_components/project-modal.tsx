@@ -36,7 +36,7 @@ export function CreateProjectModal({ isOpen, onClose, onSubmit }: CreateProjectM
     onClose()
 
     // ✅ Pass project name via query param
-    router.push(`/dashboard/select-card?projectName=${encodeURIComponent(finalName)}`)
+    router.push(`/dashboard/select-card?project=${encodeURIComponent(finalName)}`)
   }
 }
 

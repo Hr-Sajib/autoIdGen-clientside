@@ -30,6 +30,7 @@ interface StudentCardProps {
     dateOfBirth: string;
     phone: string;
   };
+  orientation?: string
 }
 
 const StudentCard: React.FC<StudentCardProps> = ({

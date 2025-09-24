@@ -2,8 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["i.postimg.cc", "via.placeholder.com", "i.ibb.co.com"],
-    // OR you can use remotePatterns for more flexibility
     remotePatterns: [
       {
         protocol: "https",
@@ -13,6 +11,16 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "via.placeholder.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "i.ibb.co.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "i.ibb.co",
         pathname: "/**",
       },
     ],

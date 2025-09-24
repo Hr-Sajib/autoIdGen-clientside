@@ -1,13 +1,13 @@
-import React from 'react';
-import StudentFormPage from './_components/StudentFormPage';
+import UserCardWithForm from './_components/UserCardWithForm';
 
 const page = () => {
     return (
         <div>
             {/* <UserDashboardHeader/> */}
-            <StudentFormPage/>
+            {/* <StudentFormPage/> */}
 
-       {/* <ExportPage/> */}
+            <UserCardWithForm />
+            {/* <ExportPage/> */}
         </div>
     );
 };

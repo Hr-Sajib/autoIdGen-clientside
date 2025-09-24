@@ -22,7 +22,7 @@ export function Sidebar({ onToggle }: SidebarProps) {
   const pathname = usePathname();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
-  
+
   // const navItems = [
   //   { href: "/dashboard", label: "Dashboard" },
   //   { href: "/dashboard/verify", label: "Verify ID Card" },
@@ -152,7 +152,36 @@ export function Sidebar({ onToggle }: SidebarProps) {
           </div>
 
           {/* Navigation */}
-          <nav className="p-4 pb-1">
+          <nav className="flex-1 p-4">
+            {
+              pathname.includes('/dashboard') && (
+                <Button
+                  variant="default"
+                  className={cn(
+                    "w-full bg-blue-400 hover:bg-blue-700 text-white transition-all duration-200",
+                    isDesktopCollapsed
+                      ? "md:justify-center md:px-2"
+                      : "justify-start  gap-3"
+                  )}
+                >
+                  <LucideLayoutDashboard />
+
+                  <Link href="/dashboard">
+                    <span
+                      className={cn(
+                        "transition-opacity duration-200",
+                        isDesktopCollapsed ? "md:hidden" : "block"
+                      )}
+                    >
+                      Dashboard
+                    </span>
+                  </Link>
+                </Button>
+
+              )
+            }
+          </nav>
+          <nav className="flex-1 p-4 pt-1">
             <Button
               variant="default"
               className={cn(
@@ -162,16 +191,16 @@ export function Sidebar({ onToggle }: SidebarProps) {
                   : "justify-start  gap-3"
               )}
             >
-              <LucideLayoutDashboard />
-              
-              <Link href="/dashboard">
+              <LucideVerified />
+
+              <Link href="/dashboard/verify">
                 <span
                   className={cn(
                     "transition-opacity duration-200",
                     isDesktopCollapsed ? "md:hidden" : "block"
                   )}
                 >
-                  Dashboard
+                  Verify ID Card
                 </span>
               </Link>
             </Button>
@@ -187,7 +216,7 @@ export function Sidebar({ onToggle }: SidebarProps) {
               )}
             >
               <LucideVerified />
-              
+
               <Link href="/dashboard/verify">
                 <span
                   className={cn(

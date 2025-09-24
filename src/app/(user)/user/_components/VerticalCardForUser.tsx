@@ -53,6 +53,7 @@ const VerticalCardForUser: React.FC<VerticalCardProps> = ({
         <div className="flex items-center ml-[33%] mt-[3%] md:mt-[4%] w-[60%]">
           {logoUrl && (
             <Image
+            unoptimized
               src={logoUrl}
               alt="Institute Logo"
               width={50}
@@ -81,6 +82,7 @@ const VerticalCardForUser: React.FC<VerticalCardProps> = ({
         {/* Profile Image */}
         <div className="absolute top-[20%] left-[6%]">
           <Image
+          unoptimized
             src={profileUrl || "https://via.placeholder.com/100"}
             alt="Profile Photo"
             width={100}
@@ -112,6 +114,7 @@ const VerticalCardForUser: React.FC<VerticalCardProps> = ({
         {signatureUrl && (
           <div className="absolute bottom-[3%] left-[10%] text-center">
             <Image
+            unoptimized
               src={signatureUrl}
               alt="Signature"
               width={60}

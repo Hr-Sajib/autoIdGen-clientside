@@ -1,6 +1,3 @@
-
-
-
 // "use client";
 // import React, { useState, useRef, useEffect, useCallback } from "react";
 // import { Input } from "@/components/ui/input";
@@ -9,344 +6,10 @@
 // import VerticalCardForUser from "./VerticalCardForUser";
 // import Image from "next/image";
 // import Cropper from "react-easy-crop";
-// import { useSearchParams } from "next/navigation";
-
-// // ---------------------
-// // Utility for cropping
-// // ---------------------
-// type CroppedAreaPixels = { x: number; y: number; width: number; height: number };
-
-// const createImage = (url: string): Promise<HTMLImageElement> =>
-//   new Promise((resolve, reject) => {
-//     const img = document.createElement("img");
-//     img.onload = () => resolve(img);
-//     img.onerror = (error) => reject(new Error("Failed to load image: " + error));
-//     if (!url.startsWith("blob:")) img.crossOrigin = "anonymous";
-//     img.src = url;
-//   });
-
-// const getCroppedImg = async (imageSrc: string, pixelCrop: CroppedAreaPixels): Promise<string> => {
-//   const image = await createImage(imageSrc);
-//   const canvas = document.createElement("canvas");
-//   const ctx = canvas.getContext("2d");
-//   if (!ctx) throw new Error("Could not get 2D context");
-
-//   const safePixelCrop = {
-//     x: Math.max(0, Math.min(pixelCrop.x, image.width)),
-//     y: Math.max(0, Math.min(pixelCrop.y, image.height)),
-//     width: Math.max(1, Math.min(pixelCrop.width, image.width - pixelCrop.x)),
-//     height: Math.max(1, Math.min(pixelCrop.height, image.height - pixelCrop.y)),
-//   };
-
-//   canvas.width = safePixelCrop.width;
-//   canvas.height = safePixelCrop.height;
-
-//   ctx.drawImage(
-//     image,
-//     safePixelCrop.x,
-//     safePixelCrop.y,
-//     safePixelCrop.width,
-//     safePixelCrop.height,
-//     0,
-//     0,
-//     safePixelCrop.width,
-//     safePixelCrop.height
-//   );
-
-//   return canvas.toDataURL("image/jpeg", 0.9);
-// };
-
-// const UserCardWithForm = () => {
-//     const searchParams = useSearchParams();
-
-    
-//     const role = searchParams.get("role");
-//     const batchCode = searchParams.get("batchCode");
-//     const rollSerial = searchParams.get("rollSerial");
-//     const [projectData, setProjectData] = useState('');
-    
-//     console.log("Role:", role);
-//     console.log("Batch Code:", batchCode);
-//     console.log("Roll Serial:", rollSerial);
-//     useEffect(() => {
-//   const fetchBatchData = async () => {
-//     try {
-//       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project/batch/${batchCode}`);
-//       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-//       const data = await response.json();
-//       console.log("project data by batchCode :===========>", data);
-//       setProjectData(data);
-
-//     } catch (error) {
-//       console.error("Failed to fetch batch data:", error);
-//     }
-//   };
-
-//   fetchBatchData();
-// }, [batchCode,role,rollSerial]);
-  
-//   // backend থেকে আসা fields
-//   const fields = ["fathersName", "mothersName", "class", "department",];
-
-//   const [values, setValues] = useState<{ [key: string]: string }>({});
-//   const [profileUrl, setProfileUrl] = useState("https://i.ibb.co.com/jvqgjL8c/62792368846-removebg-preview.png");
-//   const [cardOrientation, setCardOrientation] = useState<"horizontal" | "vertical">("horizontal");
-
-//   // cropper states
-//   const [imageSrc, setImageSrc] = useState<string | null>(null);
-//   const [crop, setCrop] = useState({ x: 0, y: 0 });
-//   const [zoom, setZoom] = useState(1);
-//   const [croppedAreaPixels, setCroppedAreaPixels] = useState<CroppedAreaPixels | null>(null);
-//   const [showCropper, setShowCropper] = useState(false);
-//   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-
-//   // webcam states
-//   const [showWebcam, setShowWebcam] = useState(false);
-//   const videoRef = useRef<HTMLVideoElement | null>(null);
-//   const streamRef = useRef<MediaStream | null>(null);
-//   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-//   const handleChange = (field: string, value: string) => {
-//     setValues((prev) => ({ ...prev, [field]: value }));
-//   };
-
-//   const handleFileChange = (file: File | null) => {
-//     if (!file) return;
-//     if (!file.type.startsWith("image/")) return alert("Select a valid image");
-//     if (file.size > 10 * 1024 * 1024) return alert("Image < 10MB");
-
-//     const imgUrl = URL.createObjectURL(file);
-//     setImageSrc(imgUrl);
-//     setShowCropper(true);
-//     setCrop({ x: 0, y: 0 });
-//     setZoom(1);
-//     setCroppedAreaPixels(null);
-//   };
-
-//   const onCropComplete = useCallback((_ : unknown, croppedAreaPixels: CroppedAreaPixels) => {
-//     setCroppedAreaPixels(croppedAreaPixels);
-//   }, []);
-
-//   const handleCropSave = async () => {
-//     if (!imageSrc || !croppedAreaPixels) return alert("Select area to crop");
-//     try {
-//       const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
-//       if (imageSrc.startsWith("blob:")) URL.revokeObjectURL(imageSrc);
-//       if (photoPreview && photoPreview.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
-//       setPhotoPreview(croppedImage);
-//       setProfileUrl(croppedImage);
-//       setShowCropper(false);
-//       setImageSrc(null);
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   };
-
-//   const handleRemovePhoto = () => {
-//     setPhotoPreview(null);
-//     setProfileUrl("https://i.ibb.co.com/jvqgjL8c/62792368846-removebg-preview.png");
-//   };
-
-//   const handleTakePhoto = async () => {
-//     try {
-//       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-//       streamRef.current = stream;
-//       setShowWebcam(true);
-//       if (videoRef.current) videoRef.current.srcObject = stream;
-//     } catch (err) {
-//       fileInputRef.current?.click();
-//     }
-//   };
-
-//   const handleCaptureFromWebcam = () => {
-//     if (!videoRef.current) return;
-//     const video = videoRef.current;
-//     const canvas = document.createElement("canvas");
-//     canvas.width = video.videoWidth;
-//     canvas.height = video.videoHeight;
-//     const ctx = canvas.getContext("2d");
-//     if (ctx) ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-//     const imgData = canvas.toDataURL("image/jpeg", 0.9);
-
-//     setImageSrc(imgData);
-//     setShowCropper(true);
-//     setShowWebcam(false);
-
-//     streamRef.current?.getTracks().forEach((track) => track.stop());
-//     streamRef.current = null;
-//   };
-
-//   const handleCloseWebcam = () => {
-//     setShowWebcam(false);
-//     streamRef.current?.getTracks().forEach((track) => track.stop());
-//     streamRef.current = null;
-//   };
-
-//   useEffect(() => {
-//     return () => {
-//       if (imageSrc && imageSrc.startsWith("blob:")) URL.revokeObjectURL(imageSrc);
-//       if (photoPreview && photoPreview.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
-//       streamRef.current?.getTracks().forEach((track) => track.stop());
-//     };
-//   }, [imageSrc, photoPreview]);
-
-//   return (
-//     <div className="flex gap-10 p-6">
-//       {/* <div>
-//         {JSON.stringify(projectData)}
-//       </div> */}
-//       {/* ---------- Left: Form ---------- */}
-//       <div className="w-[350px] border rounded-lg p-4 shadow-md bg-white">
-//         <h2 className="text-lg font-bold mb-3">Enter Student Info</h2>
-
-//         {/* Card Orientation Select */}
-//         <div className="mb-3">
-//           <label className="block text-sm font-medium mb-1">Card Orientation</label>
-//           <select
-//             className="w-full border rounded px-2 py-1"
-//             value={cardOrientation}
-//             onChange={(e) => setCardOrientation(e.target.value as "horizontal" | "vertical")}
-//           >
-//             <option value="horizontal">Horizontal</option>
-//             <option value="vertical">Vertical</option>
-//           </select>
-//         </div>
-
-//         {fields.map((field) => (
-//           <div key={field} className="mb-3">
-//             <label className="block text-sm font-medium mb-1 capitalize">
-//               {field.replace(/([A-Z])/g, " $1")}
-//             </label>
-//             <Input
-//               type="text"
-//               value={values[field] || ""}
-//               onChange={(e) => handleChange(field, e.target.value)}
-//               placeholder={`Enter ${field}`}
-//             />
-//           </div>
-//         ))}
-
-//         {/* Upload / Take photo */}
-//         <div className="flex flex-wrap gap-3 mt-3">
-//           <label className="flex items-center justify-center border rounded-lg px-3 py-2 cursor-pointer hover:bg-gray-50 transition-colors">
-//             <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileChange(e.target.files?.[0] || null)} />
-//             ⬆️ Upload Photo
-//           </label>
-//           <Button variant="outline" onClick={handleTakePhoto}>📷 Take Photo</Button>
-//           <input type="file" accept="image/*" capture="environment" ref={fileInputRef} onChange={(e) => handleFileChange(e.target.files?.[0] || null)} style={{ display: "none" }} />
-//         </div>
-
-//         {/* Photo Preview */}
-//         {photoPreview && (
-//           <div className="mt-4">
-//             <p className="text-sm text-gray-600 mb-2">📸 Current Photo:</p>
-//             <div className="relative w-fit">
-//               <Image src={photoPreview} alt="Profile Preview" width={128} height={128} className="w-32 h-32 object-cover rounded-lg border shadow" />
-//               <Button size="sm" variant="destructive" className="absolute -top-2 -right-2 rounded-full" onClick={handleRemovePhoto}>✕</Button>
-//             </div>
-//           </div>
-//         )}
-
-//         <Button onClick={() => console.log("👉 Submitted:", { ...values, profileUrl, cardOrientation })} className="mt-3 w-full">
-//           Save Data
-//         </Button>
-//       </div>
-
-//       {/* ---------- Right: Card Preview ---------- */}
-//       <div>
-//         {cardOrientation === "horizontal" ? (
-//           <HorizontalCardForUser
-//             instituteName="ABC High School"
-//             address="Dhaka, Bangladesh"
-//             idCardType="Student ID"
-//             studentName="Hasibul"
-//             qrData="CSE12345"
-//             logoUrl="https://i.ibb.co.com/WWp6qvYk/dummy-institusion-logo.png"
-//             profileUrl={profileUrl}
-//             signatureUrl="https://i.ibb.co.com/qFVRbCkZ/signature-removebg-preview.png"
-//             whoseSign="Principal"
-//             fields={fields}
-//             values={values}
-//           />
-//         ) : (
-//           <VerticalCardForUser
-//             instituteName="ABC High School"
-//             address="Dhaka, Bangladesh"
-//             idCardType="Student ID"
-//             studentName="Hasibul"
-//             qrData="CSE12345"
-//             logoUrl="https://i.ibb.co.com/WWp6qvYk/dummy-institusion-logo.png"
-//             profileUrl={profileUrl}
-//             signatureUrl="https://i.ibb.co.com/qFVRbCkZ/signature-removebg-preview.png"
-//             whoseSign="Principal"
-//             fields={fields}
-//             values={values}
-//           />
-//         )}
-//       </div>
-
-//       {/* -------- Cropper Modal -------- */}
-//       {showCropper && imageSrc && (
-//         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
-//           <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden">
-//             <div className="p-4 border-b">
-//               <h3 className="text-lg font-semibold">Crop Your Image</h3>
-//             </div>
-//             <div className="relative h-96 bg-gray-100">
-//               <Cropper
-//                 image={imageSrc}
-//                 crop={crop}
-//                 zoom={zoom}
-//                 aspect={1}
-//                 onCropChange={setCrop}
-//                 onCropComplete={onCropComplete}
-//                 onZoomChange={setZoom}
-//                 showGrid={false}
-//               />
-//             </div>
-//             <div className="p-4 border-t flex justify-end gap-3">
-//               <Button variant="outline" onClick={() => setShowCropper(false)}>Cancel</Button>
-//               <Button onClick={handleCropSave} className="bg-blue-600 text-white">Apply Crop</Button>
-//             </div>
-//           </div>
-//         </div>
-//       )}
-
-//       {/* -------- Webcam Modal -------- */}
-//       {showWebcam && (
-//         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-//           <div className="bg-white rounded-lg w-full max-w-md p-4">
-//             <h3 className="text-lg font-semibold mb-4">📷 Capture Photo</h3>
-//             <video ref={videoRef} autoPlay playsInline className="w-full rounded-lg bg-black" />
-//             <div className="flex justify-end gap-3 mt-4">
-//               <Button variant="outline" onClick={handleCloseWebcam}>Cancel</Button>
-//               <Button onClick={handleCaptureFromWebcam} className="bg-blue-600 text-white">Capture</Button>
-//             </div>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default UserCardWithForm;
-
-
-
-
-
-//? consoled all of the form values bellow
-// todo :  have to host image in imgbb (for now i send a hearcoded personalImageUrl)
-
-// "use client";
-// import React, { useState, useRef, useEffect, useCallback } from "react";
-// import { Input } from "@/components/ui/input";
-// import { Button } from "@/components/ui/button";
-// import HorizontalCardForUser from "./HorizontalCardForUser";
-// import VerticalCardForUser from "./VerticalCardForUser";
-// import Image from "next/image";
-// import Cropper from "react-easy-crop";
-// import { useSearchParams } from "next/navigation";
+// import { useSearchParams, useRouter } from "next/navigation";
+// import DownloadImage from '@/../public/images/download_icon.svg'
+// import UploadImage from '@/../public/images/upload_icon.svg'
+// import TripodImage from '@/../public/images/camera-tripod.svg'
 
 // // ---------------------
 // // Types
@@ -360,6 +23,7 @@
 //   templateId: string;
 //   institutionName: string;
 //   institutionLogoUrl: string;
+//   personPhotoBGColorCode: string;
 //   institutionSignUrl: {
 //     roleName: string;
 //     signUrl: string;
@@ -381,6 +45,33 @@
 // }
 
 // // ---------------------
+// // Image Upload Function for ImgBB
+// // ---------------------
+// const imageUpload = async (file: File) => {
+//   const formData = new FormData();
+//   formData.append("image", file);
+//   try {
+//     const response = await fetch(
+//       `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`,
+//       {
+//         method: "POST",
+//         body: formData,
+//       }
+//     );
+
+//     const data = await response.json();
+//     if (data.success) {
+//       return data.data.url; // ইমেজ লিংক রিটার্ন করবে
+//     } else {
+//       throw new Error("Failed to upload image.");
+//     }
+//   } catch (error) {
+//     console.error("Error:", error);
+//     return null;
+//   }
+// };
+
+// // ---------------------
 // // Utility for cropping
 // // ---------------------
 // const createImage = (url: string): Promise<HTMLImageElement> =>
@@ -423,1048 +114,108 @@
 //   return canvas.toDataURL("image/jpeg", 0.9);
 // };
 
-// const UserCardWithForm = () => {
-//   const searchParams = useSearchParams();
-  
-//   const role = searchParams.get("role");
-//   const batchCode = searchParams.get("batchCode");
-//   const rollSerial = searchParams.get("rollSerial");
-  
-//   const [projectData, setProjectData] = useState<ProjectData | null>(null);
-//   const [isLoading, setIsLoading] = useState(true);
-//   const [error, setError] = useState<string | null>(null);
-  
-//   console.log("Role:", role);
-//   console.log("Batch Code:", batchCode);
-//   console.log("Roll Serial:", rollSerial);
-
-//   useEffect(() => {
-//     const fetchBatchData = async () => {
-//       if (!batchCode) {
-//         setError("Batch code is required");
-//         setIsLoading(false);
-//         return;
-//       }
-
-//       try {
-//         setIsLoading(true);
-//         setError(null);
-//         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project/batch/${batchCode}`);
-        
-//         if (!response.ok) {
-//           throw new Error(`HTTP error! status: ${response.status}`);
-//         }
-        
-//         const apiResponse: ApiResponse = await response.json();
-//         console.log("project data by batchCode :===========>", apiResponse);
-        
-//         if (apiResponse.success) {
-//           setProjectData(apiResponse.data);
-//         } else {
-//           throw new Error(apiResponse.message || "Failed to fetch project data");
-//         }
-//       } catch (error) {
-//         console.error("Failed to fetch batch data:", error);
-//         setError(error instanceof Error ? error.message : "Failed to fetch batch data");
-//       } finally {
-//         setIsLoading(false);
-//       }
-//     };
-
-//     fetchBatchData();
-//   }, [batchCode, role, rollSerial]);
-
-//   // Get dynamic fields from project data or use fallback
-//   const fields = projectData?.additionalFields || [];
-
-//   // Determine card orientation based on templateId
-//   const cardOrientation = projectData?.templateId === "68b7582aaa0bc46f0acfb675" ? "vertical" : "horizontal";
-
-//   const [values, setValues] = useState<{ [key: string]: string }>({});
-//   const [studentName, setStudentName] = useState<string>("");
-//   const [profileUrl, setProfileUrl] = useState("https://i.ibb.co.com/jvqgjL8c/62792368846-removebg-preview.png");
-
-//   // cropper states
-//   const [imageSrc, setImageSrc] = useState<string | null>(null);
-//   const [crop, setCrop] = useState({ x: 0, y: 0 });
-//   const [zoom, setZoom] = useState(1);
-//   const [croppedAreaPixels, setCroppedAreaPixels] = useState<CroppedAreaPixels | null>(null);
-//   const [showCropper, setShowCropper] = useState(false);
-//   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-
-//   // webcam states
-//   const [showWebcam, setShowWebcam] = useState(false);
-//   const videoRef = useRef<HTMLVideoElement | null>(null);
-//   const streamRef = useRef<MediaStream | null>(null);
-//   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-//   const handleChange = (field: string, value: string) => {
-//     setValues((prev) => ({ ...prev, [field]: value }));
-//   };
-
-//   const handleFileChange = (file: File | null) => {
-//     if (!file) return;
-//     if (!file.type.startsWith("image/")) return alert("Select a valid image");
-//     if (file.size > 10 * 1024 * 1024) return alert("Image < 10MB");
-
-//     const imgUrl = URL.createObjectURL(file);
-//     setImageSrc(imgUrl);
-//     setShowCropper(true);
-//     setCrop({ x: 0, y: 0 });
-//     setZoom(1);
-//     setCroppedAreaPixels(null);
-//   };
-
-//   const onCropComplete = useCallback((_: unknown, croppedAreaPixels: CroppedAreaPixels) => {
-//     setCroppedAreaPixels(croppedAreaPixels);
-//   }, []);
-
-//   const handleCropSave = async () => {
-//     if (!imageSrc || !croppedAreaPixels) return alert("Select area to crop");
-//     try {
-//       const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
-//       if (imageSrc.startsWith("blob:")) URL.revokeObjectURL(imageSrc);
-//       if (photoPreview && photoPreview.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
-//       setPhotoPreview(croppedImage);
-//       setProfileUrl(croppedImage);
-//       setShowCropper(false);
-//       setImageSrc(null);
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   };
-
-//   const handleRemovePhoto = () => {
-//     setPhotoPreview(null);
-//     setProfileUrl("https://i.ibb.co.com/jvqgjL8c/62792368846-removebg-preview.png");
-//   };
-
-//   const handleTakePhoto = async () => {
-//     try {
-//       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-//       streamRef.current = stream;
-//       setShowWebcam(true);
-//       if (videoRef.current) videoRef.current.srcObject = stream;
-//     } catch (err) {
-//       fileInputRef.current?.click();
-//     }
-//   };
-
-//   const handleCaptureFromWebcam = () => {
-//     if (!videoRef.current) return;
-//     const video = videoRef.current;
-//     const canvas = document.createElement("canvas");
-//     canvas.width = video.videoWidth;
-//     canvas.height = video.videoHeight;
-//     const ctx = canvas.getContext("2d");
-//     if (ctx) ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-//     const imgData = canvas.toDataURL("image/jpeg", 0.9);
-
-//     setImageSrc(imgData);
-//     setShowCropper(true);
-//     setShowWebcam(false);
-
-//     streamRef.current?.getTracks().forEach((track) => track.stop());
-//     streamRef.current = null;
-//   };
-
-//   const handleCloseWebcam = () => {
-//     setShowWebcam(false);
-//     streamRef.current?.getTracks().forEach((track) => track.stop());
-//     streamRef.current = null;
-//   };
-
-//   useEffect(() => {
-//     return () => {
-//       if (imageSrc && imageSrc.startsWith("blob:")) URL.revokeObjectURL(imageSrc);
-//       if (photoPreview && photoPreview.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
-//       streamRef.current?.getTracks().forEach((track) => track.stop());
-//     };
-//   }, [imageSrc, photoPreview]);
-
-//   // Helper function to format field names for display
-//   const formatFieldName = (fieldName: string) => {
-//     return fieldName
-//       .replace(/([A-Z])/g, " $1") // Add space before capital letters
-//       .replace(/^./, str => str.toUpperCase()); // Capitalize first letter
-//   };
-
-//   // Loading state
-//   if (isLoading) {
-//     return (
-//       <div className="min-h-screen p-6">
-//         <div className="grid lg:grid-cols-2 gap-8">
-//           <div className="space-y-6">
-//             <div className="animate-pulse">
-//               <div className="h-6 bg-gray-200 rounded mb-4"></div>
-//               <div className="space-y-3">
-//                 <div className="h-4 bg-gray-200 rounded"></div>
-//                 <div className="h-10 bg-gray-200 rounded"></div>
-//               </div>
-//             </div>
-//           </div>
-//           <div className="flex items-center justify-center">
-//             <div className="text-lg">Loading project data...</div>
-//           </div>
-//         </div>
-//       </div>
-//     );
+// // ---------------------
+// // Data URL to Blob Converter
+// // ---------------------
+// const dataURLtoBlob = (dataURL: string) => {
+//   const arr = dataURL.split(',');
+//   const mime = arr[0].match(/:(.*?);/)![1];
+//   const bstr = atob(arr[1]);
+//   let n = bstr.length;
+//   const u8arr = new Uint8Array(n);
+//   while (n--) {
+//     u8arr[n] = bstr.charCodeAt(n);
 //   }
+//   return new Blob([u8arr], { type: mime });
+// };
 
-//   // Error state
-//   if (error) {
-//     return (
-//       <div className="min-h-screen p-6">
-//         <div className="grid lg:grid-cols-2 gap-8">
-//           <div className="space-y-6">
-//             <div className="text-red-500">
-//               <h2 className="text-lg font-bold mb-3">Error</h2>
-//               <p>{error}</p>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     );
-//   }
-
-//   // No project data
-//   if (!projectData) {
-//     return (
-//       <div className="min-h-screen p-6">
-//         <div className="grid lg:grid-cols-2 gap-8">
-//           <div className="space-y-6">
-//             <div className="text-gray-500">
-//               <h2 className="text-lg font-bold mb-3">No Data</h2>
-//               <p>No project data found for this batch code.</p>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     );
-//   }
+// // Success Page Component
+// const IDCardSuccessPage = ({ finalImageUrl, studentName, onBackToForm }: { 
+//   finalImageUrl: string; 
+//   studentName: string; 
+//   onBackToForm: () => void; 
+// }) => {
+//   // Helper function to download image
+//   const downloadImage = (imageUrl: string, filename: string) => {
+//     const link = document.createElement("a");
+//     link.href = imageUrl;
+//     link.download = filename;
+//     link.setAttribute("crossOrigin", "anonymous");
+//     document.body.appendChild(link);
+//     link.click();
+//     document.body.removeChild(link);
+//   };
 
 //   return (
-//     <div className="min-h-screen p-6">
-//       <h1 className="text-2xl font-bold text-gray-900 mb-6">{projectData.cardType} Information</h1>
-      
-//       <div className="grid lg:grid-cols-2 gap-8">
-//         {/* ---------- Form Section ---------- */}
-//         <div className="space-y-6">
-//           <div className="grid grid-cols-2 gap-4">
-//             <Input
-//               placeholder="Student Name *"
-//               value={studentName}
-//               onChange={(e) => setStudentName(e.target.value)}
-//             />
-//             {fields.length > 0 && fields.map((field) => (
-//               <Input
-//                 key={field}
-//                 placeholder={`${formatFieldName(field)} *`}
-//                 value={values[field] || ""}
-//                 onChange={(e) => handleChange(field, e.target.value)}
-//               />
-//             ))}
-//           </div>
-
-//           <div className="flex flex-wrap gap-3 mt-4">
-//             <label className="flex items-center justify-center border rounded-lg px-4 py-2 cursor-pointer hover:bg-gray-50 transition">
-//               <input
-//                 type="file"
-//                 accept="image/*"
-//                 className="hidden"
-//                 onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
-//               />
-//               ⬆️ Upload Photo
-//             </label>
-
-//             <Button variant="outline" onClick={handleTakePhoto}>
-//               📷 Take Photo
-//             </Button>
-
-//             <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={() => {
-//               const responseData = {
-//                 batchId: projectData.batchId.toString(),
-//                 serialOrRollNumber: rollSerial || "000",
-//                 name: studentName,
-//                 personalPhotoUrl: 'https://i.ibb.co.com/jvqgjL8c/62792368846-removebg-preview.png',
-//                 payload: fields.map(field => ({
-//                   fieldName: field,
-//                   value: values[field] || ""
-//                 }))
-//               };
-//               console.log(responseData);
-//             }}>
-//               💾 Save Data
-//             </Button>
-
-//             <input
-//               type="file"
-//               accept="image/*"
-//               capture="environment"
-//               ref={fileInputRef}
-//               onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
-//               style={{ display: "none" }}
-//             />
-//           </div>
-
-//           {photoPreview && (
-//             <div className="mt-4">
-//               <p className="text-sm text-gray-600 mb-2">📸 Current Photo:</p>
-//               <div className="relative w-fit">
-//                 <Image
-//                   src={photoPreview}
-//                   alt="Profile Preview"
-//                   width={128}
-//                   height={128}
-//                   className="w-32 h-32 object-cover rounded-lg border shadow"
-//                 />
-//                 <Button
-//                   size="sm"
-//                   variant="destructive"
-//                   className="absolute -top-2 -right-2 rounded-full"
-//                   onClick={handleRemovePhoto}
-//                 >
-//                   ✕
-//                 </Button>
-//               </div>
-//             </div>
-//           )}
+//     <div className="min-h-screen p-2 ">
+//       <div className="max-w-4xl  mx-auto">
+//         <div className="text-center mb-8">
+//           <div className="text-6xl mb-4">🎉</div>
+//           <h1 className="text-3xl font-bold text-green-600 mb-2">ID Card Generated Successfully!</h1>
+//           <p className="text-gray-600">Your ID card has been created and is ready for download.</p>
 //         </div>
 
-//         {/* ---------- Card Preview Section ---------- */}
-//         <div className="space-y-6">
-//           <div className="text-center mb-4 font-semibold text-gray-800">
-//             Preview ({cardOrientation === "vertical" ? "Vertical" : "Horizontal"} Layout)
+//         <div className="bg-white rounded-lg p-2 md:p-8 text-center">
+//           <h3 className="text-xl font-semibold mb-6 text-gray-800">Final Generated ID Card</h3>
+          
+//           <div className="mb-6">
+//             <Image
+//               src={finalImageUrl}
+//               alt="Final ID Card"
+//               width={500}
+//               height={300}
+//               className="border shadow-xl rounded-lg mx-auto max-w-full h-auto"
+//               unoptimized
+//             />
 //           </div>
-//           <div className="flex justify-center">
-//             {cardOrientation === "horizontal" ? (
-//               <HorizontalCardForUser
-//                 instituteName={projectData.institutionName}
-//                 address={projectData.address}
-//                 idCardType={projectData.cardType}
-//                 studentName={studentName || "Student Name"}
-//                 qrData={`${projectData.batchId}-${rollSerial || "000"}`}
-//                 logoUrl={projectData.institutionLogoUrl}
-//                 profileUrl={profileUrl}
-//                 signatureUrl={projectData.institutionSignUrl.signUrl}
-//                 whoseSign={projectData.institutionSignUrl.roleName}
-//                 fields={fields}
-//                 values={values}
-//               />
-//             ) : (
-//               <VerticalCardForUser
-//                 instituteName={projectData.institutionName}
-//                 address={projectData.address}
-//                 idCardType={projectData.cardType}
-//                 studentName={studentName || "Student Name"}
-//                 qrData={`${projectData.batchId}-${rollSerial || "000"}`}
-//                 logoUrl={projectData.institutionLogoUrl}
-//                 profileUrl={profileUrl}
-//                 signatureUrl={projectData.institutionSignUrl.signUrl}
-//                 whoseSign={projectData.institutionSignUrl.roleName}
-//                 fields={fields}
-//                 values={values}
-//               />
-//             )}
+
+//           <div className="flex justify-center gap-4 flex-wrap mb-8">
+//             <Button 
+//               onClick={() => downloadImage(finalImageUrl, `${studentName || 'Student'}_ID_Card.png`)}
+//              className="bg-[#4A61E4] hover:bg-blue-700 text-white" 
+//             >
+//               <>
+//     <Image src={DownloadImage} width={26} height={14} alt=""/>
+//      Export
+//   </>
+//             </Button>
+//             <Button 
+//               onClick={() => window.open(finalImageUrl, '_blank')}
+//               variant="outline"
+//               className="px-6 py-3"
+//             >
+//               🔍 View Full Size
+//             </Button>
+//             <Button 
+//               onClick={() => {
+//                 navigator.clipboard.writeText(finalImageUrl);
+//                 alert('Image URL copied to clipboard!');
+//               }}
+//               variant="outline"
+//               className="px-6 py-3"
+//             >
+//               📋 Copy URL
+//             </Button>
+//           </div>
+
+//           <div className="border-t pt-6">
+//             <Button 
+//               onClick={onBackToForm}
+//               variant="outline"
+//               className="md:px-8 md:py-2 text-xs md:text-base"
+//             >
+//               ← Create Another Card
+//             </Button>
 //           </div>
 //         </div>
 //       </div>
-
-//       {/* ---------- Cropper & Webcam Modals remain unchanged ---------- */}
-//       {showCropper && imageSrc && (
-//         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
-//           <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden">
-//             <div className="p-4 border-b">
-//               <h3 className="text-lg font-semibold">Crop Your Image</h3>
-//             </div>
-//             <div className="relative h-96 bg-gray-100">
-//               <Cropper
-//                 image={imageSrc}
-//                 crop={crop}
-//                 zoom={zoom}
-//                 aspect={1}
-//                 onCropChange={setCrop}
-//                 onCropComplete={onCropComplete}
-//                 onZoomChange={setZoom}
-//                 showGrid={false}
-//               />
-//             </div>
-//             <div className="p-4 border-t flex justify-end gap-3">
-//               <Button variant="outline" onClick={() => setShowCropper(false)}>Cancel</Button>
-//               <Button onClick={handleCropSave} className="bg-blue-600 text-white">Apply Crop</Button>
-//             </div>
-//           </div>
-//         </div>
-//       )}
-
-//       {showWebcam && (
-//         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-//           <div className="bg-white rounded-lg w-full max-w-md p-4">
-//             <h3 className="text-lg font-semibold mb-4">📷 Capture Photo</h3>
-//             <video ref={videoRef} autoPlay playsInline className="w-full rounded-lg bg-black" />
-//             <div className="flex justify-end gap-3 mt-4">
-//               <Button variant="outline" onClick={handleCloseWebcam}>Cancel</Button>
-//               <Button onClick={handleCaptureFromWebcam} className="bg-blue-600 text-white">Capture</Button>
-//             </div>
-//           </div>
-//         </div>
-//       )}
 //     </div>
 //   );
 // };
 
-// export default UserCardWithForm;
-
-
-
-
-
-// response get but not shown yet 
-
-
-
-
-
-
-// "use client";
-// import React, { useState, useRef, useEffect, useCallback } from "react";
-// import { Input } from "@/components/ui/input";
-// import { Button } from "@/components/ui/button";
-// import HorizontalCardForUser from "./HorizontalCardForUser";
-// import VerticalCardForUser from "./VerticalCardForUser";
-// import Image from "next/image";
-// import Cropper from "react-easy-crop";
-// import { useSearchParams } from "next/navigation";
-
-// // ---------------------
-// // Types
-// // ---------------------
-// type CroppedAreaPixels = { x: number; y: number; width: number; height: number };
-
-// interface ProjectData {
-//   _id: string;
-//   userId: string;
-//   projectName: string;
-//   templateId: string;
-//   institutionName: string;
-//   institutionLogoUrl: string;
-//   institutionSignUrl: {
-//     roleName: string;
-//     signUrl: string;
-//   };
-//   cardType: string;
-//   cardQuantity: number;
-//   address: string;
-//   batchId: number;
-//   additionalFields: string[];
-//   createdAt: string;
-//   updatedAt: string;
-//   __v: number;
-// }
-
-// interface ApiResponse {
-//   success: boolean;
-//   message: string;
-//   data: ProjectData;
-// }
-
-// // ---------------------
-// // Utility for cropping
-// // ---------------------
-// const createImage = (url: string): Promise<HTMLImageElement> =>
-//   new Promise((resolve, reject) => {
-//     const img = document.createElement("img");
-//     img.onload = () => resolve(img);
-//     img.onerror = (error) => reject(new Error("Failed to load image: " + error));
-//     if (!url.startsWith("blob:")) img.crossOrigin = "anonymous";
-//     img.src = url;
-//   });
-
-// const getCroppedImg = async (imageSrc: string, pixelCrop: CroppedAreaPixels): Promise<string> => {
-//   const image = await createImage(imageSrc);
-//   const canvas = document.createElement("canvas");
-//   const ctx = canvas.getContext("2d");
-//   if (!ctx) throw new Error("Could not get 2D context");
-
-//   const safePixelCrop = {
-//     x: Math.max(0, Math.min(pixelCrop.x, image.width)),
-//     y: Math.max(0, Math.min(pixelCrop.y, image.height)),
-//     width: Math.max(1, Math.min(pixelCrop.width, image.width - pixelCrop.x)),
-//     height: Math.max(1, Math.min(pixelCrop.height, image.height - pixelCrop.y)),
-//   };
-
-//   canvas.width = safePixelCrop.width;
-//   canvas.height = safePixelCrop.height;
-
-//   ctx.drawImage(
-//     image,
-//     safePixelCrop.x,
-//     safePixelCrop.y,
-//     safePixelCrop.width,
-//     safePixelCrop.height,
-//     0,
-//     0,
-//     safePixelCrop.width,
-//     safePixelCrop.height
-//   );
-
-//   return canvas.toDataURL("image/jpeg", 0.9);
-// };
-
 // const UserCardWithForm = () => {
 //   const searchParams = useSearchParams();
-  
-//   const role = searchParams.get("role");
-//   const batchCode = searchParams.get("batchCode");
-//   const rollSerial = searchParams.get("rollSerial");
-  
-//   const [projectData, setProjectData] = useState<ProjectData | null>(null);
-//   const [isLoading, setIsLoading] = useState(true);
-//   const [error, setError] = useState<string | null>(null);
-  
-//   console.log("Role:", role);
-//   console.log("Batch Code:", batchCode);
-//   console.log("Roll Serial:", rollSerial);
-
-//   useEffect(() => {
-//     const fetchBatchData = async () => {
-//       if (!batchCode) {
-//         setError("Batch code is required");
-//         setIsLoading(false);
-//         return;
-//       }
-
-//       try {
-//         setIsLoading(true);
-//         setError(null);
-//         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project/batch/${batchCode}`);
-        
-//         if (!response.ok) {
-//           throw new Error(`HTTP error! status: ${response.status}`);
-//         }
-        
-//         const apiResponse: ApiResponse = await response.json();
-//         console.log("project data by batchCode :===========>", apiResponse);
-        
-//         if (apiResponse.success) {
-//           setProjectData(apiResponse.data);
-//         } else {
-//           throw new Error(apiResponse.message || "Failed to fetch project data");
-//         }
-//       } catch (error) {
-//         console.error("Failed to fetch batch data:", error);
-//         setError(error instanceof Error ? error.message : "Failed to fetch batch data");
-//       } finally {
-//         setIsLoading(false);
-//       }
-//     };
-
-//     fetchBatchData();
-//   }, [batchCode, role, rollSerial]);
-
-//   // Get dynamic fields from project data or use fallback
-//   const fields = projectData?.additionalFields || [];
-
-//   // Determine card orientation based on templateId
-//   const cardOrientation = projectData?.templateId === "68b7582aaa0bc46f0acfb675" ? "horizontal" : "vertical";
-
-//   const [values, setValues] = useState<{ [key: string]: string }>({});
-//   const [studentName, setStudentName] = useState<string>("");
-//   const [profileUrl, setProfileUrl] = useState("https://i.ibb.co.com/jvqgjL8c/62792368846-removebg-preview.png");
-
-//   // cropper states
-//   const [imageSrc, setImageSrc] = useState<string | null>(null);
-//   const [crop, setCrop] = useState({ x: 0, y: 0 });
-//   const [zoom, setZoom] = useState(1);
-//   const [croppedAreaPixels, setCroppedAreaPixels] = useState<CroppedAreaPixels | null>(null);
-//   const [showCropper, setShowCropper] = useState(false);
-//   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-
-//   // webcam states
-//   const [showWebcam, setShowWebcam] = useState(false);
-//   const videoRef = useRef<HTMLVideoElement | null>(null);
-//   const streamRef = useRef<MediaStream | null>(null);
-//   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-//   const handleChange = (field: string, value: string) => {
-//     setValues((prev) => ({ ...prev, [field]: value }));
-//   };
-
-//   const handleFileChange = (file: File | null) => {
-//     if (!file) return;
-//     if (!file.type.startsWith("image/")) return alert("Select a valid image");
-//     if (file.size > 10 * 1024 * 1024) return alert("Image < 10MB");
-
-//     const imgUrl = URL.createObjectURL(file);
-//     setImageSrc(imgUrl);
-//     setShowCropper(true);
-//     setCrop({ x: 0, y: 0 });
-//     setZoom(1);
-//     setCroppedAreaPixels(null);
-//   };
-
-//   const onCropComplete = useCallback((_: unknown, croppedAreaPixels: CroppedAreaPixels) => {
-//     setCroppedAreaPixels(croppedAreaPixels);
-//   }, []);
-
-//   const handleCropSave = async () => {
-//     if (!imageSrc || !croppedAreaPixels) return alert("Select area to crop");
-//     try {
-//       const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
-//       if (imageSrc.startsWith("blob:")) URL.revokeObjectURL(imageSrc);
-//       if (photoPreview && photoPreview.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
-//       setPhotoPreview(croppedImage);
-//       setProfileUrl(croppedImage);
-//       setShowCropper(false);
-//       setImageSrc(null);
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   };
-
-//   const handleRemovePhoto = () => {
-//     setPhotoPreview(null);
-//     setProfileUrl("https://i.ibb.co.com/jvqgjL8c/62792368846-removebg-preview.png");
-//   };
-
-//   const handleTakePhoto = async () => {
-//     try {
-//       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-//       streamRef.current = stream;
-//       setShowWebcam(true);
-//       if (videoRef.current) videoRef.current.srcObject = stream;
-//     } catch (err) {
-//       fileInputRef.current?.click();
-//     }
-//   };
-
-//   const handleCaptureFromWebcam = () => {
-//     if (!videoRef.current) return;
-//     const video = videoRef.current;
-//     const canvas = document.createElement("canvas");
-//     canvas.width = video.videoWidth;
-//     canvas.height = video.videoHeight;
-//     const ctx = canvas.getContext("2d");
-//     if (ctx) ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-//     const imgData = canvas.toDataURL("image/jpeg", 0.9);
-
-//     setImageSrc(imgData);
-//     setShowCropper(true);
-//     setShowWebcam(false);
-
-//     streamRef.current?.getTracks().forEach((track) => track.stop());
-//     streamRef.current = null;
-//   };
-
-//   const handleCloseWebcam = () => {
-//     setShowWebcam(false);
-//     streamRef.current?.getTracks().forEach((track) => track.stop());
-//     streamRef.current = null;
-//   };
-
-//   // const handleSaveData = async () => {
-//   //   const responseData = {
-//   //     batchId: projectData?.batchId.toString() || "",
-//   //     serialOrRollNumber: rollSerial || "000",
-//   //     name: studentName,
-//   //     personalPhotoUrl: "https://i.ibb.co.com/jvqgjL8c/62792368846-removebg-preview.png",
-//   //     payload: fields.map(field => ({
-//   //       fieldName: field,
-//   //       value: values[field] || ""
-//   //     }))
-//   //   };
-    
-//   //   console.log(responseData);
-
-//   //   try {
-//   //     // Convert data to URL query parameters
-//   //     const queryParams = new URLSearchParams({
-//   //       batchId: responseData.batchId,
-//   //       serialOrRollNumber: responseData.serialOrRollNumber,
-//   //       name: responseData.name,
-//   //       personalPhotoUrl: responseData.personalPhotoUrl,
-//   //       payload: JSON.stringify(responseData.payload)
-//   //     });
-
-//   //     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project/getMyId?${queryParams.toString()}`, {
-//   //       method: 'GET',
-//   //       headers: {
-//   //         'Content-Type': 'application/json',
-//   //       }
-//   //     });
-
-//   //     if (!response.ok) {
-//   //       throw new Error(`HTTP error! status: ${response.status}`);
-//   //     }
-
-//   //     const result = await response.json();
-//   //     console.log('Save data response:', result);
-//   //   } catch (error) {
-//   //     console.error('Failed to save data:', error);
-//   //   }
-//   // };
-
-//   const handleSaveData = async () => {
-//     const responseData = {
-//       batchId: projectData?.batchId.toString() || "",
-//       serialOrRollNumber: rollSerial || "000",
-//       name: studentName,
-//       personalPhotoUrl: "https://i.ibb.co.com/jvqgjL8c/62792368846-removebg-preview.png",
-//       additionalfieldValues: fields.map(field => ({
-//         fieldName: field,
-//         fieldValue: values[field] || ""
-//       }))
-//     };
-    
-//     console.log(responseData);
-
-//     try {
-//       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project/getMyId`, {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify(responseData)
-//       });
-
-//       if (!response.ok) {
-//         throw new Error(`HTTP error! status: ${response.status}`);
-//       }
-
-//       const result = await response.json();
-//       console.log('Save data response:', result);
-//     } catch (error) {
-//       console.error('Failed to save data:', error);
-//     }
-//   };
-
-//   useEffect(() => {
-//     return () => {
-//       if (imageSrc && imageSrc.startsWith("blob:")) URL.revokeObjectURL(imageSrc);
-//       if (photoPreview && photoPreview.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
-//       streamRef.current?.getTracks().forEach((track) => track.stop());
-//     };
-//   }, [imageSrc, photoPreview]);
-
-//   // Helper function to format field names for display
-//   const formatFieldName = (fieldName: string) => {
-//     return fieldName
-//       .replace(/([A-Z])/g, " $1") // Add space before capital letters
-//       .replace(/^./, str => str.toUpperCase()); // Capitalize first letter
-//   };
-
-//   // Loading state
-//   if (isLoading) {
-//     return (
-//       <div className="min-h-screen p-6">
-//         <div className="grid lg:grid-cols-2 gap-8">
-//           <div className="space-y-6">
-//             <div className="animate-pulse">
-//               <div className="h-6 bg-gray-200 rounded mb-4"></div>
-//               <div className="space-y-3">
-//                 <div className="h-4 bg-gray-200 rounded"></div>
-//                 <div className="h-10 bg-gray-200 rounded"></div>
-//               </div>
-//             </div>
-//           </div>
-//           <div className="flex items-center justify-center">
-//             <div className="text-lg">Loading project data...</div>
-//           </div>
-//         </div>
-//       </div>
-//     );
-//   }
-
-//   // Error state
-//   if (error) {
-//     return (
-//       <div className="min-h-screen p-6">
-//         <div className="grid lg:grid-cols-2 gap-8">
-//           <div className="space-y-6">
-//             <div className="text-red-500">
-//               <h2 className="text-lg font-bold mb-3">Error</h2>
-//               <p>{error}</p>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     );
-//   }
-
-//   // No project data
-//   if (!projectData) {
-//     return (
-//       <div className="min-h-screen p-6">
-//         <div className="grid lg:grid-cols-2 gap-8">
-//           <div className="space-y-6">
-//             <div className="text-gray-500">
-//               <h2 className="text-lg font-bold mb-3">No Data</h2>
-//               <p>No project data found for this batch code.</p>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="min-h-screen p-6">
-//       <h1 className="text-2xl font-bold text-gray-900 mb-6">{projectData.cardType} Information</h1>
-//       <div className="grid lg:grid-cols-2 gap-8">
-//         {/* ---------- Form Section ---------- */}
-//         <div className="space-y-6">
-//           <div className="grid grid-cols-2 gap-4">
-//             <Input
-//               placeholder="Student Name *"
-//               value={studentName}
-//               onChange={(e) => setStudentName(e.target.value)}
-//             />
-//             {fields.length > 0 && fields.map((field) => (
-//               <Input
-//                 key={field}
-//                 placeholder={`${formatFieldName(field)} *`}
-//                 value={values[field] || ""}
-//                 onChange={(e) => handleChange(field, e.target.value)}
-//               />
-//             ))}
-//           </div>
-
-//           <div className="flex flex-wrap gap-3 mt-4">
-//             <label className="flex items-center justify-center border rounded-lg px-4 py-2 cursor-pointer hover:bg-gray-50 transition">
-//               <input
-//                 type="file"
-//                 accept="image/*"
-//                 className="hidden"
-//                 onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
-//               />
-//               ⬆️ Upload Photo
-//             </label>
-
-//             <Button variant="outline" onClick={handleTakePhoto}>
-//               📷 Take Photo
-//             </Button>
-
-//             <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={handleSaveData}>
-//               💾 Save Data
-//             </Button>
-
-//             <input
-//               type="file"
-//               accept="image/*"
-//               capture="environment"
-//               ref={fileInputRef}
-//               onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
-//               style={{ display: "none" }}
-//             />
-//           </div>
-
-//           {photoPreview && (
-//             <div className="mt-4">
-//               <p className="text-sm text-gray-600 mb-2">📸 Current Photo:</p>
-//               <div className="relative w-fit">
-//                 <Image
-//                   src={photoPreview}
-//                   alt="Profile Preview"
-//                   width={128}
-//                   height={128}
-//                   className="w-32 h-32 object-cover rounded-lg border shadow"
-//                 />
-//                 <Button
-//                   size="sm"
-//                   variant="destructive"
-//                   className="absolute -top-2 -right-2 rounded-full"
-//                   onClick={handleRemovePhoto}
-//                 >
-//                   ✕
-//                 </Button>
-//               </div>
-//             </div>
-//           )}
-//         </div>
-
-//         {/* ---------- Card Preview Section ---------- */}
-//         <div className="space-y-6">
-//           <div className="text-center mb-4 font-semibold text-gray-800">
-//             {/* Preview ({cardOrientation === "vertical" ? "Vertical" : "Horizontal"} Layout) */}
-//           </div>
-//           <div className="flex justify-center">
-//             {cardOrientation === "horizontal" ? (
-//               <HorizontalCardForUser
-//                 instituteName={projectData.institutionName}
-//                 address={projectData.address}
-//                 idCardType={`${projectData.cardType} ID`}
-//                 studentName={studentName || "Student Name"}
-//                 qrData={`${projectData.batchId}-${rollSerial || "000"}`}
-//                 logoUrl={projectData.institutionLogoUrl}
-//                 profileUrl={profileUrl}
-//                 signatureUrl={projectData.institutionSignUrl.signUrl}
-//                 whoseSign={projectData.institutionSignUrl.roleName}
-//                 fields={fields}
-//                 values={values}
-//               />
-//             ) : (
-//               <VerticalCardForUser
-//                 instituteName={projectData.institutionName}
-//                 address={projectData.address}
-//                 idCardType={`${projectData.cardType} ID`}
-//                 studentName={studentName || "Student Name"}
-//                 qrData={`${projectData.batchId}-${rollSerial || "000"}`}
-//                 logoUrl={projectData.institutionLogoUrl}
-//                 profileUrl={profileUrl}
-//                 signatureUrl={projectData.institutionSignUrl.signUrl}
-//                 whoseSign={projectData.institutionSignUrl.roleName}
-//                 fields={fields}
-//                 values={values}
-//               />
-//             )}
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* ---------- Cropper & Webcam Modals remain unchanged ---------- */}
-//       {showCropper && imageSrc && (
-//         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
-//           <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden">
-//             <div className="p-4 border-b">
-//               <h3 className="text-lg font-semibold">Crop Your Image</h3>
-//             </div>
-//             <div className="relative h-96 bg-gray-100">
-//               <Cropper
-//                 image={imageSrc}
-//                 crop={crop}
-//                 zoom={zoom}
-//                 aspect={1}
-//                 onCropChange={setCrop}
-//                 onCropComplete={onCropComplete}
-//                 onZoomChange={setZoom}
-//                 showGrid={false}
-//               />
-//             </div>
-//             <div className="p-4 border-t flex justify-end gap-3">
-//               <Button variant="outline" onClick={() => setShowCropper(false)}>Cancel</Button>
-//               <Button onClick={handleCropSave} className="bg-blue-600 text-white">Apply Crop</Button>
-//             </div>
-//           </div>
-//         </div>
-//       )}
-
-//       {showWebcam && (
-//         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-//           <div className="bg-white rounded-lg w-full max-w-md p-4">
-//             <h3 className="text-lg font-semibold mb-4">📷 Capture Photo</h3>
-//             <video ref={videoRef} autoPlay playsInline className="w-full rounded-lg bg-black" />
-//             <div className="flex justify-end gap-3 mt-4">
-//               <Button variant="outline" onClick={handleCloseWebcam}>Cancel</Button>
-//               <Button onClick={handleCaptureFromWebcam} className="bg-blue-600 text-white">Capture</Button>
-//             </div>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default UserCardWithForm;
-
-
-
-
-
-
-
-
-//? response shoing but looking so bad 
-
-
-
-
-// "use client";
-// import React, { useState, useRef, useEffect, useCallback } from "react";
-// import { Input } from "@/components/ui/input";
-// import { Button } from "@/components/ui/button";
-// import HorizontalCardForUser from "./HorizontalCardForUser";
-// import VerticalCardForUser from "./VerticalCardForUser";
-// import Image from "next/image";
-// import Cropper from "react-easy-crop";
-// import { useSearchParams } from "next/navigation";
-
-// // ---------------------
-// // Types
-// // ---------------------
-// type CroppedAreaPixels = { x: number; y: number; width: number; height: number };
-
-// interface ProjectData {
-//   _id: string;
-//   userId: string;
-//   projectName: string;
-//   templateId: string;
-//   institutionName: string;
-//   institutionLogoUrl: string;
-//   institutionSignUrl: {
-//     roleName: string;
-//     signUrl: string;
-//   };
-//   cardType: string;
-//   cardQuantity: number;
-//   address: string;
-//   batchId: number;
-//   additionalFields: string[];
-//   createdAt: string;
-//   updatedAt: string;
-//   __v: number;
-// }
-
-// interface ApiResponse {
-//   success: boolean;
-//   message: string;
-//   data: ProjectData;
-// }
-
-// // ---------------------
-// // Utility for cropping
-// // ---------------------
-// const createImage = (url: string): Promise<HTMLImageElement> =>
-//   new Promise((resolve, reject) => {
-//     const img = document.createElement("img");
-//     img.onload = () => resolve(img);
-//     img.onerror = (error) => reject(new Error("Failed to load image: " + error));
-//     if (!url.startsWith("blob:")) img.crossOrigin = "anonymous";
-//     img.src = url;
-//   });
-
-// const getCroppedImg = async (imageSrc: string, pixelCrop: CroppedAreaPixels): Promise<string> => {
-//   const image = await createImage(imageSrc);
-//   const canvas = document.createElement("canvas");
-//   const ctx = canvas.getContext("2d");
-//   if (!ctx) throw new Error("Could not get 2D context");
-
-//   const safePixelCrop = {
-//     x: Math.max(0, Math.min(pixelCrop.x, image.width)),
-//     y: Math.max(0, Math.min(pixelCrop.y, image.height)),
-//     width: Math.max(1, Math.min(pixelCrop.width, image.width - pixelCrop.x)),
-//     height: Math.max(1, Math.min(pixelCrop.height, image.height - pixelCrop.y)),
-//   };
-
-//   canvas.width = safePixelCrop.width;
-//   canvas.height = safePixelCrop.height;
-
-//   ctx.drawImage(
-//     image,
-//     safePixelCrop.x,
-//     safePixelCrop.y,
-//     safePixelCrop.width,
-//     safePixelCrop.height,
-//     0,
-//     0,
-//     safePixelCrop.width,
-//     safePixelCrop.height
-//   );
-
-//   return canvas.toDataURL("image/jpeg", 0.9);
-// };
-
-// const UserCardWithForm = () => {
-//   const searchParams = useSearchParams();
+//   const router = useRouter();
   
 //   const role = searchParams.get("role");
 //   const batchCode = searchParams.get("batchCode");
@@ -1478,6 +229,7 @@
 //   const [finalImageUrl, setFinalImageUrl] = useState<string | null>(null);
 //   const [isSaving, setIsSaving] = useState(false);
 //   const [saveSuccess, setSaveSuccess] = useState(false);
+//   const [showSuccessPage, setShowSuccessPage] = useState(false);
   
 //   console.log("Role:", role);
 //   console.log("Batch Code:", batchCode);
@@ -1502,6 +254,11 @@
         
 //         const apiResponse: ApiResponse = await response.json();
 //         console.log("project data by batchCode :===========>", apiResponse);
+//         console.log("personPhotoBGColorCode :===========>", apiResponse?.data?.personPhotoBGColorCode);
+//         console.log('width :===========>', 200);
+//         console.log('height :===========>', 200);
+//         console.log('enhance_quality :===========>', true);
+//         console.log('center_face :===========>', true);
         
 //         if (apiResponse.success) {
 //           setProjectData(apiResponse.data);
@@ -1527,7 +284,7 @@
 
 //   const [values, setValues] = useState<{ [key: string]: string }>({});
 //   const [studentName, setStudentName] = useState<string>("");
-//   const [profileUrl, setProfileUrl] = useState("https://i.ibb.co.com/jvqgjL8c/62792368846-removebg-preview.png");
+//   const [profileUrl, setProfileUrl] = useState("https://i.ibb.co.com/prLBzvB1/Portrait-Placeholder.png");
 
 //   // cropper states
 //   const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -1564,24 +321,191 @@
 //     setCroppedAreaPixels(croppedAreaPixels);
 //   }, []);
 
+//   // Updated handleCropSave function with ImgBB integration
 //   const handleCropSave = async () => {
 //     if (!imageSrc || !croppedAreaPixels) return alert("Select area to crop");
+    
+//     let croppedImage = null;
+    
 //     try {
-//       const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
+//       console.log("Starting crop save process...");
+//       console.log("Image source type:", imageSrc.substring(0, 20) + "...");
+//       console.log("Crop area:", croppedAreaPixels);
+      
+//       // Use existing getCroppedImg function
+//       croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
+//       console.log("Cropped image created successfully");
+      
+//       // Set the preview first
+//       setPhotoPreview(croppedImage);
+//       console.log("Preview set successfully");
+      
+//       // Clean up blob URLs after setting preview
 //       if (imageSrc.startsWith("blob:")) URL.revokeObjectURL(imageSrc);
 //       if (photoPreview && photoPreview.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
-//       setPhotoPreview(croppedImage);
-//       setProfileUrl(croppedImage);
+
+//       const blob = dataURLtoBlob(croppedImage);
+//       console.log("Blob created successfully, size:", blob.size, "bytes");
+
+//       // Prepare FormData for API request
+//       const formData = new FormData();
+//       formData.append('file', blob, 'profile-image.jpg');
+//       formData.append('background_color', projectData?.personPhotoBGColorCode || "#ffffff");
+//       // formData.append('background_color', "#ff0000");
+//       formData.append('width', "200");
+//       formData.append('height', "200");
+//       formData.append('enhance_quality', "true");
+//       formData.append('center_face', "true");
+
+//       console.log("Sending background removal request...");
+//       console.log("Background Color:", projectData?.personPhotoBGColorCode || "#ffffff");
+//       console.log("Dimensions: 200x200");
+//       console.log("Enhance Quality: true");
+//       console.log("Center Face: true");
+//       console.log("File size:", blob.size, "bytes");
+
+//       // Make API request to remove background using proxy
+//       const apiUrl = `/api/process-id-photo`;
+//       console.log("Making request to:", apiUrl);
+
+//       const apiResponse = await fetch(apiUrl, {
+//         method: 'POST',
+//         body: formData,
+//       });
+
+//       console.log("API Response Status:", apiResponse.status);
+//       console.log("API Response Headers:", Object.fromEntries(apiResponse.headers));
+
+//       if (!apiResponse.ok) {
+//         const errorText = await apiResponse.text();
+//         console.log("API Error Response:", errorText);
+//         throw new Error(`API Error! status: ${apiResponse.status}, message: ${errorText}`);
+//       }
+
+//       // Check if response is JSON or direct image
+//       const contentType = apiResponse.headers.get('content-type');
+//       console.log("Response Content-Type:", contentType);
+      
+//       let processedImageBlob = null;
+      
+//       if (contentType && contentType.includes('application/json')) {
+//         // If JSON response
+//         const apiResult = await apiResponse.json();
+//         console.log("API Response (JSON):", apiResult);
+        
+//         // If the response contains image URL, fetch it to get blob
+//         if (apiResult.imageUrl || apiResult.processedImageUrl || apiResult.image_url) {
+//           const processedImageUrl = apiResult.imageUrl || apiResult.processedImageUrl || apiResult.image_url;
+//           console.log("Processed Image URL:", processedImageUrl);
+          
+//           // Fetch the image to get blob for imgbb upload
+//           const imageResponse = await fetch(processedImageUrl);
+//           processedImageBlob = await imageResponse.blob();
+//         }
+//       } else if (contentType && contentType.includes('image')) {
+//         // If direct image response
+//         processedImageBlob = await apiResponse.blob();
+//         const processedImageUrl = URL.createObjectURL(processedImageBlob);
+//         console.log("API Response: Direct image received");
+//         console.log("Processed Image URL (blob):", processedImageUrl);
+//         console.log("Image blob size:", processedImageBlob.size, "bytes");
+        
+//         // Set preview temporarily
+//         setPhotoPreview(processedImageUrl);
+//       } else {
+//         // Fallback - treat as text
+//         const textResponse = await apiResponse.text();
+//         console.log("API Response (Text):", textResponse);
+//       }
+
+//       // Upload processed image to imgbb if we have a blob
+//       if (processedImageBlob) {
+//         console.log("Uploading processed image to imgbb...");
+//         console.log("Processed image blob size:", processedImageBlob.size, "bytes");
+        
+//         // Convert blob to file for imgbb upload
+//         const processedFile = new File([processedImageBlob], 'processed-image.png', { 
+//           type: processedImageBlob.type || 'image/png' 
+//         });
+        
+//         const hostedUrl = await imageUpload(processedFile);
+        
+//         if (hostedUrl) {
+//           console.log("✅ HOSTED URL:", hostedUrl);
+//           console.log("Image successfully uploaded to imgbb!");
+          
+//           // Update profile URL to use hosted image
+//           setProfileUrl(hostedUrl);
+          
+//           // Also update photo preview to use hosted image
+//           setPhotoPreview(hostedUrl);
+//         } else {
+//           console.log("❌ Failed to upload image to imgbb");
+//         }
+//       } else {
+//         console.log("No processed image blob available for imgbb upload");
+        
+//         // Fallback: try to upload the cropped image to imgbb
+//         try {
+//           console.log("Attempting to upload cropped image as fallback...");
+//           const croppedBlob = dataURLtoBlob(croppedImage);
+//           const croppedFile = new File([croppedBlob], 'cropped-image.jpg', { type: 'image/jpeg' });
+//           const hostedUrl = await imageUpload(croppedFile);
+          
+//           if (hostedUrl) {
+//             console.log("✅ FALLBACK HOSTED URL (cropped image):", hostedUrl);
+//             setProfileUrl(hostedUrl);
+//             setPhotoPreview(hostedUrl);
+//           }
+//         } catch (uploadError) {
+//           console.error("Failed to upload cropped image as fallback:", uploadError);
+//         }
+//       }
+
+//       // Close cropper and cleanup
 //       setShowCropper(false);
 //       setImageSrc(null);
+//       console.log("Process completed successfully");
+      
 //     } catch (error) {
-//       console.error(error);
+//       console.error("Error in background removal:", error);
+//       console.error("Error stack:", (error as Error).stack);
+//       console.error("Error message:", (error as Error).message);
+      
+//       // Still set the cropped image as preview even if API fails
+//       if (croppedImage) {
+//         console.log("Setting cropped image as preview despite error");
+//         setPhotoPreview(croppedImage);
+        
+//         // Try to upload the cropped image to imgbb as fallback
+//         try {
+//           console.log("Attempting to upload cropped image as error fallback...");
+//           const croppedBlob = dataURLtoBlob(croppedImage);
+//           const croppedFile = new File([croppedBlob], 'cropped-image.jpg', { type: 'image/jpeg' });
+//           const hostedUrl = await imageUpload(croppedFile);
+          
+//           if (hostedUrl) {
+//             console.log("✅ ERROR FALLBACK HOSTED URL (cropped image):", hostedUrl);
+//             setProfileUrl(hostedUrl);
+//             setPhotoPreview(hostedUrl);
+//           }
+//         } catch (uploadError) {
+//           console.error("Failed to upload cropped image as error fallback:", uploadError);
+//         }
+//       }
+      
+//       // Close cropper
+//       setShowCropper(false);
+//       setImageSrc(null);
+      
+//       // Show user-friendly error message
+//       alert(`Failed to process image: ${(error as Error).message}`);
 //     }
 //   };
 
 //   const handleRemovePhoto = () => {
 //     setPhotoPreview(null);
-//     setProfileUrl("https://i.ibb.co.com/jvqgjL8c/62792368846-removebg-preview.png");
+//     setProfileUrl("https://i.ibb.co.com/prLBzvB1/Portrait-Placeholder.png");
 //   };
 
 //   const handleTakePhoto = async () => {
@@ -1619,19 +543,7 @@
 //     streamRef.current = null;
 //   };
 
-//   // Helper function to download image
-//   const downloadImage = (imageUrl: string, filename: string) => {
-//     const link = document.createElement("a");
-//     link.href = imageUrl;
-//     link.download = filename;
-//     // link.crossOrigin = "anonymous";
-//     link.setAttribute("crossOrigin", "anonymous");
-//     document.body.appendChild(link);
-//     link.click();
-//     document.body.removeChild(link);
-//   };
-
-//   // Updated handleSaveData function with image handling
+//   // Updated handleSaveData function with redirect
 //   const handleSaveData = async () => {
 //     setIsSaving(true);
 //     setSaveSuccess(false);
@@ -1641,7 +553,7 @@
 //       batchId: projectData?.batchId.toString() || "",
 //       serialOrRollNumber: rollSerial || "000",
 //       name: studentName,
-//       personalPhotoUrl: profileUrl, // Use the actual uploaded/cropped photo
+//       personalPhotoUrl: profileUrl,
 //       additionalfieldValues: fields.map(field => ({
 //         fieldName: field,
 //         fieldValue: values[field] || ""
@@ -1667,13 +579,13 @@
 //       const contentType = response.headers.get('content-type');
       
 //       if (contentType && contentType.includes('image')) {
-//         // যদি response direct image file হয়
+//         // Direct image response
 //         const imageBlob = await response.blob();
 //         const imageUrl = URL.createObjectURL(imageBlob);
 //         setFinalImageUrl(imageUrl);
 //         console.log('Generated image URL from blob:', imageUrl);
 //       } else {
-//         // যদি JSON response হয়
+//         // JSON response
 //         const result = await response.json();
 //         console.log('Save data response:', result);
         
@@ -1694,12 +606,28 @@
 //       }
       
 //       setSaveSuccess(true);
+//       // Show success page after successful generation
+//       setTimeout(() => {
+//         setShowSuccessPage(true);
+//       }, 1000); // Small delay to show success message
+      
 //     } catch (error) {
 //       console.error('Failed to save data:', error);
 //       alert('Failed to save data. Please try again.');
 //     } finally {
 //       setIsSaving(false);
 //     }
+//   };
+
+//   const handleBackToForm = () => {
+//     setShowSuccessPage(false);
+//     setFinalImageUrl(null);
+//     setSaveSuccess(false);
+//     // Reset form data if needed
+//     setStudentName("");
+//     setValues({});
+//     setPhotoPreview(null);
+//     setProfileUrl("https://i.ibb.co.com/prLBzvB1/Portrait-Placeholder.png");
 //   };
 
 //   useEffect(() => {
@@ -1714,9 +642,20 @@
 //   // Helper function to format field names for display
 //   const formatFieldName = (fieldName: string) => {
 //     return fieldName
-//       .replace(/([A-Z])/g, " $1") // Add space before capital letters
-//       .replace(/^./, str => str.toUpperCase()); // Capitalize first letter
+//       .replace(/([A-Z])/g, " $1")
+//       .replace(/^./, str => str.toUpperCase());
 //   };
+
+//   // Show success page when image is ready
+//   if (showSuccessPage && finalImageUrl) {
+//     return (
+//       <IDCardSuccessPage 
+//         finalImageUrl={finalImageUrl} 
+//         studentName={studentName}
+//         onBackToForm={handleBackToForm}
+//       />
+//     );
+//   }
 
 //   // Loading state
 //   if (isLoading) {
@@ -1775,6 +714,18 @@
 //   return (
 //     <div className="min-h-screen p-6">
 //       <h1 className="text-2xl font-bold text-gray-900 mb-6">{projectData.cardType} Information</h1>
+      
+//       {/* Loading Overlay when saving */}
+//       {isSaving && (
+//         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+//           <div className="bg-white rounded-lg p-8 text-center max-w-sm mx-4">
+//             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+//             <h3 className="text-lg font-semibold mb-2">Generating ID Card...</h3>
+//             <p className="text-gray-600">Please wait while we create your ID card</p>
+//           </div>
+//         </div>
+//       )}
+
 //       <div className="grid lg:grid-cols-2 gap-8">
 //         {/* ---------- Form Section ---------- */}
 //         <div className="space-y-6">
@@ -1783,6 +734,7 @@
 //               placeholder="Student Name *"
 //               value={studentName}
 //               onChange={(e) => setStudentName(e.target.value)}
+//               disabled={isSaving}
 //             />
 //             {fields.length > 0 && fields.map((field) => (
 //               <Input
@@ -1790,31 +742,44 @@
 //                 placeholder={`${formatFieldName(field)} *`}
 //                 value={values[field] || ""}
 //                 onChange={(e) => handleChange(field, e.target.value)}
+//                 disabled={isSaving}
 //               />
 //             ))}
 //           </div>
 
 //           <div className="flex flex-wrap gap-3 mt-4">
-//             <label className="flex items-center justify-center border rounded-lg px-4 py-2 cursor-pointer hover:bg-gray-50 transition">
+//             <label className={`flex items-center  justify-center border border-transparent hover:border-gray-300 rounded-2xl px-6 py-3 cursor-pointer hover:bg-gray-50 transition ${isSaving ? 'opacity-50 pointer-events-none' : ''}`}>
 //               <input
 //                 type="file"
 //                 accept="image/*"
 //                 className="hidden"
 //                 onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+//                 disabled={isSaving}
 //               />
-//               ⬆️ Upload Photo
+//                <span className="flex items-center gap-2 font-semibold ">
+//     <Image className="" src={UploadImage} width={26} height={14} alt=""/>
+//      Upload Image
+//   </span>
 //             </label>
 
-//             <Button variant="outline" onClick={handleTakePhoto}>
-//               📷 Take Photo
-//             </Button>
+//             <button 
+//               onClick={handleTakePhoto}
+//               disabled={isSaving}
+//               className="px-6 py-6 rounded-2xl shadow-none border border-transparent hover:border-gray-300 hover:bg-white  hover:text-black flex gap-2 items-center font-semibold"
+//             >
+//     <Image src={TripodImage} width={26} height={14} alt=""/>
+//      Take Photo
+//             </button>
 
 //             <Button 
-//               className="bg-blue-600 hover:bg-blue-700 text-white" 
+//               className="bg-[#4A61E4] ml-4 hover:bg-blue-700 py-6 px-7 rounded-2xl text-white" 
 //               onClick={handleSaveData}
 //               disabled={isSaving}
 //             >
-//               {isSaving ? "⏳ Saving..." : "💾 Save Data"}
+//               {isSaving ? "⏳ Generating..." :  <>
+//     <Image src={DownloadImage} width={26} height={14} alt=""/>
+//      Export
+//   </>}
 //             </Button>
 
 //             <input
@@ -1824,13 +789,14 @@
 //               ref={fileInputRef}
 //               onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
 //               style={{ display: "none" }}
+//               disabled={isSaving}
 //             />
 //           </div>
 
 //           {/* Success message */}
-//           {saveSuccess && (
+//           {saveSuccess && !showSuccessPage && (
 //             <div className="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
-//               ✅ Data saved successfully!
+//               ✅ ID Card generated successfully! Redirecting...
 //             </div>
 //           )}
 
@@ -1844,54 +810,17 @@
 //                   width={128}
 //                   height={128}
 //                   className="w-32 h-32 object-cover rounded-lg border shadow"
+//                   unoptimized
 //                 />
 //                 <Button
 //                   size="sm"
 //                   variant="destructive"
 //                   className="absolute -top-2 -right-2 rounded-full"
 //                   onClick={handleRemovePhoto}
+//                   disabled={isSaving}
 //                 >
 //                   ✕
 //                 </Button>
-//               </div>
-//             </div>
-//           )}
-
-//           {/* Final Generated Image Display */}
-//           {finalImageUrl && (
-//             <div className="mt-6 p-4 border rounded-lg bg-gray-50">
-//               <h3 className="text-lg font-semibold mb-3">🎯 Final Generated ID Card:</h3>
-//               <div className="text-center">
-//                 <Image
-//                   src={finalImageUrl}
-//                   alt="Final ID Card"
-//                   width={400}
-//                   height={250}
-//                   className="border shadow-lg rounded-lg mx-auto max-w-full h-auto"
-//                 />
-//                 <div className="mt-3 flex justify-center gap-3 flex-wrap">
-//                   <Button 
-//                     onClick={() => downloadImage(finalImageUrl, `${studentName || 'Student'}_ID_Card.png`)}
-//                     className="bg-green-600 hover:bg-green-700 text-white"
-//                   >
-//                     📥 Download Card
-//                   </Button>
-//                   <Button 
-//                     onClick={() => window.open(finalImageUrl, '_blank')}
-//                     variant="outline"
-//                   >
-//                     🔍 View Full Size
-//                   </Button>
-//                   <Button 
-//                     onClick={() => {
-//                       navigator.clipboard.writeText(finalImageUrl);
-//                       alert('Image URL copied to clipboard!');
-//                     }}
-//                     variant="outline"
-//                   >
-//                     📋 Copy URL
-//                   </Button>
-//                 </div>
 //               </div>
 //             </div>
 //           )}
@@ -1900,7 +829,7 @@
 //         {/* ---------- Card Preview Section ---------- */}
 //         <div className="space-y-6">
 //           <div className="text-center mb-4 font-semibold text-gray-800">
-//             {/* Preview ({cardOrientation === "vertical" ? "Vertical" : "Horizontal"} Layout) */}
+//             Live Preview
 //           </div>
 //           <div className="flex justify-center">
 //             {cardOrientation === "horizontal" ? (
@@ -1937,7 +866,7 @@
 //       </div>
 
 //       {/* ---------- Cropper Modal ---------- */}
-//       {showCropper && imageSrc && (
+//       {showCropper && imageSrc && !isSaving && (
 //         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
 //           <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden">
 //             <div className="p-4 border-b">
@@ -1964,7 +893,7 @@
 //       )}
 
 //       {/* ---------- Webcam Modal ---------- */}
-//       {showWebcam && (
+//       {showWebcam && !isSaving && (
 //         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
 //           <div className="bg-white rounded-lg w-full max-w-md p-4">
 //             <h3 className="text-lg font-semibold mb-4">📷 Capture Photo</h3>
@@ -1984,14 +913,6 @@
 
 
 
-
-
-
-
-
-
-
-
 "use client";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
@@ -2001,10 +922,13 @@ import VerticalCardForUser from "./VerticalCardForUser";
 import Image from "next/image";
 import Cropper from "react-easy-crop";
 import { useSearchParams, useRouter } from "next/navigation";
+import DownloadImage from '@/../public/images/download_icon.svg'
+import UploadImage from '@/../public/images/upload_icon.svg'
+import TripodImage from '@/../public/images/camera-tripod.svg'
 
-// ---------------------
-// Types
-// ---------------------
+// ===========================
+// Type Definitions
+// ===========================
 type CroppedAreaPixels = { x: number; y: number; width: number; height: number };
 
 interface ProjectData {
@@ -2014,6 +938,7 @@ interface ProjectData {
   templateId: string;
   institutionName: string;
   institutionLogoUrl: string;
+  personPhotoBGColorCode: string;
   institutionSignUrl: {
     roleName: string;
     signUrl: string;
@@ -2034,9 +959,49 @@ interface ApiResponse {
   data: ProjectData;
 }
 
-// ---------------------
-// Utility for cropping
-// ---------------------
+// ===========================
+// Constants
+// ===========================
+const PLACEHOLDER_IMAGE = "https://i.ibb.co.com/prLBzvB1/Portrait-Placeholder.png";
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+// ===========================
+// Utility Functions
+// ===========================
+
+/**
+ * Uploads image file to ImgBB hosting service
+ * @param file - Image file to upload
+ * @returns Promise<string | null> - Hosted image URL or null if failed
+ */
+const imageUpload = async (file: File): Promise<string | null> => {
+  const formData = new FormData();
+  formData.append("image", file);
+  try {
+    const response = await fetch(
+      `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const data = await response.json();
+    if (data.success) {
+      console.log("✅ Image uploaded to ImgBB:", data.data.url);
+      return data.data.url;
+    } else {
+      throw new Error("Failed to upload image.");
+    }
+  } catch (error) {
+    console.error("❌ Image upload error:", error);
+    return null;
+  }
+};
+
+/**
+ * Creates an HTML image element from URL
+ */
 const createImage = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
     const img = document.createElement("img");
@@ -2046,6 +1011,9 @@ const createImage = (url: string): Promise<HTMLImageElement> =>
     img.src = url;
   });
 
+/**
+ * Crops image based on specified pixel coordinates
+ */
 const getCroppedImg = async (imageSrc: string, pixelCrop: CroppedAreaPixels): Promise<string> => {
   const image = await createImage(imageSrc);
   const canvas = document.createElement("canvas");
@@ -2077,33 +1045,62 @@ const getCroppedImg = async (imageSrc: string, pixelCrop: CroppedAreaPixels): Pr
   return canvas.toDataURL("image/jpeg", 0.9);
 };
 
-// Success Page Component
-const IDCardSuccessPage = ({ finalImageUrl, studentName, onBackToForm }: { 
-  finalImageUrl: string; 
-  studentName: string; 
-  onBackToForm: () => void; 
-}) => {
+/**
+ * Converts base64 data URL to Blob object
+ */
+const dataURLtoBlob = (dataURL: string): Blob => {
+  const arr = dataURL.split(',');
+  const mime = arr[0].match(/:(.*?);/)![1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
+};
+
+// ===========================
+// Success Page Component (EXACT ORIGINAL DESIGN)
+// ===========================
+interface IDCardSuccessPageProps {
+  finalImageUrl: string;
+  studentName: string;
+  onBackToForm: () => void;
+}
+
+const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({ finalImageUrl, studentName, onBackToForm }) => {
+  const [isDownloading, setIsDownloading] = useState(false);
+
   // Helper function to download image
-  const downloadImage = (imageUrl: string, filename: string) => {
-    const link = document.createElement("a");
-    link.href = imageUrl;
-    link.download = filename;
-    link.setAttribute("crossOrigin", "anonymous");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const downloadImage = async (imageUrl: string, filename: string) => {
+    try {
+      setIsDownloading(true);
+      const link = document.createElement("a");
+      link.href = imageUrl;
+      link.download = filename;
+      link.setAttribute("crossOrigin", "anonymous");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Download failed:", error);
+      alert("Failed to download image. Please try again.");
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen p-6 bg-gradient-to-br from-green-50 to-blue-50">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen p-2 ">
+      <div className="max-w-4xl  mx-auto">
         <div className="text-center mb-8">
           <div className="text-6xl mb-4">🎉</div>
           <h1 className="text-3xl font-bold text-green-600 mb-2">ID Card Generated Successfully!</h1>
           <p className="text-gray-600">Your ID card has been created and is ready for download.</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+        <div className="bg-white rounded-lg p-2 md:p-8 text-center">
           <h3 className="text-xl font-semibold mb-6 text-gray-800">Final Generated ID Card</h3>
           
           <div className="mb-6">
@@ -2113,15 +1110,18 @@ const IDCardSuccessPage = ({ finalImageUrl, studentName, onBackToForm }: {
               width={500}
               height={300}
               className="border shadow-xl rounded-lg mx-auto max-w-full h-auto"
+              unoptimized
             />
           </div>
 
           <div className="flex justify-center gap-4 flex-wrap mb-8">
             <Button 
               onClick={() => downloadImage(finalImageUrl, `${studentName || 'Student'}_ID_Card.png`)}
-              className="bg-green-600 hover:bg-green-700 text-white px-6 py-3"
+             className="bg-[#4A61E4] hover:bg-blue-700 text-white" 
+             disabled={isDownloading}
             >
-              📥 Download ID Card
+              <Image src={DownloadImage} width={26} height={14} alt=""/>
+              {isDownloading ? "Downloading..." : "Export"}
             </Button>
             <Button 
               onClick={() => window.open(finalImageUrl, '_blank')}
@@ -2146,7 +1146,7 @@ const IDCardSuccessPage = ({ finalImageUrl, studentName, onBackToForm }: {
             <Button 
               onClick={onBackToForm}
               variant="outline"
-              className="px-8 py-2"
+              className="md:px-8 md:py-2 text-xs md:text-base"
             >
               ← Create Another Card
             </Button>
@@ -2157,7 +1157,10 @@ const IDCardSuccessPage = ({ finalImageUrl, studentName, onBackToForm }: {
   );
 };
 
-const UserCardWithForm = () => {
+// ===========================
+// Main Component
+// ===========================
+const UserCardWithForm: React.FC = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   
@@ -2169,9 +1172,14 @@ const UserCardWithForm = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
+  // Loading states for different operations
+  const [isCropping, setIsCropping] = useState(false);
+  const [isProcessingBackground, setIsProcessingBackground] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  
   // Final image states
   const [finalImageUrl, setFinalImageUrl] = useState<string | null>(null);
-  const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [showSuccessPage, setShowSuccessPage] = useState(false);
   
@@ -2190,6 +1198,8 @@ const UserCardWithForm = () => {
       try {
         setIsLoading(true);
         setError(null);
+        console.log("🔄 Fetching project data for batch:", batchCode);
+        
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project/batch/${batchCode}`);
         
         if (!response.ok) {
@@ -2197,7 +1207,12 @@ const UserCardWithForm = () => {
         }
         
         const apiResponse: ApiResponse = await response.json();
-        console.log("project data by batchCode :===========>", apiResponse);
+        console.log("✅ Project data fetched:", apiResponse);
+        console.log("personPhotoBGColorCode:", apiResponse?.data?.personPhotoBGColorCode);
+        console.log('width:', 200);
+        console.log('height:', 200);
+        console.log('enhance_quality:', true);
+        console.log('center_face:', true);
         
         if (apiResponse.success) {
           setProjectData(apiResponse.data);
@@ -2205,7 +1220,7 @@ const UserCardWithForm = () => {
           throw new Error(apiResponse.message || "Failed to fetch project data");
         }
       } catch (error) {
-        console.error("Failed to fetch batch data:", error);
+        console.error("❌ Failed to fetch batch data:", error);
         setError(error instanceof Error ? error.message : "Failed to fetch batch data");
       } finally {
         setIsLoading(false);
@@ -2223,7 +1238,7 @@ const UserCardWithForm = () => {
 
   const [values, setValues] = useState<{ [key: string]: string }>({});
   const [studentName, setStudentName] = useState<string>("");
-  const [profileUrl, setProfileUrl] = useState("https://i.ibb.co.com/jvqgjL8c/62792368846-removebg-preview.png");
+  const [profileUrl, setProfileUrl] = useState<string>(PLACEHOLDER_IMAGE);
 
   // cropper states
   const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -2246,8 +1261,9 @@ const UserCardWithForm = () => {
   const handleFileChange = (file: File | null) => {
     if (!file) return;
     if (!file.type.startsWith("image/")) return alert("Select a valid image");
-    if (file.size > 10 * 1024 * 1024) return alert("Image < 10MB");
+    if (file.size > MAX_FILE_SIZE) return alert("Image < 10MB");
 
+    console.log("📁 File selected:", file.name, `${(file.size / 1024 / 1024).toFixed(2)}MB`);
     const imgUrl = URL.createObjectURL(file);
     setImageSrc(imgUrl);
     setShowCropper(true);
@@ -2260,39 +1276,193 @@ const UserCardWithForm = () => {
     setCroppedAreaPixels(croppedAreaPixels);
   }, []);
 
+  /**
+   * Enhanced crop save with proper loading states
+   */
   const handleCropSave = async () => {
     if (!imageSrc || !croppedAreaPixels) return alert("Select area to crop");
+    
+    let croppedImage: string | null = null;
+    
     try {
-      const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
+      // Step 1: Start cropping
+      setIsCropping(true);
+      console.log("✂️ Starting crop process...", croppedAreaPixels);
+      
+      croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
+      console.log("✅ Image cropped successfully");
+      setPhotoPreview(croppedImage);
+      setIsCropping(false);
+      
+      // Step 2: Background removal
+      setIsProcessingBackground(true);
+      console.log("🎨 Starting background removal...");
+      
+      // Clean up blob URLs after setting preview
       if (imageSrc.startsWith("blob:")) URL.revokeObjectURL(imageSrc);
       if (photoPreview && photoPreview.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
-      setPhotoPreview(croppedImage);
-      setProfileUrl(croppedImage);
+
+      const blob = dataURLtoBlob(croppedImage);
+      console.log("📦 Created blob:", `${(blob.size / 1024).toFixed(2)}KB`);
+
+      // Prepare FormData for API request
+      const formData = new FormData();
+      formData.append('file', blob, 'profile-image.jpg');
+      formData.append('background_color', projectData?.personPhotoBGColorCode || "#ffffff");
+      formData.append('width', "200");
+      formData.append('height', "200");
+      formData.append('enhance_quality', "true");
+      formData.append('center_face', "true");
+
+      console.log("🔄 Background removal request:", {
+        backgroundColor: projectData?.personPhotoBGColorCode || "#ffffff",
+        dimensions: "200x200"
+      });
+
+      // Make API request to remove background using proxy
+      const apiResponse = await fetch(`/api/process-id-photo`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      console.log("📡 API Response:", apiResponse.status);
+
+      if (!apiResponse.ok) {
+        const errorText = await apiResponse.text();
+        console.log("❌ API Error:", errorText);
+        throw new Error(`API Error! status: ${apiResponse.status}, message: ${errorText}`);
+      }
+
+      // Process response
+      let processedImageBlob: Blob | null = null;
+      const contentType = apiResponse.headers.get('content-type');
+      console.log("Response Content-Type:", contentType);
+      
+      if (contentType && contentType.includes('application/json')) {
+        const apiResult = await apiResponse.json();
+        console.log("📄 JSON Response:", apiResult);
+        
+        if (apiResult.imageUrl || apiResult.processedImageUrl || apiResult.image_url) {
+          const processedImageUrl = apiResult.imageUrl || apiResult.processedImageUrl || apiResult.image_url;
+          const imageResponse = await fetch(processedImageUrl);
+          processedImageBlob = await imageResponse.blob();
+        }
+      } else if (contentType && contentType.includes('image')) {
+        processedImageBlob = await apiResponse.blob();
+        const processedImageUrl = URL.createObjectURL(processedImageBlob);
+        console.log("🖼️ Direct image response");
+        setPhotoPreview(processedImageUrl);
+      }
+
+      setIsProcessingBackground(false);
+
+      // Step 3: Upload to imgbb
+      if (processedImageBlob) {
+        setIsUploadingImage(true);
+        console.log("☁️ Uploading to ImgBB...");
+        
+        const processedFile = new File([processedImageBlob], 'processed-image.png', { 
+          type: processedImageBlob.type || 'image/png' 
+        });
+        
+        const hostedUrl = await imageUpload(processedFile);
+        
+        if (hostedUrl) {
+          console.log("✅ HOSTED URL:", hostedUrl);
+          setProfileUrl(hostedUrl);
+          setPhotoPreview(hostedUrl);
+        } else {
+          console.log("❌ Failed to upload to imgbb");
+        }
+        setIsUploadingImage(false);
+      } else {
+        console.log("⚠️ No processed image, using fallback");
+        
+        // Fallback: upload cropped image
+        try {
+          setIsUploadingImage(true);
+          const croppedBlob = dataURLtoBlob(croppedImage);
+          const croppedFile = new File([croppedBlob], 'cropped-image.jpg', { type: 'image/jpeg' });
+          const hostedUrl = await imageUpload(croppedFile);
+          
+          if (hostedUrl) {
+            console.log("✅ FALLBACK HOSTED URL:", hostedUrl);
+            setProfileUrl(hostedUrl);
+            setPhotoPreview(hostedUrl);
+          }
+        } catch (uploadError) {
+          console.error("❌ Fallback upload failed:", uploadError);
+        } finally {
+          setIsUploadingImage(false);
+        }
+      }
+
+      // Close cropper and cleanup
       setShowCropper(false);
       setImageSrc(null);
+      console.log("✅ Process completed successfully");
+      
     } catch (error) {
-      console.error(error);
+      console.error("❌ Error in crop save:", error);
+      
+      // Reset all loading states
+      setIsCropping(false);
+      setIsProcessingBackground(false);
+      setIsUploadingImage(false);
+      
+      // Still set the cropped image as preview even if API fails
+      if (croppedImage) {
+        console.log("🔄 Setting cropped image as fallback");
+        setPhotoPreview(croppedImage);
+        
+        // Try to upload the cropped image to imgbb as fallback
+        try {
+          setIsUploadingImage(true);
+          const croppedBlob = dataURLtoBlob(croppedImage);
+          const croppedFile = new File([croppedBlob], 'cropped-image.jpg', { type: 'image/jpeg' });
+          const hostedUrl = await imageUpload(croppedFile);
+          
+          if (hostedUrl) {
+            console.log("✅ ERROR FALLBACK HOSTED URL:", hostedUrl);
+            setProfileUrl(hostedUrl);
+            setPhotoPreview(hostedUrl);
+          }
+        } catch (uploadError) {
+          console.error("❌ Error fallback upload failed:", uploadError);
+        } finally {
+          setIsUploadingImage(false);
+        }
+      }
+      
+      setShowCropper(false);
+      setImageSrc(null);
+      alert(`Failed to process image: ${(error as Error).message}`);
     }
   };
 
   const handleRemovePhoto = () => {
+    console.log("🗑️ Removing photo");
     setPhotoPreview(null);
-    setProfileUrl("https://i.ibb.co.com/jvqgjL8c/62792368846-removebg-preview.png");
+    setProfileUrl(PLACEHOLDER_IMAGE);
   };
 
   const handleTakePhoto = async () => {
     try {
+      console.log("📷 Requesting webcam...");
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       streamRef.current = stream;
       setShowWebcam(true);
       if (videoRef.current) videoRef.current.srcObject = stream;
     } catch (err) {
+      console.log("⚠️ Webcam failed, using file input");
       fileInputRef.current?.click();
     }
   };
 
   const handleCaptureFromWebcam = () => {
     if (!videoRef.current) return;
+    
+    console.log("📸 Capturing from webcam...");
     const video = videoRef.current;
     const canvas = document.createElement("canvas");
     canvas.width = video.videoWidth;
@@ -2310,12 +1480,15 @@ const UserCardWithForm = () => {
   };
 
   const handleCloseWebcam = () => {
+    console.log("❌ Closing webcam");
     setShowWebcam(false);
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
   };
 
-  // Updated handleSaveData function with redirect
+  /**
+   * Enhanced save data with proper loading states
+   */
   const handleSaveData = async () => {
     setIsSaving(true);
     setSaveSuccess(false);
@@ -2332,7 +1505,7 @@ const UserCardWithForm = () => {
       }))
     };
     
-    console.log("Sending data:", responseData);
+    console.log("🔄 Generating ID card:", responseData);
 
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project/getMyId`, {
@@ -2355,11 +1528,11 @@ const UserCardWithForm = () => {
         const imageBlob = await response.blob();
         const imageUrl = URL.createObjectURL(imageBlob);
         setFinalImageUrl(imageUrl);
-        console.log('Generated image URL from blob:', imageUrl);
+        console.log('✅ Generated image URL from blob');
       } else {
         // JSON response
         const result = await response.json();
-        console.log('Save data response:', result);
+        console.log('📄 Save data response:', result);
         
         // Check for different possible image URL fields
         if (result.imageUrl) {
@@ -2381,10 +1554,11 @@ const UserCardWithForm = () => {
       // Show success page after successful generation
       setTimeout(() => {
         setShowSuccessPage(true);
+        console.log('🎉 Showing success page');
       }, 1000); // Small delay to show success message
       
     } catch (error) {
-      console.error('Failed to save data:', error);
+      console.error('❌ Failed to save data:', error);
       alert('Failed to save data. Please try again.');
     } finally {
       setIsSaving(false);
@@ -2392,6 +1566,7 @@ const UserCardWithForm = () => {
   };
 
   const handleBackToForm = () => {
+    console.log("🔄 Back to form");
     setShowSuccessPage(false);
     setFinalImageUrl(null);
     setSaveSuccess(false);
@@ -2399,11 +1574,12 @@ const UserCardWithForm = () => {
     setStudentName("");
     setValues({});
     setPhotoPreview(null);
-    setProfileUrl("https://i.ibb.co.com/jvqgjL8c/62792368846-removebg-preview.png");
+    setProfileUrl(PLACEHOLDER_IMAGE);
   };
 
   useEffect(() => {
     return () => {
+      console.log("🧹 Cleanup");
       if (imageSrc && imageSrc.startsWith("blob:")) URL.revokeObjectURL(imageSrc);
       if (photoPreview && photoPreview.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
       if (finalImageUrl && finalImageUrl.startsWith("blob:")) URL.revokeObjectURL(finalImageUrl);
@@ -2412,7 +1588,7 @@ const UserCardWithForm = () => {
   }, [imageSrc, photoPreview, finalImageUrl]);
 
   // Helper function to format field names for display
-  const formatFieldName = (fieldName: string) => {
+  const formatFieldName = (fieldName: string): string => {
     return fieldName
       .replace(/([A-Z])/g, " $1")
       .replace(/^./, str => str.toUpperCase());
@@ -2483,6 +1659,9 @@ const UserCardWithForm = () => {
     );
   }
 
+  // Check if any loading operation is in progress
+  const isAnyLoading = isCropping || isProcessingBackground || isUploadingImage || isSaving;
+
   return (
     <div className="min-h-screen p-6">
       <h1 className="text-2xl font-bold text-gray-900 mb-6">{projectData.cardType} Information</h1>
@@ -2498,6 +1677,25 @@ const UserCardWithForm = () => {
         </div>
       )}
 
+      {/* Loading Overlay for image processing */}
+      {(isCropping || isProcessingBackground || isUploadingImage) && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 text-center max-w-sm mx-4">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <h3 className="text-lg font-semibold mb-2">
+              {isCropping ? "Cropping Image..." :
+               isProcessingBackground ? "Processing Background..." :
+               "Uploading Image..."}
+            </h3>
+            <p className="text-gray-600">
+              {isCropping ? "Applying your crop selection" :
+               isProcessingBackground ? "Removing background and enhancing photo" :
+               "Saving processed image to cloud"}
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="grid lg:grid-cols-2 gap-8">
         {/* ---------- Form Section ---------- */}
         <div className="space-y-6">
@@ -2506,7 +1704,7 @@ const UserCardWithForm = () => {
               placeholder="Student Name *"
               value={studentName}
               onChange={(e) => setStudentName(e.target.value)}
-              disabled={isSaving}
+              disabled={isAnyLoading}
             />
             {fields.length > 0 && fields.map((field) => (
               <Input
@@ -2514,37 +1712,46 @@ const UserCardWithForm = () => {
                 placeholder={`${formatFieldName(field)} *`}
                 value={values[field] || ""}
                 onChange={(e) => handleChange(field, e.target.value)}
-                disabled={isSaving}
+                disabled={isAnyLoading}
               />
             ))}
           </div>
 
           <div className="flex flex-wrap gap-3 mt-4">
-            <label className={`flex items-center justify-center border rounded-lg px-4 py-2 cursor-pointer hover:bg-gray-50 transition ${isSaving ? 'opacity-50 pointer-events-none' : ''}`}>
+            <label className={`flex items-center  justify-center border border-transparent hover:border-gray-300 rounded-2xl px-6 py-3 cursor-pointer hover:bg-gray-50 transition ${isAnyLoading ? 'opacity-50 pointer-events-none' : ''}`}>
               <input
                 type="file"
                 accept="image/*"
                 className="hidden"
                 onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
-                disabled={isSaving}
+                disabled={isAnyLoading}
               />
-              ⬆️ Upload Photo
+               <span className="flex items-center gap-2 font-semibold ">
+                <Image className="" src={UploadImage} width={26} height={14} alt=""/>
+                Upload Image
+              </span>
             </label>
 
-            <Button 
-              variant="outline" 
+            <button 
               onClick={handleTakePhoto}
-              disabled={isSaving}
+              disabled={isAnyLoading}
+              className="px-6 py-6 rounded-2xl shadow-none border border-transparent hover:border-gray-300 hover:bg-white  hover:text-black flex gap-2 items-center font-semibold"
             >
-              📷 Take Photo
-            </Button>
+              <Image src={TripodImage} width={26} height={14} alt=""/>
+              Take Photo
+            </button>
 
             <Button 
-              className="bg-blue-600 hover:bg-blue-700 text-white" 
+              className="bg-[#4A61E4] ml-4 hover:bg-blue-700 py-6 px-7 rounded-2xl text-white" 
               onClick={handleSaveData}
-              disabled={isSaving}
+              disabled={isAnyLoading}
             >
-              {isSaving ? "⏳ Generating..." : "💾 Save Data"}
+              {isSaving ? "⏳ Generating..." : (
+                <>
+                  <Image src={DownloadImage} width={26} height={14} alt=""/>
+                  Export
+                </>
+              )}
             </Button>
 
             <input
@@ -2554,7 +1761,7 @@ const UserCardWithForm = () => {
               ref={fileInputRef}
               onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
               style={{ display: "none" }}
-              disabled={isSaving}
+              disabled={isAnyLoading}
             />
           </div>
 
@@ -2575,13 +1782,14 @@ const UserCardWithForm = () => {
                   width={128}
                   height={128}
                   className="w-32 h-32 object-cover rounded-lg border shadow"
+                  unoptimized
                 />
                 <Button
                   size="sm"
                   variant="destructive"
                   className="absolute -top-2 -right-2 rounded-full"
                   onClick={handleRemovePhoto}
-                  disabled={isSaving}
+                  disabled={isAnyLoading}
                 >
                   ✕
                 </Button>
@@ -2649,8 +1857,22 @@ const UserCardWithForm = () => {
               />
             </div>
             <div className="p-4 border-t flex justify-end gap-3">
-              <Button variant="outline" onClick={() => setShowCropper(false)}>Cancel</Button>
-              <Button onClick={handleCropSave} className="bg-blue-600 text-white">Apply Crop</Button>
+              <Button 
+                variant="outline" 
+                onClick={() => setShowCropper(false)}
+                disabled={isCropping || isProcessingBackground || isUploadingImage}
+              >
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleCropSave} 
+                className="bg-blue-600 text-white"
+                disabled={isCropping || isProcessingBackground || isUploadingImage}
+              >
+                {isCropping ? "Cropping..." :
+                 isProcessingBackground ? "Processing..." :
+                 isUploadingImage ? "Uploading..." : "Apply Crop"}
+              </Button>
             </div>
           </div>
         </div>

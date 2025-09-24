@@ -167,6 +167,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
               alt="School Logo"
               width={60}
               height={60}
+              unoptimized
               className="rounded-md object-cover absolute top-[20px] w-[50px] h-[50px] bg-white shadow-md"
             />
           )}
@@ -181,6 +182,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
         {/* Student Photo */}
         <div className="absolute top-[145px] left-1/2 -translate-x-1/2 w-[160px] h-[160px] rounded-full border-[6px] border-[#2E9DA6] bg-white overflow-hidden">
           <Image
+            unoptimized
             src={profileUrl || "https://via.placeholder.com/160"}
             alt="Student"
             fill
@@ -235,6 +237,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
         {signatureUrl && (
           <div className="absolute bottom-[55px] right-[20px] text-center">
             <Image
+              unoptimized
               src={signatureUrl}
               alt="Principal Signature"
               width={75}

@@ -1312,7 +1312,7 @@ const UserCardWithForm: React.FC = () => {
       formData.append('width', "200");
       formData.append('height', "200");
       formData.append('enhance_quality', "true");
-      formData.append('center_face', "true");
+      formData.append('center_face', "false");
 
       console.log("🔄 Background removal request:", {
         backgroundColor: projectData?.personPhotoBGColorCode || "#ffffff",

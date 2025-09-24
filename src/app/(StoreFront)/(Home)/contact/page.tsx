@@ -168,6 +168,7 @@
 import React from 'react';
 import ExamplePage from '../../../(user)/user/_components/UserCardWithForm';
 import Error from '@/app/error';
+import Test from './_components/Test';
 
 
 
@@ -176,7 +177,7 @@ const page = () => {
     <div>
       {/* <StudentCard/>
       <EmpIDCard/> */}
-      hello
+      <Test/>
      {/* <Error error={error}/> */}
       {/* <ExamplePage/> */}
     </div>

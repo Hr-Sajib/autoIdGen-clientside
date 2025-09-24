@@ -327,7 +327,7 @@ interface EmployeeCardProps {
 }
 
 const EmployeeCard: React.FC<EmployeeCardProps> = ({
-  name = "John Marshal",
+  // name = "Name",
   department = "Sales",
   employeeId = "1233",
   bloodGroup = "B+",
@@ -344,8 +344,8 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
   customLabels = {
     studentName: "Name",
     department: "Department",
-    rollNumber: "Employee ID",
-    employeeId: "Employee ID",
+    rollNumber: "Roll Number",
+    // employeeId: "Roll Number",
     bloodGroup: "Blood Group",
     dateOfBirth: "Date of Birth",
     phone: "Phone"
@@ -408,13 +408,13 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
         </div>
 
         {/* Name */}
-        <p className="absolute top-[28%] md:top-[30%] left-[2%] md:left-[7%] right-0 text-center font-bold
+        <p className="absolute top-[33%] md:top-[41%] left-[4%] md:left-[5%] right-0 text-center font-bold
                       text-[10px] md:text-[17px] lg:text-[22px] xl:text-[26px] text-cyan-400">
-          {name|| customLabels.studentName || "John Marshal"}
+          {customLabels.studentName || "Name"}
         </p>
 
         {/* Details */}
-        <div className="absolute top-[41%] md:top-[47%] left-[37%] md:left-[38%] w-[50%] flex justify-center text-white text-[6px] md:text-[8px] lg:text-[14px] xl:text-[16px]">
+        <div className="absolute top-[46%] md:top-[52%] left-[37%] md:left-[38%] w-[50%] flex justify-center text-white text-[6px] md:text-[8px] lg:text-[14px] xl:text-[16px]">
           <div className="w-4/12 pr-1 md:pr-2 lg:pr-2 xl:pr-2 space-y-0.5">
             <p>{customLabels.department}</p>
             <p>{customLabels?.employeeId || customLabels.rollNumber}</p>

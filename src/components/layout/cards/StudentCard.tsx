@@ -106,7 +106,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
           />
         </div>
 
-        {/* Student Name */}
+        {/* Name */}
         <p className="absolute top-[318px] font-[900] w-full text-center text-[18px]  text-blue-700">
           {studentName}
         </p>

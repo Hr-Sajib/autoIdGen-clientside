@@ -18,7 +18,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 export default function InstituteTemplateSetupPage() {
   const router = useRouter()
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [cardOrientation, setCardOrientation] = useState("horizontal")
   const [idCardType, setIdCardType] = useState("Student")
   const [editingField, setEditingField] = useState<string | null>(null)
 
@@ -52,6 +51,10 @@ export default function InstituteTemplateSetupPage() {
     }
   }, [searchParams])
 
+  const [selectedCard, setSelectedCard] = useState<"Student" | "Employee">("Student");
+  const [formData, setFormData] = useState<any>({});
+  const [cardOrientation, setCardOrientation] = useState("horizontal");
+
 
   // Initialize customLabels from sessionStorage if available
   const [customLabels, setCustomLabels] = useState(() => {
@@ -81,25 +84,64 @@ export default function InstituteTemplateSetupPage() {
     sessionStorage.setItem("customLabels", JSON.stringify(customLabels));
   }, [customLabels]);
 
-  const [formData, setFormData] = useState({
-    project: projectName,
-    department: "",
-    rollNumber: "",
-    bloodGroup: "",
-    dateOfBirth: "",
-    phone: "",
-    studentName: "",
-    instituteName: "Eastern Mine School & College",
-    idCardType: "Student",
-    address: "21A/B mine union point, Singapore",
-    logoUrl: "",
-    signatureUrl: "",
-    profileUrl: "https://i.postimg.cc/Y0ydK27n/person.jpg",
-    bgColor: "#0f172a",
-    qrData: "CSE/1233/B+/12122000/+65-2131-XXXX",
-    whoseSign: "Principal",
-    type: "student"
-  })
+  useEffect(() => {
+    try {
+      // Get card type from session storage
+      const savedCardType = sessionStorage.getItem("selectedCard");
+      const savedForm = sessionStorage.getItem("formData");
+
+      if (savedCardType === "Student" || savedCardType === "Employee") {
+        setSelectedCard(savedCardType);
+
+        const parsedData = savedForm ? JSON.parse(savedForm) : {};
+
+        if (savedCardType === "Student") {
+          setFormData({
+            project: parsedData.project || "",
+            studentName: parsedData.studentName || "",
+            rollNumber: parsedData.rollNumber || "",
+            department: parsedData.department || "",
+            bloodGroup: parsedData.bloodGroup || "",
+            dateOfBirth: parsedData.dateOfBirth || "",
+            phone: parsedData.phone || "",
+            instituteName: parsedData.instituteName || "Eastern Mine School & College",
+            idCardType: "Student",
+            address: parsedData.address || "21A/B mine union point, Singapore",
+            logoUrl: parsedData.logoUrl || "",
+            signatureUrl: parsedData.signatureUrl || "",
+            profileUrl: parsedData.profileUrl || "https://i.postimg.cc/Y0ydK27n/person.jpg",
+            bgColor: parsedData.bgColor || "#0f172a",
+            qrData: parsedData.qrData || "CSE/1233/B+/12122000/+65-2131-XXXX",
+            whoseSign: parsedData.whoseSign || "Principal",
+          });
+        } else {
+          setFormData({
+            project: parsedData.project || "",
+            studentName: parsedData.studentName || "",
+            rollNumber: parsedData.rollNumber || "",
+            department: parsedData.department || "",
+            bloodGroup: parsedData.bloodGroup || "",
+            dateOfBirth: parsedData.dateOfBirth || "",
+            phone: parsedData.phone || "",
+            instituteName: parsedData.instituteName || "Company Name",
+            idCardType: "Employee",
+            address: parsedData.address || "",
+            logoUrl: parsedData.logoUrl || "",
+            signatureUrl: parsedData.signatureUrl || "",
+            profileUrl: parsedData.profileUrl || "https://i.postimg.cc/Y0ydK27n/person.jpg",
+            bgColor: parsedData.bgColor || "#0f172a",
+            qrData: parsedData.qrData || "EMP/1233/B+/12122000/+65-2131-XXXX",
+            whoseSign: parsedData.whoseSign || "Manager",
+          });
+        }
+
+        if (parsedData.cardOrientation) setCardOrientation(parsedData.cardOrientation);
+      }
+    } catch (err) {
+      console.error("❌ Error reading sessionStorage:", err);
+    }
+  }, []);
+
 
   // ✅ Load from sessionStorage when component mounts
   useEffect(() => {
@@ -123,9 +165,11 @@ export default function InstituteTemplateSetupPage() {
 
   // ✅ Hook for creating project
   const [createProject] =
-    useCreateProjectMutation(); const handleInputChange = (field: string, value: string) => {
-      setFormData((prev) => ({ ...prev, [field]: value }))
-    }
+    useCreateProjectMutation();
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev: any) => ({ ...prev, [field]: value }));
+  };
 
   const handleLabelChange = (field: string, value: string) => {
     setCustomLabels((prev: any) => ({ ...prev, [field]: value }))
@@ -136,6 +180,7 @@ export default function InstituteTemplateSetupPage() {
     const sessionData = {
       ...formData,
       cardOrientation,
+      idCardType
     };
     sessionStorage.setItem("formData", JSON.stringify(sessionData));
     console.log("💾 Saved formData before going back:", sessionData);
@@ -144,7 +189,7 @@ export default function InstituteTemplateSetupPage() {
     const project = formData.project || "Project";
 
     // Navigate to Institute Template Setup with project param
-    router.push(`/dashboard/institute-template-setup?project=${encodeURIComponent(project)}`);
+    router.push(`/dashboard/card-template-setup?project=${encodeURIComponent(project)}`);
   };
 
   const { user } = useSelector(
@@ -168,12 +213,8 @@ export default function InstituteTemplateSetupPage() {
         cardType: formData.idCardType,
         address: formData.address,
         contactPhone: formData.phone,
-        institutionLogoUrl:
-          formData.logoUrl ||
-          "https://i.ibb.co.com/Y765FrW0/education-logo-and-minimal-school-badge-design-template-vector.jpg",
-        institutionSignUrl:
-          formData.signatureUrl ||
-          "https://i.ibb.co.com/vxmHjprY/signpic.png",
+        institutionLogoUrl: formData.logoUrl,
+        institutionSignUrl: formData.signatureUrl,
         signRoleName: formData.whoseSign,
         additionalFields: ["Class", "Section", "Roll"], // can be built from customLabels
         cardQuantity: quantity,
@@ -220,34 +261,34 @@ export default function InstituteTemplateSetupPage() {
   // Dynamic card rendering based on type and orientation from session storage
   const renderCard = () => {
     const cardProps = {
-      name: formData.studentName || "",
+      name: formData.studentName,
       instituteName: formData.instituteName,
       address: formData.address,
       idCardType: formData.idCardType,
-      department: formData.department || "",
-      bloodGroup: formData.bloodGroup || "",
-      dob: formData.dateOfBirth || "",
-      phone: formData.phone || "",
-      logoUrl: formData.logoUrl || "https://i.postimg.cc/hthwhxwy/uni-logo.avif",
-      signatureUrl: formData.signatureUrl || "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png",
+      department: formData.department,
+      bloodGroup: formData.bloodGroup,
+      dob: formData.dateOfBirth,
+      phone: formData.phone,
+      logoUrl: formData.logoUrl,
+      signatureUrl: formData.signatureUrl,
       profileUrl: formData.profileUrl,
       bgColor: formData.bgColor,
       qrData: formData.qrData,
       whoseSign: formData.whoseSign
     }
 
-    if (idCardType === "student") {
+    // if (idCardType === "Student") {
+    if (selectedCard === "Student") {
       if (cardOrientation === "vertical") {
-        console.log("Rendering student card in vertical orientation")
         return (
           <EmployeeCard
             {...cardProps}
-            employeeName={formData.studentName || ""}
-            employeeId={formData.rollNumber || ""}
+            employeeName={formData.studentName}
+            employeeId={formData.rollNumber}
             companyName={formData.instituteName}
             personImage={formData.profileUrl}
-            logo={formData.logoUrl || "https://i.postimg.cc/hthwhxwy/uni-logo.avif"}
-            signature={formData.signatureUrl || "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png"}
+            logo={formData.logoUrl}
+            signature={formData.signatureUrl}
             customLabels={customLabels}
             orientation={cardOrientation}
           />
@@ -256,34 +297,48 @@ export default function InstituteTemplateSetupPage() {
         return (
           <StudentCard
             {...cardProps}
-            studentName={formData.studentName || "john doe"}
-            roll={formData.rollNumber || ""}
+            studentName={formData.studentName}
+            roll={formData.rollNumber}
             customLabels={customLabels}
             orientation={cardOrientation}
           />
         )
       }
-    } else if (idCardType === "employee") {
-      return (
-        <EmployeeCard
-          {...cardProps}
-          employeeName={formData.studentName || "John Doe"}
-          employeeId={formData.rollNumber || ""}
-          companyName={formData.instituteName}
-          personImage={formData.profileUrl}
-          logo={formData.logoUrl || "https://i.postimg.cc/hthwhxwy/uni-logo.avif"}
-          signature={formData.signatureUrl || "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png"}
-          customLabels={customLabels}
-        />
-      )
+      // } else if (idCardType === "Employee") {
+    } else if (selectedCard === "Employee") {
+      if (cardOrientation === "vertical") {
+        return (
+          <EmployeeCard
+            {...cardProps}
+            employeeName={formData.studentName}
+            employeeId={formData.rollNumber}
+            companyName={formData.instituteName}
+            personImage={formData.profileUrl}
+            logo={formData.logoUrl}
+            signature={formData.signatureUrl}
+            customLabels={customLabels}
+            orientation={cardOrientation}
+          />
+        )
+      } else {
+        return (
+          <StudentCard
+            {...cardProps}
+            studentName={formData.studentName}
+            roll={formData.rollNumber}
+            customLabels={customLabels}
+            orientation={cardOrientation}
+          />
+        )
+      }
     }
 
     // Default fallback
     return (
       <StudentCard
         {...cardProps}
-        studentName={formData.studentName || "John Doe"}
-        roll={formData.rollNumber || ""}
+        studentName={formData.studentName}
+        roll={formData.rollNumber}
         customLabels={customLabels}
         orientation={cardOrientation}
       />
@@ -296,9 +351,9 @@ export default function InstituteTemplateSetupPage() {
       <div className="min-h-screen bg-background">
         <DashboardHeader />
 
-        <main className="container mx-auto px-6 py-8">
+        <main className="container mx-auto px-6 py-12">
           <div className="max-w-full mx-auto">
-            <h1 className="text-2xl font-bold text-gray-900 mb-8">Contact Info Selection</h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-8">Contact Info Field Selection</h1>
             {/* <CardPreview/> */}
 
             <div className="grid lg:grid-cols-2 gap-8">
@@ -550,14 +605,24 @@ export default function InstituteTemplateSetupPage() {
               </div>
 
               {/* Right Preview Section */}
-              <div className="space-y-6">
-                <div className="text-center mb-4">
-                  <span className="text-lg font-semibold text-gray-800">
-                    Preview <span className="text-md font-medium text-gray-600">({cardOrientation === "vertical" ? "Vertical" : "Horizontal"} Layout)</span>
-                  </span>
+              <div className="flex flex-col items-center justify-start -mt-10">
+                <div className="mb-4">
+                  <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">
+                    Preview
+                  </h2>
+
+                  <div className="flex justify-center mb-2">
+                    <div className="bg-gray-100 p-1 rounded-lg flex">
+                      <button
+                        className="px-4 py-2 rounded-md text-sm font-medium transition-all bg-white text-gray-900 shadow-sm"
+                      >
+                        {cardOrientation === "vertical" ? "Vertical" : "Horizontal"} Layout
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
-                <Card className="p-6 bg-white border-none shadow-lg">
+                <Card className="p-4 bg-white border-none shadow-none">
                   <div className="w-full mx-auto flex justify-center">
                     <div className={cardOrientation === "vertical" ? "scale-90" : "scale-100"}>
                       {renderCard()}

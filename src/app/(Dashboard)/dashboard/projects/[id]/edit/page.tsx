@@ -12,6 +12,7 @@ import { useParams } from "next/navigation"
 import { Card, CardRow, Project } from "@/types/inedx"
 import { EditProject } from "../../_components/EditProject"
 import Image from "next/image"
+import { downloadBulkExport } from "@/utils/bulkExport"
 
 export default function ViewDetailsPage() {
   const params = useParams()
@@ -21,7 +22,13 @@ export default function ViewDetailsPage() {
   const [updateProject] = useUpdateProjectMutation()
   const project = projectData?.data
 
-  const { data: cardData, isLoading: cardLoading } = useGetCardByBatchIdQuery(project?.batchId, { skip: !project?.batchId })
+  const batchId = project?.batchId ?? ""; // always a string
+  console.log("Batch ID:", batchId);
+
+  const { data: cardData, isLoading: cardLoading } = useGetCardByBatchIdQuery(batchId, {
+    skip: !project?.batchId, // safe: hook order stays the same
+  });
+
   const [createCard] = useCreateCardMutation()
   const [updateCard] = useUpdateCardMutation()
   const [deleteCard] = useDeleteCardMutation()
@@ -116,34 +123,43 @@ export default function ViewDetailsPage() {
     }
   };
 
-const handleDownloadCard = (card: Card) => {
-  if (!card.cardImageUrl) {
-    console.error("No card image available");
-    return;
-  }
+  const handleDownloadCard = (card: Card) => {
+    if (!card.cardImageUrl) {
+      console.error("No card image available");
+      return;
+    }
 
-  // Open the card image in a new tab
-  const newWindow = window.open(card.cardImageUrl, "_blank");
-  if (newWindow) {
-    newWindow.document.title = `${card.name || card.serialOrRollNumber}-ID-Card`; // sets the tab title
-    // Optional: Create an image element with download attribute
-    const img = newWindow.document.createElement("img");
-    img.src = card.cardImageUrl;
-    img.alt = `${card.name || card.serialOrRollNumber} ID Card`;
-    img.style.maxWidth = "100%";
-    newWindow.document.body.style.margin = "0";
-    newWindow.document.body.style.display = "flex";
-    newWindow.document.body.style.justifyContent = "center";
-    newWindow.document.body.style.alignItems = "center";
-    newWindow.document.body.style.height = "100vh";
-    newWindow.document.body.appendChild(img);
-  } else {
-    console.error("Failed to open new window for card download");
-  }
-};
+    // Open the card image in a new tab
+    const newWindow = window.open(card.cardImageUrl, "_blank");
+    if (newWindow) {
+      newWindow.document.title = `${card.name || card.serialOrRollNumber}-ID-Card`; // sets the tab title
+      // Optional: Create an image element with download attribute
+      const img = newWindow.document.createElement("img");
+      img.src = card.cardImageUrl;
+      img.alt = `${card.name || card.serialOrRollNumber} ID Card`;
+      img.style.maxWidth = "100%";
+      newWindow.document.body.style.margin = "0";
+      newWindow.document.body.style.display = "flex";
+      newWindow.document.body.style.justifyContent = "center";
+      newWindow.document.body.style.alignItems = "center";
+      newWindow.document.body.style.height = "100vh";
+      newWindow.document.body.appendChild(img);
+    } else {
+      console.error("Failed to open new window for card download");
+    }
+  };
 
   if (projectLoading) return <div className="p-6">Loading project...</div>
   if (projectError) return <div className="p-6 text-red-500">Failed to load project</div>
+
+
+  // const [loading, setLoading] = useState(false);
+
+  const handleExport = async () => {
+    // setLoading(true);
+    await downloadBulkExport(project.batchId)
+    // setLoading(false);
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -191,7 +207,13 @@ const handleDownloadCard = (card: Card) => {
           <h2 className="text-lg font-semibold">Student Details</h2>
           <div className="flex gap-2">
             <Input placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)} className="w-60 bg-gray-100" />
-            <Button variant="outline">Export</Button>
+            <Button
+              onClick={handleExport}
+              variant="outline">
+              {/* {loading ? "Preparing..." : "Export"} */}
+              Export
+            </Button>
+
           </div>
         </div>
 

@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "@/lib/slice/Auth/authSlice";
 import { RootState } from "@/lib/store";
+import { LucideLayoutDashboard, LucideVerified } from "lucide-react";
 
 interface SidebarProps {
   onToggle?: (isCollapsed: boolean) => void;
@@ -21,7 +22,11 @@ export function Sidebar({ onToggle }: SidebarProps) {
   const pathname = usePathname();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
-  console.log(pathname);
+  
+  // const navItems = [
+  //   { href: "/dashboard", label: "Dashboard" },
+  //   { href: "/dashboard/verify", label: "Verify ID Card" },
+  // ];
 
   const handleDesktopToggle = () => {
     const newCollapsed = !isDesktopCollapsed;
@@ -147,29 +152,17 @@ export function Sidebar({ onToggle }: SidebarProps) {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4">
+          <nav className="p-4 pb-1">
             <Button
               variant="default"
               className={cn(
-                "w-full bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200",
+                "w-full bg-blue-400 hover:bg-blue-700 text-white transition-all duration-200",
                 isDesktopCollapsed
                   ? "md:justify-center md:px-2"
                   : "justify-start  gap-3"
               )}
             >
-              <svg
-                className="h-4 w-4 ml-1.5 flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-                />
-              </svg>
+              <LucideLayoutDashboard />
               
               <Link href="/dashboard">
                 <span
@@ -179,6 +172,30 @@ export function Sidebar({ onToggle }: SidebarProps) {
                   )}
                 >
                   Dashboard
+                </span>
+              </Link>
+            </Button>
+          </nav>
+          <nav className="flex-1 p-4 pt-1">
+            <Button
+              variant="default"
+              className={cn(
+                "w-full bg-blue-400 hover:bg-blue-700 text-white transition-all duration-200",
+                isDesktopCollapsed
+                  ? "md:justify-center md:px-2"
+                  : "justify-start  gap-3"
+              )}
+            >
+              <LucideVerified />
+              
+              <Link href="/dashboard/verify">
+                <span
+                  className={cn(
+                    "transition-opacity duration-200",
+                    isDesktopCollapsed ? "md:hidden" : "block"
+                  )}
+                >
+                  Verify ID Card
                 </span>
               </Link>
             </Button>

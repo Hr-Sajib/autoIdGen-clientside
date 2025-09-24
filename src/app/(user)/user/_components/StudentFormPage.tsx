@@ -106,7 +106,7 @@
 //               {/* Name + Department */}
 //               <div className="grid grid-cols-2 gap-4">
 //                 <Input
-//                   placeholder="Employee Name"
+//                   placeholder="Name"
 //                   value={formData.employeeName}
 //                   onChange={(e) =>
 //                     handleInputChange("employeeName", e.target.value)
@@ -492,7 +492,7 @@
 //             <div className="space-y-6">
 //               <div className="grid grid-cols-2 gap-4">
 //                 <Input
-//                   placeholder="Employee Name *"
+//                   placeholder="Name *"
 //                   value={formData.employeeName}
 //                   onChange={(e) => handleInputChange("employeeName", e.target.value)}
 //                   className={!formData.employeeName ? "border-red-200" : ""}
@@ -775,7 +775,6 @@ const getCroppedImg = async (
 // Main Component
 // ---------------------
 export default function EmployeeInformationPage() {
-  const router = useRouter()
 
   const [formData, setFormData] = useState({
     employeeName: "",
@@ -967,7 +966,7 @@ export default function EmployeeInformationPage() {
               {/* Inputs */}
               <div className="grid grid-cols-2 gap-4">
                 <Input
-                  placeholder="Employee Name *"
+                  placeholder="Name *"
                   value={formData.employeeName}
                   onChange={(e) => handleInputChange("employeeName", e.target.value)}
                 />

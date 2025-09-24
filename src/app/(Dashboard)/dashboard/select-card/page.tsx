@@ -8,7 +8,7 @@ import { DashboardHeader } from "../_components/dashboard-header"
 import Image from "next/image"
 
 export default function SelectCardPage() {
-  const [selectedCard, setSelectedCard] = useState<string | null>("student")
+  const [selectedCard, setSelectedCard] = useState<string | null>("")
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -24,12 +24,12 @@ export default function SelectCardPage() {
 
   const cardTypes = [
     {
-      id: "student",
+      id: "Student",
       title: "Student ID Card",
       image: "/images/studentCard.png",
     },
     {
-      id: "employee",
+      id: "Employee",
       title: "Employee ID Card",
       image: "/images/employeeCard.png",
     },
@@ -42,21 +42,22 @@ export default function SelectCardPage() {
   }, []);
 
   const handleContinue = () => {
-    sessionStorage.setItem("selectedCard", selectedCard || "student")
+    sessionStorage.setItem("selectedCard", selectedCard || "")
 
     router.push(
-      `/dashboard/institute-template-setup?project=${projectName}&type=${selectedCard}`
+      `/dashboard/card-template-setup?project=${projectName}&type=${selectedCard}`
     )
   }
 
   // const handleContinue = () => {
-  //   if (selectedCard === "student") {
+  //   sessionStorage.setItem("selectedCard", selectedCard || "Student")
+  //   if (selectedCard === "Student") {
   //     router.push(
-  //       `/dashboard/institute-template-setup?project=${projectName || ""}&type=student`
+  //       `/dashboard/institute-template-setup?project=${projectName}&type=${selectedCard}`
   //     )
-  //   } else if (selectedCard === "employee") {
+  //   } else if (selectedCard === "Employee") {
   //     router.push(
-  //       `/dashboard/company-template-setup?project=${projectName || ""}&type=employee`
+  //       `/dashboard/company-template-setup?project=${projectName}&type=${selectedCard}`
   //     )
   //   }
   // }
@@ -121,18 +122,18 @@ export default function SelectCardPage() {
           <div className="space-y-4">
             <div className="flex gap-2 mb-4">
               <Button
-                variant={selectedCard === "student" ? "default" : "outline"}
+                variant={selectedCard === "Student" ? "default" : "outline"}
                 size="sm"
-                onClick={() => setSelectedCard("student")}
-                className={selectedCard === "student" ? "bg-blue-600 text-white" : ""}
+                onClick={() => setSelectedCard("Student")}
+                className={selectedCard === "Student" ? "bg-blue-600 text-white" : ""}
               >
                 Student ID Card
               </Button>
               <Button
-                variant={selectedCard === "employee" ? "default" : "outline"}
+                variant={selectedCard === "Employee" ? "default" : "outline"}
                 size="sm"
-                onClick={() => setSelectedCard("employee")}
-                className={selectedCard === "employee" ? "bg-blue-600 text-white" : ""}
+                onClick={() => setSelectedCard("Employee")}
+                className={selectedCard === "Employee" ? "bg-blue-600 text-white" : ""}
               >
                 Employee ID Card
               </Button>

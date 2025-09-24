@@ -29,6 +29,15 @@ export const cardApi = baseApi.injectEndpoints({
             invalidatesTags: ["Card"],
         }),
 
+        verificationStatus: builder.mutation({
+            query: (payload) => ({
+                url: "/card/verifyCard",
+                method: "POST",
+                body: payload
+            }),
+            invalidatesTags: ["Card"],
+        }),
+
         // getProject: builder.query({
         //     query: () => "/project",
         //     providesTags: ["Card"],
@@ -64,6 +73,7 @@ export const {
     useCreateCardMutation,    
     useGetCardByBatchIdQuery,
     useUpdateCardMutation,
+    useVerificationStatusMutation,
     // useCreateProjectMutation,
     // useGetMyProjectQuery,
     // useGetSpecificProjectQuery,

@@ -48,6 +48,13 @@ export const projectApi = baseApi.injectEndpoints({
                 method: "DELETE",
             }),
             invalidatesTags: ["Project"],
+        }),
+
+        bulkExport: builder.query({
+            query: (batchId) => ({
+                url: `project/bulk/${batchId}`,
+                method: "GET",
+            }),
         })
     }),
 });
@@ -58,5 +65,6 @@ export const {
     useGetMyProjectQuery,
     useGetSpecificProjectQuery,
     useUpdateProjectMutation,
-    useDeleteProjectMutation
+    useDeleteProjectMutation,
+    useBulkExportQuery,
 } = projectApi;

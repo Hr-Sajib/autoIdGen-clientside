@@ -147,7 +147,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
 }) => {
   return (
     <div
-      className="calibri relative w-[350px] h-[600px] rounded-lg overflow-hidden shadow-lg font-sans"
+      className="calibri relative w-[350px] h-[560px] rounded-sm overflow-hidden shadow-lg font-sans"
       style={{
         backgroundImage: `url(${background.src})`,
         backgroundSize: "cover",
@@ -155,7 +155,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
       }}
     >
       {/* Overlay */}
-      <div className="absolute inset-0"></div>
+      {/* <div className="absolute inset-0"></div> */}
 
       {/* Content */}
       <div className="relative z-10 h-full w-full px-3">
@@ -167,13 +167,13 @@ const StudentCard: React.FC<StudentCardProps> = ({
               alt="School Logo"
               width={60}
               height={60}
-              className="rounded-md object-cover w-[60px] h-[60px] bg-white shadow-md"
+              className="rounded-md object-cover absolute top-[20px] w-[50px] h-[50px] bg-white shadow-md"
             />
           )}
-          <p className="text-center absolute top-[62px] pt-1 text-[15px] font-bold text-white max-w-[300px]">
+          <p className="text-center absolute top-[70px] pt-1 text-[15px] font-bold text-white max-w-[300px]">
             {instituteName}
           </p>
-          <p className="absolute top-[110px] mt-1 text-center text-[12px] text-gray-200">
+          <p className="absolute top-[100px] mt-1 text-center font-thin text-[11px] text-gray-300">
             {address}
           </p>
         </div>
@@ -188,43 +188,43 @@ const StudentCard: React.FC<StudentCardProps> = ({
           />
         </div>
 
-        {/* Student Name */}
-        <p className="absolute top-[318px] font-[900] w-full text-center text-[18px] text-blue-700">
-          {studentName}
-        </p>
+       {/* Student Name */}
+<p className="absolute top-[315px] left-0 w-full text-center font-[700] text-[20px] text-blue-700">
+  {studentName}
+</p>
 
-        {/* Dynamic Student Info */}
-        <div className="absolute top-[345px] left-1/2 -translate-x-1/2 w-[260px] text-[12.5px] text-black">
-          <div className="flex gap-1">
-            {/* Labels */}
-            <div className="w-[110px] font-medium text-gray-700">
-              {fields.map((field) => (
-                <p key={field} className="my-1.5 capitalize">
-                  {field.replace(/([A-Z])/g, " $1")}
-                </p>
-              ))}
-            </div>
-            {/* Values */}
-            <div className="ml-1 w-[150px]">
-              {fields.map((field) => (
-                <p key={field} className="my-1.5">
-                  :&nbsp;{values[field] || "-"}
-                </p>
-              ))}
-            </div>
-          </div>
-        </div>
+{/* Dynamic Student Info */}
+<div className="absolute top-[347px] inset-x-0  text-[12px] text-black">
+ <div className="flex w-max mx-auto">
+   <div className="w-max">
+    {fields.map((field) => (
+    <div key={field} className="w-max">
+      {/* Label */}
+      <span className="flex-1 text-left">
+        {field.replace(/([A-Z])/g, " $1")}
+      </span>
+     
+    </div>
+  ))}
+  </div>
+  <div className="w-max">
+     {fields.map((field) => (
+              <p className="pl-2" key={field}><span className="pr-2">:</span>  {values[field] || "-"}</p>
+            ))}
+  </div>
+ </div>
+</div>
 
         {/* ID Type */}
-        <p className="absolute bottom-[30px] rounded border border-gray-300 px-2 py-[2px] text-[11px] text-gray-100 bg-black/30">
+        <p className="absolute bottom-[25px] left-[7px] rounded border border-gray-400 px-2 py-[2px] text-[11px] text-gray-400 bg-black/30">
           {idCardType}
         </p>
 
         {/* QR Code */}
-        <div className="absolute bottom-[60px] left-1/2 -translate-x-1/2">
+        <div className="absolute bottom-[62px] left-1/2 -translate-x-1/2">
           <QRCodeCanvas
             value={qrData}
-            size={55}
+            size={38}
             bgColor="#fff"
             fgColor="#000"
             level="H"

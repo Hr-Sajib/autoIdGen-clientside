@@ -1431,7 +1431,7 @@ import { useSelector } from "react-redux";
 
 export default function InstituteTemplateSetupPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [cardOrientation, setCardOrientation] = useState("horizontal")
+  const [cardOrientation, setCardOrientation] = useState("")
   const [editingField, setEditingField] = useState<string | null>(null)
 
   // Add state for custom labels - Name field is static, others are editable

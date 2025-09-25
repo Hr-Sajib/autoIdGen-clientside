@@ -39,8 +39,8 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/process-id-photo',
-        destination: 'http://206.162.244.131:8000/process-id-photo',
-      },
+        destination: `${process.env.NEXT_PUBLIC_AI_SERVER_URL}/process-id-photo`,
+      }
     ];
   },
 };

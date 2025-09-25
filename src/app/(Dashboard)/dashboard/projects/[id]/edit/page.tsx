@@ -46,7 +46,7 @@ export default function ViewDetailsPage() {
       serialStr: (i + 1).toString().padStart(2, "0"),
       batchId: project.batchId,
       name: "",
-      status: "Pending" as const,
+      status: "",
       additionalFields: {} as Record<string, string>,
       _id: "",
       setBy: "",
@@ -66,7 +66,7 @@ export default function ViewDetailsPage() {
       rows[index] = {
         ...card,
         serialStr: card.serialOrRollNumber.toString().padStart(2, "0"),
-        status: "Pending" as const,
+        status: card.status,
         additionalFields: fields,
       }
     })

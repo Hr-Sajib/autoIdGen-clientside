@@ -152,7 +152,7 @@ export function Sidebar({ onToggle }: SidebarProps) {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4">
+          <nav className="p-4 pb-1">
             {
               pathname.includes('/dashboard') && (
                 <Button
@@ -180,30 +180,6 @@ export function Sidebar({ onToggle }: SidebarProps) {
 
               )
             }
-          </nav>
-          <nav className="flex-1 p-4 pt-1">
-            <Button
-              variant="default"
-              className={cn(
-                "w-full bg-blue-400 hover:bg-blue-700 text-white transition-all duration-200",
-                isDesktopCollapsed
-                  ? "md:justify-center md:px-2"
-                  : "justify-start  gap-3"
-              )}
-            >
-              <LucideVerified />
-
-              <Link href="/dashboard/verify">
-                <span
-                  className={cn(
-                    "transition-opacity duration-200",
-                    isDesktopCollapsed ? "md:hidden" : "block"
-                  )}
-                >
-                  Verify ID Card
-                </span>
-              </Link>
-            </Button>
           </nav>
           <nav className="flex-1 p-4 pt-1">
             <Button

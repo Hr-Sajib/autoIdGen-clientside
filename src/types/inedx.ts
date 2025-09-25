@@ -79,12 +79,13 @@ export interface Card {
     fieldValue: string;
   }>;
   cardImageUrl?: string;
+  status: string;
 }
 
 // Optional extension for table rendering
 export type CardRow = Card & {
   serialStr: string;
-  status: "Complete" | "Pending";
+  // status: "";
   additionalFields: Record<string, string>;
 };
 

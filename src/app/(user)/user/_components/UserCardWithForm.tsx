@@ -1200,7 +1200,7 @@ const UserCardWithForm: React.FC = () => {
         setError(null);
         console.log("🔄 Fetching project data for batch:", batchCode);
         
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project/batch/${batchCode}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}project/batch/${batchCode}`);
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -1508,7 +1508,7 @@ const UserCardWithForm: React.FC = () => {
     console.log("🔄 Generating ID card:", responseData);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project/getMyId`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}project/getMyId`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

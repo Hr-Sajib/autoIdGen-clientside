@@ -1701,7 +1701,7 @@ const UserCardWithForm: React.FC = () => {
         <div className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <Input
-              placeholder="Student Name *"
+              placeholder={`${projectData.cardType} Name *`}
               value={studentName}
               onChange={(e) => setStudentName(e.target.value)}
               disabled={isAnyLoading}
@@ -1809,7 +1809,7 @@ const UserCardWithForm: React.FC = () => {
                 instituteName={projectData.institutionName}
                 address={projectData.address}
                 idCardType={`${projectData.cardType} ID`}
-                studentName={studentName || "Student Name"}
+                studentName={studentName || `${projectData.cardType} Name`}
                 qrData={`${projectData.batchId}-${rollSerial || "000"}`}
                 logoUrl={projectData.institutionLogoUrl}
                 profileUrl={profileUrl}
@@ -1823,7 +1823,7 @@ const UserCardWithForm: React.FC = () => {
                 instituteName={projectData.institutionName}
                 address={projectData.address}
                 idCardType={`${projectData.cardType} ID`}
-                studentName={studentName || "Student Name"}
+                 studentName={studentName || `${projectData.cardType} Name`}
                 qrData={`${projectData.batchId}-${rollSerial || "000"}`}
                 logoUrl={projectData.institutionLogoUrl}
                 profileUrl={profileUrl}

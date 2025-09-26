@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,10 +11,8 @@ import { useSearchParams, useRouter } from "next/navigation";
 import DownloadImage from '@/../public/images/download_icon.svg'
 import UploadImage from '@/../public/images/upload_icon.svg'
 import TripodImage from '@/../public/images/camera-tripod.svg'
-import Error from "@/app/error";
-import ErrorImage from "@/../public/images/error_id_card.png";
 import Link from "next/link";
-
+import ErrorImage from "@/../public/images/error_id_card.png";
 
 // ===========================
 // Type Definitions
@@ -251,6 +250,7 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({ finalImageUrl, st
 // ===========================
 const UserCardWithForm: React.FC = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const role = searchParams.get("role");
   const batchCode = searchParams.get("batchCode");
@@ -541,13 +541,8 @@ const UserCardWithForm: React.FC = () => {
       streamRef.current = stream;
       setShowWebcam(true);
       if (videoRef.current) videoRef.current.srcObject = stream;
-    } catch (err: unknown) {
+    } catch (err) {
       console.log("⚠️ Webcam failed, using file input");
-
-      if (err instanceof Error) {
-        console.error("Camera error:", err.message);
-      }
-
       fileInputRef.current?.click();
     }
   };
@@ -720,84 +715,84 @@ const UserCardWithForm: React.FC = () => {
     );
   }
 
-  // Error state
-  if (error) {
-    {
-      console.error('❌ Error: from UserCardWithForm error state', error);
+    // Error state
+    if (error) {
+        {
+            console.error('❌ Error: from UserCardWithForm error state', error);
+        }
+        return (
+            <>
+                <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-6">
+                    <div className="text-center">
+                        {/* Error image */}
+                        <div className="flex justify-center mb-6">
+                            <Image
+                                src={ErrorImage}
+                                alt="Error illustration"
+                                width={600}
+                                height={400}
+                                className="rounded-lg object-cover"
+                                priority
+                            />
+                        </div>
+
+                        {/* Error message */}
+                        <p className="text-gray-600 mb-6 break-words text-sm sm:text-base">
+                            {error}
+                        </p>
+
+                        {/* Retry button */}
+                        <Link href="/">
+                            <Button
+                                className="px-6 py-2 bg-blue-600/60 text-white font-medium rounded-lg hover:bg-blue-700/80 focus:ring-2 focus:ring-red-400 focus:outline-none transition-colors duration-200"
+                            >
+                                Try Again
+                            </Button>
+                        </Link>
+                    </div>
+                </div>
+                {/* <Error error={new Error(error)} /> */}
+            </>
+        );
     }
-    return (
-      <>
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-6">
-          <div className="text-center">
-            {/* Error image */}
-            <div className="flex justify-center mb-6">
-              <Image
-                src={ErrorImage}
-                alt="Error illustration"
-                width={600}
-                height={400}
-                className="rounded-lg object-cover"
-                priority
-              />
-            </div>
 
-            {/* Error message */}
-            <p className="text-gray-600 mb-6 break-words text-sm sm:text-base">
-              {error}
-            </p>
+    // No project data
+    if (!projectData) {
+        return (
+            <>
+                <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-6">
+                    <div className="text-center">
+                        {/* Error image */}
+                        <div className="flex justify-center mb-6">
+                            <Image
+                                src={ErrorImage}
+                                alt="Error illustration"
+                                width={600}
+                                height={400}
+                                className="rounded-lg object-cover"
+                                priority
+                            />
+                        </div>
 
-            {/* Retry button */}
-            <Link href="/">
-              <Button
-                className="px-6 py-2 bg-blue-600/60 text-white font-medium rounded-lg hover:bg-blue-700/80 focus:ring-2 focus:ring-red-400 focus:outline-none transition-colors duration-200"
-              >
-                Try Again
-              </Button>
-            </Link>
-          </div>
-        </div>
-        {/* <Error error={new Error(error)} /> */}
-      </>
-    );
-  }
+                        {/* Error message */}
+                        <p className="text-gray-600 mb-6 break-words text-sm sm:text-base">
+                            No project data found for this batch code.
+                        </p>
 
-  // No project data
-  if (!projectData) {
-    return (
-      <>
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-6">
-          <div className="text-center">
-            {/* Error image */}
-            <div className="flex justify-center mb-6">
-              <Image
-                src={ErrorImage}
-                alt="Error illustration"
-                width={600}
-                height={400}
-                className="rounded-lg object-cover"
-                priority
-              />
-            </div>
-
-            {/* Error message */}
-            <p className="text-gray-600 mb-6 break-words text-sm sm:text-base">
-              No project data found for this batch code.
-            </p>
-
-            {/* Retry button */}
-            <Link href="/">
-              <Button
-                className="px-6 py-2 bg-blue-600/60 text-white font-medium rounded-lg hover:bg-blue-700/80 focus:ring-2 focus:ring-red-400 focus:outline-none transition-colors duration-200"
-              >
-                Try Again
-              </Button>
-            </Link>
-          </div>
-        </div>
-        {/* <Error error={{ message: "No project data found for this batch code." } as Error} /> */}
-      </>
-    );
-  }
+                        {/* Retry button */}
+                        <Link href="/">
+                            <Button
+                                className="px-6 py-2 bg-blue-600/60 text-white font-medium rounded-lg hover:bg-blue-700/80 focus:ring-2 focus:ring-red-400 focus:outline-none transition-colors duration-200"
+                            >
+                                Try Again
+                            </Button>
+                        </Link>
+                    </div>
+                </div>
+                {/* <Error error={{ message: "No project data found for this batch code." } as Error} /> */}
+            </>
+        );
+    }
 
   // Check if any loading operation is in progress
   const isAnyLoading = isCropping || isProcessingBackground || isUploadingImage || isSaving;
@@ -949,7 +944,7 @@ const UserCardWithForm: React.FC = () => {
                 instituteName={projectData.institutionName}
                 address={projectData.address}
                 idCardType={`${projectData.cardType} ID`}
-                studentName={studentName || `${projectData.cardType} Name `}
+                studentName={studentName || `${projectData.cardType} Name`}
                 qrData={`${projectData.batchId}-${rollSerial || "000"}`}
                 logoUrl={projectData.institutionLogoUrl}
                 profileUrl={profileUrl}
@@ -963,7 +958,7 @@ const UserCardWithForm: React.FC = () => {
                 instituteName={projectData.institutionName}
                 address={projectData.address}
                 idCardType={`${projectData.cardType} ID`}
-                studentName={studentName || `${projectData.cardType} Name *`}
+                studentName={studentName || `${projectData.cardType} Name`}
                 qrData={`${projectData.batchId}-${rollSerial || "000"}`}
                 logoUrl={projectData.institutionLogoUrl}
                 profileUrl={profileUrl}

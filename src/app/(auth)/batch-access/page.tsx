@@ -235,7 +235,7 @@ const AccessForm: React.FC = () => {
       toast.success("Form submitted successfully 🚀");
 
       const formData = {
-        role,
+        // role,
         batchCode: batchCode.join(""),
         rollSerial,
       };

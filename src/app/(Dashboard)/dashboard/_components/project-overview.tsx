@@ -3,18 +3,22 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { LucideCopy, LucideFolderOpen, Trash2 } from "lucide-react"
+import { Loader2, LucideCopy, LucideFolderOpen, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
-import { useDeleteProjectMutation, useGetMyProjectQuery } from "@/lib/feature/Project/projectApi"
+import { projectApi, useCreateProjectMutation, useDeleteProjectMutation, useGetMyProjectQuery, useGetSpecificProjectQuery } from "@/lib/feature/Project/projectApi"
 import { Project } from "@/types/inedx"
+import { useAppDispatch } from "@/lib/hooks"
 
 export function ProjectOverview() {
   const { data, isLoading, isError } = useGetMyProjectQuery(undefined)
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [copyingId, setCopyingId] = useState<string | null>(null)
 
   const [deleteProject] = useDeleteProjectMutation()
+  const [createProject] = useCreateProjectMutation()
+  const dispatch = useAppDispatch()
 
   // API gives { success, message, data: [...] }
   const projects = data?.data ?? []
@@ -27,6 +31,53 @@ export function ProjectOverview() {
       setTimeout(() => setCopiedId(null), 2000)
     } catch (err) {
       console.error("Failed to copy text: ", err)
+    }
+  }
+
+  const handleCopyProject = async (projectId: string) => {
+    setCopyingId(projectId)
+    try {
+      // 1. fetch project by id
+      const res = await dispatch(
+        projectApi.endpoints.getSpecificProject.initiate(projectId)
+      ).unwrap()
+
+      // console.log("Original project:", res)
+
+      const original = res?.data
+      if (!original) {
+        alert("❌ Project not found")
+        return
+      }
+
+      // 2. Build payload for new project
+      const payload = {
+        userId: original.userId,
+        projectName: `${original.projectName} (Copy)`,
+        templateId: original.templateId,
+        institutionName: original.institutionName,
+        institutionLogoUrl: original.institutionLogoUrl,
+        institutionSignUrl: original.institutionSignUrl.signUrl,
+        signRoleName: original.institutionSignUrl.roleName,
+        cardType: original.cardType,
+        cardQuantity: original.cardQuantity,
+        address: original.address,
+        personPhotoBGColorCode: original.personPhotoBGColorCode,
+        // batchId: Math.floor(1000 + Math.random() * 9000), // new random batch
+        additionalFields: original.additionalFields || [],
+      }
+
+      // console.log("Payload:", payload)
+
+      // 3. Create new project
+      await createProject(payload).unwrap()
+
+      alert("✅ Project copied successfully")
+    } catch (err) {
+      console.error("Failed to copy project:", err)
+      alert("❌ Failed to copy project")
+    } finally {
+      setCopyingId(null)
     }
   }
 
@@ -121,6 +172,20 @@ export function ProjectOverview() {
                           <LucideFolderOpen />
                         </Button>
                       </Link>
+                      {/* Copy Project icon */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                        onClick={() => handleCopyProject(project._id)}
+                        disabled={copyingId === project._id}
+                      >
+                        {copyingId === project._id ? (
+                          <Loader2 className="animate-spin h-4 w-4 text-blue-600" />
+                        ) : (
+                          <LucideCopy />
+                        )}
+                      </Button>
                       {/* Delete icon */}
                       <Button
                         variant="ghost"

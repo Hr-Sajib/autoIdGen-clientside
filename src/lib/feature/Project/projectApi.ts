@@ -60,8 +60,8 @@ export const projectApi = baseApi.injectEndpoints({
 });
 
 export const {
-    useGetProjectQuery,
     useCreateProjectMutation,
+    useGetProjectQuery,
     useGetMyProjectQuery,
     useGetSpecificProjectQuery,
     useUpdateProjectMutation,

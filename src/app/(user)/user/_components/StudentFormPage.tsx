@@ -63,13 +63,12 @@ const getCroppedImg = async (
 // Main Component
 // ---------------------
 export default function EmployeeInformationPage() {
-  const router = useRouter()
-    const searchParams = useSearchParams();
+  const searchParams = useSearchParams();
 
   const role = searchParams.get("role");
   const batchCode = searchParams.get("batchCode");
   const rollSerial = searchParams.get("rollSerial");
-  
+
   console.log("Role:", role);
   console.log("Batch Code:", batchCode);
   console.log("Roll Serial:", rollSerial);
@@ -195,7 +194,10 @@ export default function EmployeeInformationPage() {
       if (videoRef.current) {
         videoRef.current.srcObject = stream
       }
-    } catch (err) {
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error("Camera error:", err.message)
+      }
       fileInputRef.current?.click()
     }
   }

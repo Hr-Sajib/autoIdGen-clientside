@@ -85,6 +85,7 @@ export interface Card {
 // Optional extension for table rendering
 export type CardRow = Card & {
   serialStr: string;
+  name: string;
   // status: "";
   additionalFields: Record<string, string>;
 };

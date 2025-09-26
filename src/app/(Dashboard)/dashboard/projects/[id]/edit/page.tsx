@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { LucideEdit, Trash2, Loader2, LucideDownload } from "lucide-react"
+import { LucideEdit, Trash2, Loader2, LucideDownload, Search } from "lucide-react"
 import { DashboardHeader } from "../../../_components/dashboard-header"
 import { EditCard } from "../../_components/EditCard"
 import { useGetSpecificProjectQuery, useUpdateProjectMutation } from "@/lib/feature/Project/projectApi"
@@ -27,6 +27,7 @@ export default function ViewDetailsPage() {
 
   const { data: cardData, isLoading: cardLoading } = useGetCardByBatchIdQuery(batchId, {
     skip: !project?.batchId, // safe: hook order stays the same
+    pollingInterval: 5000,
   });
 
   const [createCard] = useCreateCardMutation()
@@ -66,6 +67,7 @@ export default function ViewDetailsPage() {
       rows[index] = {
         ...card,
         serialStr: card.serialOrRollNumber.toString().padStart(2, "0"),
+        name: card.name,
         status: card.status,
         additionalFields: fields,
       }
@@ -132,11 +134,11 @@ export default function ViewDetailsPage() {
     // Open the card image in a new tab
     const newWindow = window.open(card.cardImageUrl, "_blank");
     if (newWindow) {
-      newWindow.document.title = `${card.name || card.serialOrRollNumber}-ID-Card`; // sets the tab title
+      newWindow.document.title = `${card.serialOrRollNumber || batchId}-ID-Card`; // sets the tab title
       // Optional: Create an image element with download attribute
       const img = newWindow.document.createElement("img");
       img.src = card.cardImageUrl;
-      img.alt = `${card.name || card.serialOrRollNumber} ID Card`;
+      img.alt = `${card.serialOrRollNumber} ID Card`;
       img.style.maxWidth = "100%";
       newWindow.document.body.style.margin = "0";
       newWindow.document.body.style.display = "flex";
@@ -164,72 +166,61 @@ export default function ViewDetailsPage() {
   return (
     <div className="min-h-screen bg-background">
       <DashboardHeader />
+
       <div className="p-6 space-y-6">
-        {/* Project Info */}
+        {/* Project Info Card */}
         {project && (
-          <div className="flex items-center gap-6 border rounded-lg p-4 bg-white shadow-sm">
-            <Image
-              src={project.institutionLogoUrl}
-              alt="Institution Logo"
-              width={100}
-              height={100}
-              className="w-16 h-16 object-contain" />
-            <div>
-              <h2 className="text-xl font-bold">{project.projectName}</h2>
+          <div className="flex flex-col md:flex-row items-center gap-6 bg-white p-6 rounded-xl shadow-md border border-gray-100">
+            <Image src={project.institutionLogoUrl} alt="Logo" width={100} height={100} className="w-20 h-20 object-contain rounded-lg border" />
+            <div className="flex-1 space-y-1">
+              <h2 className="text-2xl font-bold text-gray-800">{project.projectName}</h2>
               <p className="text-gray-600">{project.institutionName}</p>
-              <p className="text-sm text-gray-500">
-                Batch: <span className="font-medium">{project.batchId}</span> | Cards:{" "}
-                <span className="font-medium">{project.cardQuantity}</span> | Type:{" "}
-                <span className="font-medium">{project.cardType}</span>
+              <p className="text-gray-500 text-sm">
+                Batch: <span className="font-medium">{project.batchId}</span> | Cards: <span className="font-medium">{project.cardQuantity}</span> | Type: <span className="font-medium">{project.cardType}</span>
               </p>
-              <p className="text-sm text-gray-500">Contact: {project.contactPhone} | Address: {project.address}</p>
+              <p className="text-gray-500 text-sm">Contact: {project.contactPhone} | Address: {project.address}</p>
             </div>
             {project.institutionSignUrl?.signUrl && (
-              <div className="ml-auto text-center">
-                <Image
-                  src={project.institutionSignUrl.signUrl}
-                  alt="Sign"
-                  width={100}
-                  height={100}
-                  className="w-20 h-12 object-contain" />
+              <div className="text-center">
+                <Image src={project.institutionSignUrl.signUrl} alt="Sign" width={100} height={50} className="object-contain rounded-md border" />
                 <p className="text-xs text-gray-500">{project.institutionSignUrl.roleName}</p>
               </div>
             )}
-            <div>
-              Edit
-              <LucideEdit className="cursor-pointer" onClick={() => handleEditProject()} />
-            </div>
+            <button className="ml-auto text-indigo-600 hover:text-indigo-800 flex items-center gap-1" onClick={handleEditProject}>
+              <LucideEdit /> Edit Project
+            </button>
           </div>
         )}
 
         {/* Search + Export */}
-        <div className="flex justify-between items-center">
-          <h2 className="text-lg font-semibold">Student Details</h2>
-          <div className="flex gap-2">
-            <Input placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)} className="w-60 bg-gray-100" />
-            <Button
-              onClick={handleExport}
-              variant="outline">
-              {/* {loading ? "Preparing..." : "Export"} */}
-              Export
-            </Button>
-
+        <div className="flex flex-col md:flex-row justify-between items-center gap-3 md:gap-0">
+          <div className="relative w-full md:w-64">
+            <Input
+              placeholder="Search by Roll, Name, etc."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-10 bg-gray-100"
+            />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
           </div>
+          <Button onClick={handleExport} variant="outline" className="bg-white hover:bg-gray-100 hover:text-gray-800">
+            Export All
+          </Button>
         </div>
 
         {/* Student Table */}
-        <div className="overflow-x-auto rounded-lg border">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-left text-gray-700 font-medium">
+        <div className="overflow-x-auto rounded-xl border border-gray-100 shadow-sm bg-white">
+          <table className="min-w-full text-left text-gray-700">
+            <thead className="bg-gray-100 sticky top-0 z-10">
               <tr>
-                <th className="px-4 py-2 border-b">#</th>
-                <th className="px-4 py-2 border-b">Batch Code</th>
-                <th className="px-4 py-2 border-b">Name</th>
+                <th className="px-4 py-3 border-b">Sr.</th>
+                <th className="px-4 py-3 border-b">Batch</th>
+                <th className="px-4 py-3 border-b">Name</th>
                 {project?.additionalFields?.map((field: string, idx: number) => (
-                  <th key={idx} className="px-4 py-2 border-b">{field}</th>
+                  <th key={idx} className="px-4 py-3 border-b">{field}</th>
                 ))}
-                <th className="px-4 py-2 border-b">Status</th>
-                <th className="px-4 py-2 border-b">Actions</th>
+                <th className="px-4 py-3 border-b">Status</th>
+                <th className="px-4 py-3 border-b">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -241,30 +232,58 @@ export default function ViewDetailsPage() {
                 </tr>
               ) : cards.length > 0 ? (
                 cards.map((card, idx) => (
-                  <tr key={idx} className="hover:bg-gray-50">
+                  <tr key={idx} className="hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-2 border-b">{card.serialStr}</td>
                     <td className="px-4 py-2 border-b">{card.batchId}</td>
-                    <td className="px-4 py-2 border-b">{card.name || "-"}</td>
+                    <td className="px-4 py-2 border-b">{card.name}</td>
                     {project?.additionalFields?.map((field: string, i: number) => (
                       <td key={i} className="px-4 py-2 border-b">{card.additionalFields[field] || "-"}</td>
                     ))}
-                    <td className="px-4 py-2 border-b">{card.status}</td>
-                    <td className="px-4 py-2 border-b flex gap-3">
-                      <button onClick={() => handleEditCard(card)}>
-                        <LucideEdit size={18} className="text-gray-700 hover:text-indigo-600" />
-                      </button>
-                      <button onClick={() => handleDeleteCard(card)}>
-                        <Trash2 size={18} className="text-red-500 hover:text-red-700" />
-                      </button>
-                      <button onClick={() => handleDownloadCard(card)}>
-                        <LucideDownload size={18} className="text-gray-700 hover:text-indigo-600" />
-                      </button>
+                    <td className="px-4 py-2 border-b">
+                      {card.status === "pending" ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                          Pending
+                        </span>
+                      ) : card.status === "generated" ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                          Generated
+                        </span>
+                      ) : (
+                        <span className="text-gray-500">-</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2 border-b">
+                      <>
+                        <button onClick={() => handleEditCard(card)} className="p-1 hover:bg-indigo-100 rounded">
+                          <LucideEdit size={18} className="text-indigo-600" />
+                        </button>
+                        {card._id ? (
+                          <>
+                            <button onClick={() => handleDeleteCard(card)} className="p-1 hover:bg-red-100 rounded">
+                              <Trash2 size={18} className="text-red-600" />
+                            </button>
+                            <button
+                              onClick={() => handleDownloadCard(card)}
+                              disabled={card.status.toLowerCase() === "pending"}
+                              className={`p-1 rounded ${card.status.toLowerCase() === "pending"
+                                ? "text-gray-400 cursor-not-allowed bg-gray-100"
+                                : "text-gray-700 hover:bg-gray-100"
+                                }`}
+                            >
+                              <LucideDownload size={18} />
+                            </button>
+                          </>
+                        ) : (
+                          // <span className="text-gray-500">—</span>
+                          null
+                        )}
+                      </>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={4 + (project?.additionalFields?.length || 0)} className="text-center text-gray-500 py-6">
+                  <td colSpan={4 + (project?.additionalFields?.length || 0)} className="text-center py-6 text-gray-500">
                     No student records found
                   </td>
                 </tr>
@@ -281,7 +300,6 @@ export default function ViewDetailsPage() {
             initialData={selectedCard}
             projectAdditionalFields={project?.additionalFields || []}
           />
-
         )}
 
         {project && (

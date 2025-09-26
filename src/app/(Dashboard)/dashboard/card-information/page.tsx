@@ -69,10 +69,9 @@ export default function InstituteTemplateSetupPage() {
 
     // Default labels if no session storage
     return {
-      studentName: "Name", // Static field - cannot be changed
+      // studentName: "Name",
       department: "Department",
       rollNumber: "Roll Number",
-      employeeId: "Employee ID",
       bloodGroup: "Blood Group",
       dateOfBirth: "Date of Birth",
       phone: "Phone"
@@ -164,8 +163,7 @@ export default function InstituteTemplateSetupPage() {
   }, [])
 
   // ✅ Hook for creating project
-  const [createProject] =
-    useCreateProjectMutation();
+  const [createProject] = useCreateProjectMutation();
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev: any) => ({ ...prev, [field]: value }));
@@ -198,6 +196,7 @@ export default function InstituteTemplateSetupPage() {
 
   // ✅ Final function to call API + save to session
   const handleGenerateProject = async (quantity: number) => {
+
     let toastId: string | number | undefined
     try {
       if (!user || !user.userId) {
@@ -205,10 +204,15 @@ export default function InstituteTemplateSetupPage() {
         return;
       }
 
+      const templateId =
+        cardOrientation === "vertical"
+          ? "68b759c0fa9b3b1fd60fab77" // vertical
+          : "68b7582aaa0bc46f0acfb675"; // horizontal
+
       const payload = {
         userId: user.userId,
-        projectName: `${projectName} ID Project`,
-        templateId: "68b7582aaa0bc46f0acfb675", // TODO: dynamic later
+        projectName: `${projectName}`,
+        templateId,
         institutionName: formData.instituteName,
         cardType: formData.idCardType,
         address: formData.address,
@@ -216,7 +220,10 @@ export default function InstituteTemplateSetupPage() {
         institutionLogoUrl: formData.logoUrl,
         institutionSignUrl: formData.signatureUrl,
         signRoleName: formData.whoseSign,
-        additionalFields: ["Class", "Section", "Roll"], // can be built from customLabels
+        personPhotoBGColorCode: formData.bgColor,
+        additionalFields: Object.entries(customLabels)
+          .filter(([key]) => key !== "name")
+          .map(([_, label]) => label),
         cardQuantity: quantity,
       };
 
@@ -227,7 +234,7 @@ export default function InstituteTemplateSetupPage() {
       })
 
       // ✅ 2. Call API
-      console.log("📤 Sending payload:", payload);
+      // console.log("📤 Sending payload:", payload);
       await createProject(payload).unwrap();
 
       // ✅ Replace loading with success
@@ -242,21 +249,19 @@ export default function InstituteTemplateSetupPage() {
       sessionStorage.removeItem("customLabels");
       sessionStorage.removeItem("cardOrientation");
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       const errorMessage =
-        err?.data?.message ||
-        err?.error ||
+        (err as { data?: { message?: string }; error?: string })?.data?.message ||
+        (err as { error?: string })?.error ||
         "❌ Failed to create project. Please try again."
 
-      // ✅ Replace loading with error
       toast.error(errorMessage, {
         id: toastId,
-        duration: 7000, // noticeable & stays longer
+        duration: 7000,
         className: "bg-red-600 text-white text-center font-semibold shadow-lg",
       })
     }
-  };
-
+  }
 
   // Dynamic card rendering based on type and orientation from session storage
   const renderCard = () => {
@@ -364,12 +369,13 @@ export default function InstituteTemplateSetupPage() {
                     <div className="flex items-center gap-2 mb-2">
                       {/* Name field is static - no edit button */}
                       <label className="block text-base font-medium text-gray-800">
-                        {customLabels.studentName}
+                        {/* {customLabels.studentName} */}
+                        Name
                       </label>
                       <span className="text-xs text-gray-500 ml-2">(Fixed)</span>
                     </div>
                     <Input
-                      hidden
+                      // hidden
                       type="text"
                       placeholder="Type Name"
                       value={formData.studentName}

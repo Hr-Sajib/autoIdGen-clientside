@@ -14,14 +14,18 @@ export default function VerifyPage() {
 
   const [verifyCard, { isLoading }] = useVerificationStatusMutation();
 
-  const handleVerify = async () => {
-    try {
-      const res = await verifyCard({ batchId, payloadString: payload }).unwrap();
-      setVerifyStatus(res);
-    } catch (err: any) {
-      setVerifyStatus({ error: err?.data?.message || "Verification failed" });
-    }
-  };
+const handleVerify = async () => {
+  try {
+    const res = await verifyCard({ batchId, payloadString: payload }).unwrap()
+    setVerifyStatus(res)
+  } catch (err: unknown) {
+    const errorMessage =
+      (err as { data?: { message?: string } })?.data?.message ||
+      "Verification failed"
+
+    setVerifyStatus({ error: errorMessage })
+  }
+}
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50 p-4">

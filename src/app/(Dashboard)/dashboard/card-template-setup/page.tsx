@@ -101,8 +101,14 @@ export default function InstituteTemplateSetupPage() {
           })
         }
       } catch (error) {
+        let message = "Error uploading image!"
+
+        if (error instanceof Error) {
+          message = error.message
+        }
+
         toast.dismiss()
-        toast.error("Error uploading image!", {
+        toast.error(message, {
           duration: 6000,
           className: "bg-red-600 text-white font-semibold shadow-lg",
         })

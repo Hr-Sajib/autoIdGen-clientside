@@ -133,7 +133,7 @@ export function ProjectOverview() {
             <thead>
               <tr className="border-b-2 border-b-blue-600 border-border">
                 <th className="text-left py-3 px-4 font-semibold text-muted-foreground">Project Name</th>
-                <th className="text-left py-3 px-4 font-semibold text-muted-foreground">Institution</th>
+                <th className="text-left py-3 px-4 font-semibold text-muted-foreground">Institution/Company</th>
                 <th className="text-left py-3 px-4 font-semibold text-muted-foreground">Card Type</th>
                 <th className="text-left py-3 px-4 font-semibold text-muted-foreground">Total Cards</th>
                 <th className="text-left py-3 px-4 font-semibold text-muted-foreground">Batch Code</th>

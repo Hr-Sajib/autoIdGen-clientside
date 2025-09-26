@@ -6,13 +6,13 @@ export default function Error({
   error,
   reset,
 }: {
-  error: Error;
-  reset: () => void;
+  error?: { message: string };
+  reset?: () => void;
 }) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-6">
       <div className="text-center">
-       
+
 
         {/* Error image */}
         <div className="flex justify-center mb-6">
@@ -28,7 +28,7 @@ export default function Error({
 
         {/* Error message */}
         <p className="text-gray-600 mb-6 break-words text-sm sm:text-base">
-          {error.message}
+          {error?.message}
         </p>
 
         {/* Retry button */}

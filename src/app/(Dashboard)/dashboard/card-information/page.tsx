@@ -375,7 +375,7 @@ export default function InstituteTemplateSetupPage() {
                       <span className="text-xs text-gray-500 ml-2">(Fixed)</span>
                     </div>
                     <Input
-                      // hidden
+                      hidden
                       type="text"
                       placeholder="Type Name"
                       value={formData.studentName}

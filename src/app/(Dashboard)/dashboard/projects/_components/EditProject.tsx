@@ -124,7 +124,7 @@ export function EditProject({ isOpen, onClose, onSubmit, initialData }: EditProj
         <h2 className="text-xl font-bold text-gray-900 mb-6">Edit Project</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <Input name="userId" value={formData.userId} onChange={handleChange} placeholder="User ID" />
+          {/* <Input name="userId" value={formData.userId} onChange={handleChange} placeholder="User ID" /> */}
           <Input name="templateId" value={formData.templateId} onChange={handleChange} placeholder="Template ID" />
           <Input name="batchId" value={formData.batchId} onChange={handleChange} placeholder="Batch ID" />
           <Input name="projectName" value={formData.projectName} onChange={handleChange} placeholder="Project Name" />

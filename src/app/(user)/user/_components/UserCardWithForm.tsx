@@ -925,6 +925,10 @@ import { useSearchParams, useRouter } from "next/navigation";
 import DownloadImage from '@/../public/images/download_icon.svg'
 import UploadImage from '@/../public/images/upload_icon.svg'
 import TripodImage from '@/../public/images/camera-tripod.svg'
+import Error from "@/app/error";
+import ErrorImage from "@/../public/images/error_id_card.png";
+import Link from "next/link";
+
 
 // ===========================
 // Type Definitions
@@ -1633,33 +1637,80 @@ const UserCardWithForm: React.FC = () => {
 
   // Error state
   if (error) {
+    {
+      console.error('❌ Error: from UserCardWithForm error state', error);
+    }
     return (
-      <div className="min-h-screen p-6">
-        <div className="grid lg:grid-cols-2 gap-8">
-          <div className="space-y-6">
-            <div className="text-red-500">
-              <h2 className="text-lg font-bold mb-3">Error</h2>
-              <p>{error}</p>
+      <>
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-6">
+          <div className="text-center">
+            {/* Error image */}
+            <div className="flex justify-center mb-6">
+              <Image
+                src={ErrorImage}
+                alt="Error illustration"
+                width={600}
+                height={400}
+                className="rounded-lg object-cover"
+                priority
+              />
             </div>
+
+            {/* Error message */}
+            <p className="text-gray-600 mb-6 break-words text-sm sm:text-base">
+              {error}
+            </p>
+
+            {/* Retry button */}
+            <Link href="/">
+              <Button
+                className="px-6 py-2 bg-blue-600/60 text-white font-medium rounded-lg hover:bg-blue-700/80 focus:ring-2 focus:ring-red-400 focus:outline-none transition-colors duration-200"
+              >
+                Try Again
+              </Button>
+            </Link>
           </div>
         </div>
-      </div>
+        {/* <Error error={new Error(error)} /> */}
+      </>
     );
   }
 
   // No project data
   if (!projectData) {
     return (
-      <div className="min-h-screen p-6">
-        <div className="grid lg:grid-cols-2 gap-8">
-          <div className="space-y-6">
-            <div className="text-gray-500">
-              <h2 className="text-lg font-bold mb-3">No Data</h2>
-              <p>No project data found for this batch code.</p>
+      <>
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-6">
+          <div className="text-center">
+            {/* Error image */}
+            <div className="flex justify-center mb-6">
+              <Image
+                src={ErrorImage}
+                alt="Error illustration"
+                width={600}
+                height={400}
+                className="rounded-lg object-cover"
+                priority
+              />
             </div>
+
+            {/* Error message */}
+            <p className="text-gray-600 mb-6 break-words text-sm sm:text-base">
+              No project data found for this batch code.
+            </p>
+
+            {/* Retry button */}
+            <Link href="/">
+              <Button
+                className="px-6 py-2 bg-blue-600/60 text-white font-medium rounded-lg hover:bg-blue-700/80 focus:ring-2 focus:ring-red-400 focus:outline-none transition-colors duration-200"
+              >
+                Try Again
+              </Button>
+            </Link>
           </div>
         </div>
-      </div>
+        {/* <Error error={{ message: "No project data found for this batch code." } as Error} /> */}
+      </>
     );
   }
 
@@ -1705,7 +1756,7 @@ const UserCardWithForm: React.FC = () => {
         <div className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <Input
-              placeholder="Student Name *"
+              placeholder={`${projectData.cardType} Name *`}
               value={studentName}
               onChange={(e) => setStudentName(e.target.value)}
               disabled={isAnyLoading}
@@ -1813,7 +1864,7 @@ const UserCardWithForm: React.FC = () => {
                 instituteName={projectData.institutionName}
                 address={projectData.address}
                 idCardType={`${projectData.cardType} ID`}
-                studentName={studentName || "Student Name"}
+                studentName={studentName || `${projectData.cardType} Name `}
                 qrData={`${projectData.batchId}-${rollSerial || "000"}`}
                 logoUrl={projectData.institutionLogoUrl}
                 profileUrl={profileUrl}
@@ -1827,7 +1878,7 @@ const UserCardWithForm: React.FC = () => {
                 instituteName={projectData.institutionName}
                 address={projectData.address}
                 idCardType={`${projectData.cardType} ID`}
-                studentName={studentName || "Student Name"}
+                studentName={studentName || `${projectData.cardType} Name *`}
                 qrData={`${projectData.batchId}-${rollSerial || "000"}`}
                 logoUrl={projectData.institutionLogoUrl}
                 profileUrl={profileUrl}

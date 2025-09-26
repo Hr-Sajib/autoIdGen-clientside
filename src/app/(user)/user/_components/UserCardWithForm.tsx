@@ -1,7 +1,5 @@
-
-
-
 "use client";
+
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,6 +11,8 @@ import { useSearchParams, useRouter } from "next/navigation";
 import DownloadImage from '@/../public/images/download_icon.svg'
 import UploadImage from '@/../public/images/upload_icon.svg'
 import TripodImage from '@/../public/images/camera-tripod.svg'
+import Link from "next/link";
+import ErrorImage from "@/../public/images/error_id_card.png";
 
 // ===========================
 // Type Definitions
@@ -190,7 +190,7 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({ finalImageUrl, st
 
         <div className="bg-white rounded-lg p-2 md:p-8 text-center">
           <h3 className="text-xl font-semibold mb-6 text-gray-800">Final Generated ID Card</h3>
-          
+
           <div className="mb-6">
             <Image
               src={finalImageUrl}
@@ -203,22 +203,22 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({ finalImageUrl, st
           </div>
 
           <div className="flex justify-center gap-4 flex-wrap mb-8">
-            <Button 
+            <Button
               onClick={() => downloadImage(finalImageUrl, `${studentName || 'Student'}_ID_Card.png`)}
-             className="bg-[#4A61E4] hover:bg-blue-700 text-white" 
-             disabled={isDownloading}
+              className="bg-[#4A61E4] hover:bg-blue-700 text-white"
+              disabled={isDownloading}
             >
-              <Image src={DownloadImage} width={26} height={14} alt=""/>
+              <Image src={DownloadImage} width={26} height={14} alt="" />
               {isDownloading ? "Downloading..." : "Export"}
             </Button>
-            <Button 
+            <Button
               onClick={() => window.open(finalImageUrl, '_blank')}
               variant="outline"
               className="px-6 py-3"
             >
               🔍 View Full Size
             </Button>
-            <Button 
+            <Button
               onClick={() => {
                 navigator.clipboard.writeText(finalImageUrl);
                 alert('Image URL copied to clipboard!');
@@ -231,7 +231,7 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({ finalImageUrl, st
           </div>
 
           <div className="border-t pt-6">
-            <Button 
+            <Button
               onClick={onBackToForm}
               variant="outline"
               className="md:px-8 md:py-2 text-xs md:text-base"
@@ -251,26 +251,26 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({ finalImageUrl, st
 const UserCardWithForm: React.FC = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  
+
   const role = searchParams.get("role");
   const batchCode = searchParams.get("batchCode");
   const rollSerial = searchParams.get("rollSerial");
-  
+
   const [projectData, setProjectData] = useState<ProjectData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Loading states for different operations
   const [isCropping, setIsCropping] = useState(false);
   const [isProcessingBackground, setIsProcessingBackground] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  
+
   // Final image states
   const [finalImageUrl, setFinalImageUrl] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [showSuccessPage, setShowSuccessPage] = useState(false);
-  
+
   console.log("Role:", role);
   console.log("Batch Code:", batchCode);
   console.log("Roll Serial:", rollSerial);
@@ -287,13 +287,13 @@ const UserCardWithForm: React.FC = () => {
         setIsLoading(true);
         setError(null);
         console.log("🔄 Fetching project data for batch:", batchCode);
-        
+
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}project/batch/${batchCode}`);
-        
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const apiResponse: ApiResponse = await response.json();
         console.log("✅ Project data fetched:", apiResponse);
         console.log("personPhotoBGColorCode:", apiResponse?.data?.personPhotoBGColorCode);
@@ -301,7 +301,7 @@ const UserCardWithForm: React.FC = () => {
         console.log('height:', 200);
         console.log('enhance_quality:', true);
         console.log('center_face:', true);
-        
+
         if (apiResponse.success) {
           setProjectData(apiResponse.data);
         } else {
@@ -369,23 +369,23 @@ const UserCardWithForm: React.FC = () => {
    */
   const handleCropSave = async () => {
     if (!imageSrc || !croppedAreaPixels) return alert("Select area to crop");
-    
+
     let croppedImage: string | null = null;
-    
+
     try {
       // Step 1: Start cropping
       setIsCropping(true);
       console.log("✂️ Starting crop process...", croppedAreaPixels);
-      
+
       croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
       console.log("✅ Image cropped successfully");
       setPhotoPreview(croppedImage);
       setIsCropping(false);
-      
+
       // Step 2: Background removal
       setIsProcessingBackground(true);
       console.log("🎨 Starting background removal...");
-      
+
       // Clean up blob URLs after setting preview
       if (imageSrc.startsWith("blob:")) URL.revokeObjectURL(imageSrc);
       if (photoPreview && photoPreview.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
@@ -425,11 +425,11 @@ const UserCardWithForm: React.FC = () => {
       let processedImageBlob: Blob | null = null;
       const contentType = apiResponse.headers.get('content-type');
       console.log("Response Content-Type:", contentType);
-      
+
       if (contentType && contentType.includes('application/json')) {
         const apiResult = await apiResponse.json();
         console.log("📄 JSON Response:", apiResult);
-        
+
         if (apiResult.imageUrl || apiResult.processedImageUrl || apiResult.image_url) {
           const processedImageUrl = apiResult.imageUrl || apiResult.processedImageUrl || apiResult.image_url;
           const imageResponse = await fetch(processedImageUrl);
@@ -448,13 +448,13 @@ const UserCardWithForm: React.FC = () => {
       if (processedImageBlob) {
         setIsUploadingImage(true);
         console.log("☁️ Uploading to ImgBB...");
-        
-        const processedFile = new File([processedImageBlob], 'processed-image.png', { 
-          type: processedImageBlob.type || 'image/png' 
+
+        const processedFile = new File([processedImageBlob], 'processed-image.png', {
+          type: processedImageBlob.type || 'image/png'
         });
-        
+
         const hostedUrl = await imageUpload(processedFile);
-        
+
         if (hostedUrl) {
           console.log("✅ HOSTED URL:", hostedUrl);
           setProfileUrl(hostedUrl);
@@ -465,14 +465,14 @@ const UserCardWithForm: React.FC = () => {
         setIsUploadingImage(false);
       } else {
         console.log("⚠️ No processed image, using fallback");
-        
+
         // Fallback: upload cropped image
         try {
           setIsUploadingImage(true);
           const croppedBlob = dataURLtoBlob(croppedImage);
           const croppedFile = new File([croppedBlob], 'cropped-image.jpg', { type: 'image/jpeg' });
           const hostedUrl = await imageUpload(croppedFile);
-          
+
           if (hostedUrl) {
             console.log("✅ FALLBACK HOSTED URL:", hostedUrl);
             setProfileUrl(hostedUrl);
@@ -489,27 +489,27 @@ const UserCardWithForm: React.FC = () => {
       setShowCropper(false);
       setImageSrc(null);
       console.log("✅ Process completed successfully");
-      
+
     } catch (error) {
       console.error("❌ Error in crop save:", error);
-      
+
       // Reset all loading states
       setIsCropping(false);
       setIsProcessingBackground(false);
       setIsUploadingImage(false);
-      
+
       // Still set the cropped image as preview even if API fails
       if (croppedImage) {
         console.log("🔄 Setting cropped image as fallback");
         setPhotoPreview(croppedImage);
-        
+
         // Try to upload the cropped image to imgbb as fallback
         try {
           setIsUploadingImage(true);
           const croppedBlob = dataURLtoBlob(croppedImage);
           const croppedFile = new File([croppedBlob], 'cropped-image.jpg', { type: 'image/jpeg' });
           const hostedUrl = await imageUpload(croppedFile);
-          
+
           if (hostedUrl) {
             console.log("✅ ERROR FALLBACK HOSTED URL:", hostedUrl);
             setProfileUrl(hostedUrl);
@@ -521,7 +521,7 @@ const UserCardWithForm: React.FC = () => {
           setIsUploadingImage(false);
         }
       }
-      
+
       setShowCropper(false);
       setImageSrc(null);
       alert(`Failed to process image: ${(error as Error).message}`);
@@ -549,7 +549,7 @@ const UserCardWithForm: React.FC = () => {
 
   const handleCaptureFromWebcam = () => {
     if (!videoRef.current) return;
-    
+
     console.log("📸 Capturing from webcam...");
     const video = videoRef.current;
     const canvas = document.createElement("canvas");
@@ -592,7 +592,7 @@ const UserCardWithForm: React.FC = () => {
         fieldValue: values[field] || ""
       }))
     };
-    
+
     console.log("🔄 Generating ID card:", responseData);
 
     try {
@@ -610,7 +610,7 @@ const UserCardWithForm: React.FC = () => {
 
       // Check response content type
       const contentType = response.headers.get('content-type');
-      
+
       if (contentType && contentType.includes('image')) {
         // Direct image response
         const imageBlob = await response.blob();
@@ -621,7 +621,7 @@ const UserCardWithForm: React.FC = () => {
         // JSON response
         const result = await response.json();
         console.log('📄 Save data response:', result);
-        
+
         // Check for different possible image URL fields
         if (result.imageUrl) {
           setFinalImageUrl(result.imageUrl);
@@ -637,14 +637,14 @@ const UserCardWithForm: React.FC = () => {
           setFinalImageUrl(imageDataUrl);
         }
       }
-      
+
       setSaveSuccess(true);
       // Show success page after successful generation
       setTimeout(() => {
         setShowSuccessPage(true);
         console.log('🎉 Showing success page');
       }, 1000); // Small delay to show success message
-      
+
     } catch (error) {
       console.error('❌ Failed to save data:', error);
       alert('Failed to save data. Please try again.');
@@ -685,8 +685,8 @@ const UserCardWithForm: React.FC = () => {
   // Show success page when image is ready
   if (showSuccessPage && finalImageUrl) {
     return (
-      <IDCardSuccessPage 
-        finalImageUrl={finalImageUrl} 
+      <IDCardSuccessPage
+        finalImageUrl={finalImageUrl}
         studentName={studentName}
         onBackToForm={handleBackToForm}
       />
@@ -715,37 +715,84 @@ const UserCardWithForm: React.FC = () => {
     );
   }
 
-  // Error state
-  if (error) {
-    return (
-      <div className="min-h-screen p-6">
-        <div className="grid lg:grid-cols-2 gap-8">
-          <div className="space-y-6">
-            <div className="text-red-500">
-              <h2 className="text-lg font-bold mb-3">Error</h2>
-              <p>{error}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+    // Error state
+    if (error) {
+        {
+            console.error('❌ Error: from UserCardWithForm error state', error);
+        }
+        return (
+            <>
+                <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-6">
+                    <div className="text-center">
+                        {/* Error image */}
+                        <div className="flex justify-center mb-6">
+                            <Image
+                                src={ErrorImage}
+                                alt="Error illustration"
+                                width={600}
+                                height={400}
+                                className="rounded-lg object-cover"
+                                priority
+                            />
+                        </div>
 
-  // No project data
-  if (!projectData) {
-    return (
-      <div className="min-h-screen p-6">
-        <div className="grid lg:grid-cols-2 gap-8">
-          <div className="space-y-6">
-            <div className="text-gray-500">
-              <h2 className="text-lg font-bold mb-3">No Data</h2>
-              <p>No project data found for this batch code.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+                        {/* Error message */}
+                        <p className="text-gray-600 mb-6 break-words text-sm sm:text-base">
+                            {error}
+                        </p>
+
+                        {/* Retry button */}
+                        <Link href="/">
+                            <Button
+                                className="px-6 py-2 bg-blue-600/60 text-white font-medium rounded-lg hover:bg-blue-700/80 focus:ring-2 focus:ring-red-400 focus:outline-none transition-colors duration-200"
+                            >
+                                Try Again
+                            </Button>
+                        </Link>
+                    </div>
+                </div>
+                {/* <Error error={new Error(error)} /> */}
+            </>
+        );
+    }
+
+    // No project data
+    if (!projectData) {
+        return (
+            <>
+                <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-6">
+                    <div className="text-center">
+                        {/* Error image */}
+                        <div className="flex justify-center mb-6">
+                            <Image
+                                src={ErrorImage}
+                                alt="Error illustration"
+                                width={600}
+                                height={400}
+                                className="rounded-lg object-cover"
+                                priority
+                            />
+                        </div>
+
+                        {/* Error message */}
+                        <p className="text-gray-600 mb-6 break-words text-sm sm:text-base">
+                            No project data found for this batch code.
+                        </p>
+
+                        {/* Retry button */}
+                        <Link href="/">
+                            <Button
+                                className="px-6 py-2 bg-blue-600/60 text-white font-medium rounded-lg hover:bg-blue-700/80 focus:ring-2 focus:ring-red-400 focus:outline-none transition-colors duration-200"
+                            >
+                                Try Again
+                            </Button>
+                        </Link>
+                    </div>
+                </div>
+                {/* <Error error={{ message: "No project data found for this batch code." } as Error} /> */}
+            </>
+        );
+    }
 
   // Check if any loading operation is in progress
   const isAnyLoading = isCropping || isProcessingBackground || isUploadingImage || isSaving;
@@ -753,7 +800,7 @@ const UserCardWithForm: React.FC = () => {
   return (
     <div className="min-h-screen p-6">
       <h1 className="text-2xl font-bold text-gray-900 mb-6">{projectData.cardType} Information</h1>
-      
+
       {/* Loading Overlay when saving */}
       {isSaving && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -772,13 +819,13 @@ const UserCardWithForm: React.FC = () => {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
             <h3 className="text-lg font-semibold mb-2">
               {isCropping ? "Cropping Image..." :
-               isProcessingBackground ? "Processing Background..." :
-               "Uploading Image..."}
+                isProcessingBackground ? "Processing Background..." :
+                  "Uploading Image..."}
             </h3>
             <p className="text-gray-600">
               {isCropping ? "Applying your crop selection" :
-               isProcessingBackground ? "Removing background and enhancing photo" :
-               "Saving processed image to cloud"}
+                isProcessingBackground ? "Removing background and enhancing photo" :
+                  "Saving processed image to cloud"}
             </p>
           </div>
         </div>
@@ -814,29 +861,29 @@ const UserCardWithForm: React.FC = () => {
                 onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
                 disabled={isAnyLoading}
               />
-               <span className="flex items-center gap-2 font-semibold ">
-                <Image className="" src={UploadImage} width={26} height={14} alt=""/>
+              <span className="flex items-center gap-2 font-semibold ">
+                <Image className="" src={UploadImage} width={26} height={14} alt="" />
                 Upload Image
               </span>
             </label>
 
-            <button 
+            <button
               onClick={handleTakePhoto}
               disabled={isAnyLoading}
               className="px-6 py-6 rounded-2xl shadow-none border border-transparent hover:border-gray-300 hover:bg-white  hover:text-black flex gap-2 items-center font-semibold"
             >
-              <Image src={TripodImage} width={26} height={14} alt=""/>
+              <Image src={TripodImage} width={26} height={14} alt="" />
               Take Photo
             </button>
 
-            <Button 
-              className="bg-[#4A61E4] ml-4 hover:bg-blue-700 py-6 px-7 rounded-2xl text-white" 
+            <Button
+              className="bg-[#4A61E4] ml-4 hover:bg-blue-700 py-6 px-7 rounded-2xl text-white"
               onClick={handleSaveData}
               disabled={isAnyLoading}
             >
               {isSaving ? "⏳ Generating..." : (
                 <>
-                  <Image src={DownloadImage} width={26} height={14} alt=""/>
+                  <Image src={DownloadImage} width={26} height={14} alt="" />
                   Export
                 </>
               )}
@@ -911,7 +958,7 @@ const UserCardWithForm: React.FC = () => {
                 instituteName={projectData.institutionName}
                 address={projectData.address}
                 idCardType={`${projectData.cardType} ID`}
-                 studentName={studentName || `${projectData.cardType} Name`}
+                studentName={studentName || `${projectData.cardType} Name`}
                 qrData={`${projectData.batchId}-${rollSerial || "000"}`}
                 logoUrl={projectData.institutionLogoUrl}
                 profileUrl={profileUrl}
@@ -945,21 +992,21 @@ const UserCardWithForm: React.FC = () => {
               />
             </div>
             <div className="p-4 border-t flex justify-end gap-3">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => setShowCropper(false)}
                 disabled={isCropping || isProcessingBackground || isUploadingImage}
               >
                 Cancel
               </Button>
-              <Button 
-                onClick={handleCropSave} 
+              <Button
+                onClick={handleCropSave}
                 className="bg-blue-600 text-white"
                 disabled={isCropping || isProcessingBackground || isUploadingImage}
               >
                 {isCropping ? "Cropping..." :
-                 isProcessingBackground ? "Processing..." :
-                 isUploadingImage ? "Uploading..." : "Apply Crop"}
+                  isProcessingBackground ? "Processing..." :
+                    isUploadingImage ? "Uploading..." : "Apply Crop"}
               </Button>
             </div>
           </div>

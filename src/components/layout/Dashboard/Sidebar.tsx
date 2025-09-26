@@ -182,6 +182,8 @@ export function Sidebar({ onToggle }: SidebarProps) {
             }
           </nav>
           <nav className="flex-1 p-4 pt-1">
+             {
+              pathname.includes('/dashboard') && (
             <Button
               variant="default"
               className={cn(
@@ -204,6 +206,7 @@ export function Sidebar({ onToggle }: SidebarProps) {
                 </span>
               </Link>
             </Button>
+              )}
           </nav>
 
           {/* Footer */}

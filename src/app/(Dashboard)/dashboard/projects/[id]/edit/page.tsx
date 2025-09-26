@@ -332,6 +332,7 @@ import { Card, CardRow, Project } from "@/types/inedx"
 import { EditProject } from "../../_components/EditProject"
 import Image from "next/image"
 import { downloadBulkExport } from "@/utils/bulkExport"
+import Loading from "@/app/loading"
 
 export default function ViewDetailsPage() {
   const params = useParams()
@@ -484,7 +485,8 @@ export default function ViewDetailsPage() {
     }
   };
 
-  if (projectLoading) return <div className="p-6">Loading project...</div>
+  // if (projectLoading) return <div className="p-6">Loading project...</div>
+  if (projectLoading) return <Loading/>
   if (projectError) return <div className="p-6 text-red-500">Failed to load project</div>
 
 
@@ -559,9 +561,10 @@ export default function ViewDetailsPage() {
             </thead>
             <tbody>
               {cardLoading ? (
-                <tr>
-                  <td colSpan={4 + (project?.additionalFields?.length || 0)} className="text-center py-6">
-                    <Loader2 className="animate-spin mx-auto h-6 w-6 text-gray-500" />
+                <tr >
+                  <td colSpan={4 + (project?.additionalFields?.length || 0)} className="text-center py-6 h-[400px]" >
+                    {/* <Loader2 className="animate-spin mx-auto h-6 w-6 text-gray-500" /> */}
+                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
                   </td>
                 </tr>
               ) : filteredCards.length > 0 ? (

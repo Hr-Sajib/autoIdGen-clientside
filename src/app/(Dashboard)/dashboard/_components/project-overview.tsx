@@ -260,6 +260,7 @@ import { useState } from "react"
 import { projectApi, useCreateProjectMutation, useDeleteProjectMutation, useGetMyProjectQuery, useGetSpecificProjectQuery } from "@/lib/feature/Project/projectApi"
 import { Project } from "@/types/inedx"
 import { useAppDispatch } from "@/lib/hooks"
+import Loading from "@/app/loading"
 
 export function ProjectOverview() {
   const { data, isLoading, isError } = useGetMyProjectQuery(undefined)
@@ -365,7 +366,8 @@ export function ProjectOverview() {
   }
 
   if (isLoading) {
-    return <p className="p-6 text-muted-foreground">Loading projects...</p>
+    // return <p className="p-6 text-muted-foreground">Loading projects.sf..</p>
+    return <Loading/>
   }
 
   if (isError) {

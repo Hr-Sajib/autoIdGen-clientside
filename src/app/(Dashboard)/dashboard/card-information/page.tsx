@@ -22,13 +22,6 @@ export default function InstituteTemplateSetupPage() {
   const [editingField, setEditingField] = useState<string | null>(null)
 
   const searchParams = useSearchParams()
-  // Get projectName from query param OR session storage
-  // const queryProjectName = searchParams.get("project")
-  // const savedFormData = sessionStorage.getItem("formData")
-  // const sessionProjectName = savedFormData ? JSON.parse(savedFormData).project : null
-  // const projectName = queryProjectName || sessionProjectName || ""
-
-
 
   // ✅ ProjectName state (dynamic from sessionStorage or query param)
   const [projectName, setProjectName] = useState("")
@@ -195,73 +188,69 @@ export default function InstituteTemplateSetupPage() {
   );
 
   // ✅ Final function to call API + save to session
-  const handleGenerateProject = async (quantity: number) => {
+const handleGenerateProject = async (quantity: number) => {
+  if (!user || !user.userId) return;
 
-    let toastId: string | number | undefined
-    try {
-      if (!user || !user.userId) {
-        console.error("❌ User is not logged in or userId is missing.");
-        return;
-      }
+  const templateId =
+    cardOrientation === "vertical"
+      ? "68b759c0fa9b3b1fd60fab77"
+      : "68b7582aaa0bc46f0acfb675";
 
-      const templateId =
-        cardOrientation === "vertical"
-          ? "68b759c0fa9b3b1fd60fab77" // vertical
-          : "68b7582aaa0bc46f0acfb675"; // horizontal
+  const payload = {
+    userId: user.userId,
+    projectName: `${projectName}`,
+    templateId,
+    institutionName: formData.instituteName,
+    cardType: formData.idCardType,
+    address: formData.address,
+    contactPhone: formData.phone,
+    institutionLogoUrl: formData.logoUrl,
+    institutionSignUrl: formData.signatureUrl,
+    signRoleName: formData.whoseSign,
+    personPhotoBGColorCode: formData.bgColor,
+    additionalFields: Object.entries(customLabels)
+      .filter(([key]) => key !== "name")
+      .map(([_, label]) => label),
+    cardQuantity: quantity,
+  };
 
-      const payload = {
-        userId: user.userId,
-        projectName: `${projectName}`,
-        templateId,
-        institutionName: formData.instituteName,
-        cardType: formData.idCardType,
-        address: formData.address,
-        contactPhone: formData.phone,
-        institutionLogoUrl: formData.logoUrl,
-        institutionSignUrl: formData.signatureUrl,
-        signRoleName: formData.whoseSign,
-        personPhotoBGColorCode: formData.bgColor,
-        additionalFields: Object.entries(customLabels)
-          .filter(([key]) => key !== "name")
-          .map(([_, label]) => label),
-        cardQuantity: quantity,
-      };
+  try {
+    // Show loading toast
+    const toastId = toast.loading("🚀 Creating project...", {
+      duration: 4000,
+      className: "bg-blue-600 text-white font-semibold text-center shadow-lg",
+    });
 
-      // ✅ Show loading toast
-      toastId = toast.loading("🚀 Creating project...", {
-        duration: 4000, // stays until updated
-        className: "bg-red-600 text-white text-center font-semibold shadow-lg",
-      })
+    // Call API
+    await createProject(payload).unwrap();
 
-      // ✅ 2. Call API
-      // console.log("📤 Sending payload:", payload);
-      await createProject(payload).unwrap();
+    // Success toast
+    toast.success("🎉 Project created successfully!", {
+      id: toastId,
+      duration: 6000,
+    });
 
-      // ✅ Replace loading with success
-      toast.success("🎉 Project created successfully!", {
-        id: toastId,
-        duration: 6000, // stays longer
-      })
+    // Clear session storage
+    sessionStorage.removeItem("formData");
+    sessionStorage.removeItem("selectedCard");
+    sessionStorage.removeItem("customLabels");
+    sessionStorage.removeItem("cardOrientation");
 
-      // ✅ Clear session storage after success
-      sessionStorage.removeItem("formData");
-      sessionStorage.removeItem("selectedCard");
-      sessionStorage.removeItem("customLabels");
-      sessionStorage.removeItem("cardOrientation");
+    // ✅ Only navigate on success
+    router.push("/dashboard");
 
-    } catch (err: unknown) {
-      const errorMessage =
-        (err as { data?: { message?: string }; error?: string })?.data?.message ||
-        (err as { error?: string })?.error ||
-        "❌ Failed to create project. Please try again."
+  } catch (err: any) {
+    // Show API error message
+    const errorMessage =
+      err?.data?.message || err?.error || "❌ Failed to create project. Please try again.";
 
-      toast.error(errorMessage, {
-        id: toastId,
-        duration: 7000,
-        className: "bg-red-600 text-white text-center font-semibold shadow-lg",
-      })
-    }
+    toast.error(errorMessage, {
+      duration: 7000,
+      className: "bg-red-600 text-white font-semibold text-center shadow-lg",
+    });
   }
+};
+
 
   // Dynamic card rendering based on type and orientation from session storage
   const renderCard = () => {

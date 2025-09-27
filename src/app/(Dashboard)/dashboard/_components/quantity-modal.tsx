@@ -23,7 +23,6 @@ export function CardQuantityModal({ isOpen, onClose, onGenerate }: CardQuantityM
       onGenerate(Number.parseInt(quantity.trim()))
       setQuantity("")
       onClose()
-      router.push('/dashboard')
     }
   }
 

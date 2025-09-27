@@ -261,6 +261,7 @@ import { projectApi, useCreateProjectMutation, useDeleteProjectMutation, useGetM
 import { Project } from "@/types/inedx"
 import { useAppDispatch } from "@/lib/hooks"
 import Loading from "@/app/loading"
+import { toast } from "sonner"
 
 export function ProjectOverview() {
   const { data, isLoading, isError } = useGetMyProjectQuery(undefined)
@@ -336,15 +337,13 @@ export function ProjectOverview() {
         additionalFields: original.additionalFields || [],
       }
 
-      // console.log("Payload:", payload)
-
       // 3. Create new project
       await createProject(payload).unwrap()
 
-      alert("✅ Project copied successfully")
+      toast.success("✅ Project copied successfully")
     } catch (err) {
       console.error("Failed to copy project:", err)
-      alert("❌ Failed to copy project")
+      toast.error("❌ Failed to copy project. Please try again.")
     } finally {
       setCopyingId(null)
     }

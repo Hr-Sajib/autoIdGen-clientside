@@ -332,9 +332,17 @@ import { Card, CardRow, Project } from "@/types/inedx"
 import { EditProject } from "../../_components/EditProject"
 import Image from "next/image"
 import { downloadBulkExport } from "@/utils/bulkExport"
+import ExportLoading from "../../../_components/ExportLoading"
 import Loading from "@/app/loading"
 
 export default function ViewDetailsPage() {
+  const [loading, setLoading] = useState(false);
+  const [cards, setCards] = useState<(CardRow)[]>([])
+  const [search, setSearch] = useState("")
+  const [editCardModalOpen, setEditCardModalOpen] = useState(false)
+  const [editProjectModalOpen, setEditProjectModalOpen] = useState(false)
+  const [selectedCard, setSelectedCard] = useState<Card | null>(null)
+
   const params = useParams()
   const id = params?.id as string
 
@@ -353,10 +361,6 @@ export default function ViewDetailsPage() {
   const [createCard] = useCreateCardMutation()
   const [updateCard] = useUpdateCardMutation()
   const [deleteCard] = useDeleteCardMutation()
-
-  const [cards, setCards] = useState<(CardRow)[]>([])
-  const [selectedCard, setSelectedCard] = useState<Card | null>(null)
-
 
   useEffect(() => {
     if (!project) return
@@ -398,9 +402,7 @@ export default function ViewDetailsPage() {
 
 
 
-  const [search, setSearch] = useState("")
-  const [editCardModalOpen, setEditCardModalOpen] = useState(false)
-  const [editProjectModalOpen, setEditProjectModalOpen] = useState(false)
+
 
   // Filter cards based on search term
   const filteredCards = cards.filter((card) => {
@@ -459,43 +461,36 @@ export default function ViewDetailsPage() {
     }
   };
 
-  const handleDownloadCard = (card: Card) => {
-    if (!card.cardImageUrl) {
-      console.error("No card image available");
-      return;
-    }
+  const handleDownloadCard = async (card: Card) => {
+    if (!card.cardImageUrl) return;
 
-    // Open the card image in a new tab
-    const newWindow = window.open(card.cardImageUrl, "_blank");
-    if (newWindow) {
-      newWindow.document.title = `${card.serialOrRollNumber || batchId}-ID-Card`; // sets the tab title
-      // Optional: Create an image element with download attribute
-      const img = newWindow.document.createElement("img");
-      img.src = card.cardImageUrl;
-      img.alt = `${card.serialOrRollNumber} ID Card`;
-      img.style.maxWidth = "100%";
-      newWindow.document.body.style.margin = "0";
-      newWindow.document.body.style.display = "flex";
-      newWindow.document.body.style.justifyContent = "center";
-      newWindow.document.body.style.alignItems = "center";
-      newWindow.document.body.style.height = "100vh";
-      newWindow.document.body.appendChild(img);
-    } else {
-      console.error("Failed to open new window for card download");
+    try {
+      const res = await fetch(card.cardImageUrl);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${card.serialOrRollNumber || card.batchId}-ID-Card.jpg`; // .jpg
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Failed to download card", err);
     }
   };
 
+  if (projectLoading) return <div className="p-6 text-red-500">Project loading</div>
   // if (projectLoading) return <div className="p-6">Loading project...</div>
   if (projectLoading) return <Loading/>
   if (projectError) return <div className="p-6 text-red-500">Failed to load project</div>
 
-
-  // const [loading, setLoading] = useState(false);
+  if (loading) return <ExportLoading />
 
   const handleExport = async () => {
-    // setLoading(true);
+    setLoading(true);
     await downloadBulkExport(project.batchId)
-    // setLoading(false);
+    setLoading(false);
   }
 
   return (

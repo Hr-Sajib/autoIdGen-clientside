@@ -10,6 +10,7 @@ import { projectApi, useCreateProjectMutation, useDeleteProjectMutation, useGetM
 import { Project } from "@/types/inedx"
 import { useAppDispatch } from "@/lib/hooks"
 import { toast } from "sonner"
+import Loading from "@/app/loading"
 
 export function ProjectOverview() {
   const { data, isLoading, isError } = useGetMyProjectQuery(undefined)

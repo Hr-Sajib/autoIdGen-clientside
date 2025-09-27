@@ -13,6 +13,7 @@ import UploadImage from '@/../public/images/upload_icon.svg'
 import TripodImage from '@/../public/images/camera-tripod.svg'
 import Link from "next/link";
 import ErrorImage from "@/../public/images/error_id_card.png";
+import Loading from "@/app/loading";
 
 // ===========================
 // Type Definitions
@@ -696,22 +697,23 @@ const UserCardWithForm: React.FC = () => {
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen p-6">
-        <div className="grid lg:grid-cols-2 gap-8">
-          <div className="space-y-6">
-            <div className="animate-pulse">
-              <div className="h-6 bg-gray-200 rounded mb-4"></div>
-              <div className="space-y-3">
-                <div className="h-4 bg-gray-200 rounded"></div>
-                <div className="h-10 bg-gray-200 rounded"></div>
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center justify-center">
-            <div className="text-lg">Loading project data...</div>
-          </div>
-        </div>
-      </div>
+      // <div className="min-h-screen p-6">
+      //   <div className="grid lg:grid-cols-2 gap-8">
+      //     <div className="space-y-6">
+      //       <div className="animate-pulse">
+      //         <div className="h-6 bg-gray-200 rounded mb-4"></div>
+      //         <div className="space-y-3">
+      //           <div className="h-4 bg-gray-200 rounded"></div>
+      //           <div className="h-10 bg-gray-200 rounded"></div>
+      //         </div>
+      //       </div>
+      //     </div>
+      //     <div className="flex items-center justify-center">
+      //       <div className="text-lg">change Loading project data...</div>
+      //     </div>
+      //   </div>
+      // </div>
+      <Loading/>
     );
   }
 

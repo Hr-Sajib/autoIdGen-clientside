@@ -13,6 +13,7 @@ import { Card, CardRow, Project } from "@/types/inedx"
 import { EditProject } from "../../_components/EditProject"
 import Image from "next/image"
 import { downloadBulkExport } from "@/utils/bulkExport"
+import Loading from "@/app/loading"
 import ExportLoading from "../../../_components/ExportLoading"
 
 export default function ViewDetailsPage() {
@@ -80,6 +81,20 @@ export default function ViewDetailsPage() {
     setCards(rows)
   }, [cardData, project])
 
+  // Filter cards based on search term
+  const filteredCards = cards.filter((card) => {
+    if (!search) return true
+    
+    const searchLower = search.toLowerCase()
+    const name = card.name?.toLowerCase() || ""
+    const serialStr = card.serialStr?.toLowerCase() || ""
+    const serialNumber = card.serialOrRollNumber?.toString().toLowerCase() || ""
+    
+    return name.includes(searchLower) || 
+           serialStr.includes(searchLower) || 
+           serialNumber.includes(searchLower)
+  })
+
   const handleEditProject = () => setEditProjectModalOpen(true)
   const handleProjectUpdate = async (formData: Project) => {
     if (!project?._id) return
@@ -142,7 +157,8 @@ export default function ViewDetailsPage() {
     }
   };
 
-  if (projectLoading) return <div className="p-6 text-red-500">Project loading</div>
+  // if (projectLoading) return <div className="p-6">Loading project...</div>
+  if (projectLoading) return <Loading/>
   if (projectError) return <div className="p-6 text-red-500">Failed to load project</div>
 
   if (loading) return <ExportLoading />
@@ -191,6 +207,7 @@ export default function ViewDetailsPage() {
               onChange={(e) => setSearch(e.target.value)}
               className="pl-10 bg-gray-100"
             />
+            
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
           </div>
           <Button onClick={handleExport} variant="outline" className="bg-white hover:bg-gray-100 hover:text-gray-800">
@@ -215,13 +232,14 @@ export default function ViewDetailsPage() {
             </thead>
             <tbody>
               {cardLoading ? (
-                <tr>
-                  <td colSpan={4 + (project?.additionalFields?.length || 0)} className="text-center py-6">
-                    <Loader2 className="animate-spin mx-auto h-6 w-6 text-gray-500" />
+                <tr >
+                  <td colSpan={4 + (project?.additionalFields?.length || 0)} className="text-center py-6 h-[400px]" >
+                    {/* <Loader2 className="animate-spin mx-auto h-6 w-6 text-gray-500" /> */}
+                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
                   </td>
                 </tr>
-              ) : cards.length > 0 ? (
-                cards.map((card, idx) => (
+              ) : filteredCards.length > 0 ? (
+                filteredCards.map((card, idx) => (
                   <tr key={idx} className="hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-2 border-b">{card.serialStr}</td>
                     <td className="px-4 py-2 border-b">{card.batchId}</td>
@@ -271,10 +289,35 @@ export default function ViewDetailsPage() {
                     </td>
                   </tr>
                 ))
+              ) : cards.length > 0 && search ? (
+                <tr>
+                  <td colSpan={4 + (project?.additionalFields?.length || 0)} className="text-center py-12">
+                    <div className="flex flex-col items-center space-y-3">
+                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                        <Search className="h-6 w-6 text-gray-400" />
+                      </div>
+                      <div className="text-center">
+                        <h3 className="text-lg font-medium text-gray-700 mb-1">No results found</h3>
+                        <p className="text-gray-500">No student records found matching &quot;{search}&quot;</p>
+                        <p className="text-sm text-gray-400 mt-1">Try adjusting your search terms</p>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
               ) : (
                 <tr>
-                  <td colSpan={4 + (project?.additionalFields?.length || 0)} className="text-center py-6 text-gray-500">
-                    No student records found
+                  <td colSpan={4 + (project?.additionalFields?.length || 0)} className="text-center py-12">
+                    <div className="flex flex-col items-center space-y-3">
+                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                        <svg className="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                        </svg>
+                      </div>
+                      <div className="text-center">
+                        <h3 className="text-lg font-medium text-gray-700 mb-1">No student records</h3>
+                        <p className="text-gray-500">Start adding students to see them listed here</p>
+                      </div>
+                    </div>
                   </td>
                 </tr>
               )}

@@ -16,6 +16,7 @@ export function ProjectOverview() {
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [copyingId, setCopyingId] = useState<string | null>(null)
+  const [searchTerm, setSearchTerm] = useState<string>("")
 
   const [deleteProject] = useDeleteProjectMutation()
   const [createProject] = useCreateProjectMutation()
@@ -23,7 +24,23 @@ export function ProjectOverview() {
 
   // API gives { success, message, data: [...] }
   const projects = data?.data ?? []
+  
+  // Filter projects based on search term
+  const filteredProjects = projects.filter((project: Project) => {
+    if (!searchTerm) return true
+    
+    const searchLower = searchTerm.toLowerCase()
+    const projectName = project.projectName?.toLowerCase() || ""
+    const institutionName = project.institutionName?.toLowerCase() || ""
+    const batchCode = project.batchId?.toString().toLowerCase() || ""
+    
+    return projectName.includes(searchLower) || 
+           institutionName.includes(searchLower) || 
+           batchCode.includes(searchLower)
+  })
+  
   console.log("Projects data:", projects)
+  
   const handleCopy = async (text: string, id: string) => {
     try {
       await navigator.clipboard.writeText(text)
@@ -96,7 +113,8 @@ export function ProjectOverview() {
   }
 
   if (isLoading) {
-    return <p className="p-6 text-muted-foreground">Loading projects...</p>
+    // return <p className="p-6 text-muted-foreground">Loading projects.sf..</p>
+    return <Loading/>
   }
 
   if (isError) {
@@ -122,7 +140,12 @@ export function ProjectOverview() {
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
             </svg>
-            <Input placeholder="Search" className="pl-10 w-64 border border-gray-200" />
+            <Input 
+              placeholder="Search by project name, institution, or batch code" 
+              className="pl-10 w-64 border border-gray-200"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
         </div>
       </CardHeader>
@@ -140,7 +163,7 @@ export function ProjectOverview() {
               </tr>
             </thead>
             <tbody>
-              {projects.map((project: Project) => (
+              {filteredProjects.map((project: Project) => (
                 <tr key={project._id} className="border-b border-border hover:bg-muted/50">
                   <td className="py-4 px-4 font-medium text-foreground">{project.projectName}</td>
                   <td className="py-4 px-4 text-foreground">{project.institutionName}</td>
@@ -202,6 +225,23 @@ export function ProjectOverview() {
             </tbody>
           </table>
         </div>
+
+        {filteredProjects.length === 0 && projects.length > 0 && (
+          <div className="text-center py-12">
+            <div className="mx-auto w-24 h-24 bg-muted rounded-full flex items-center justify-center mb-4">
+              <svg className="h-8 w-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-foreground mb-2">No projects found</h3>
+            <p className="text-muted-foreground mb-4">Try adjusting your search terms</p>
+          </div>
+        )}
 
         {projects.length === 0 && (
           <div className="text-center py-12">

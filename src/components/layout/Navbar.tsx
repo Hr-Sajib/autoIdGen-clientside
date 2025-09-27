@@ -19,7 +19,7 @@ export default function Navbar() {
           <div className="flex space-x-8 text-[18px]">
             <a href="#features" className="hover:opacity-80">Features</a>
             <a href="#how-it-works" className="hover:opacity-80">How It Works</a>
-            <a href="contact" className="hover:opacity-80">Contact Us</a>
+            <a href="#contact" className="hover:opacity-80">Contact Us</a>
           </div>
 
           {/* Right - Button */}

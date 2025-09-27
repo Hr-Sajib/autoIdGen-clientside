@@ -480,7 +480,7 @@ export default function ViewDetailsPage() {
     }
   };
 
-  if (projectLoading) return <div className="p-6 text-red-500">Project loading</div>
+  // if (projectLoading) return <div className="p-6 text-red-500">Project loading</div>
   // if (projectLoading) return <div className="p-6">Loading project...</div>
   if (projectLoading) return <Loading/>
   if (projectError) return <div className="p-6 text-red-500">Failed to load project</div>

@@ -810,11 +810,11 @@ const UserCardWithForm: React.FC = () => {
   }, [imageSrc, photoPreview, finalImageUrl]);
 
   // Helper function to format field names for display
-  const formatFieldName = (fieldName: string): string => {
-    return fieldName
-      .replace(/([A-Z])/g, " $1")
-      .replace(/^./, str => str.toUpperCase());
-  };
+  // const formatFieldName = (fieldName: string): string => {
+  //   return fieldName
+  //     .replace(/([A-Z])/g, " $1")
+  //     .replace(/^./, str => str.toUpperCase());
+  // };
 
   // Show success page when image is ready
   if (showSuccessPage && finalImageUrl) {
@@ -995,7 +995,8 @@ const UserCardWithForm: React.FC = () => {
               return (
                 <div key={fieldObj._id} className="flex flex-col space-y-4">
                   <label className="text-sm ml-4 font-medium text-gray-700">
-                    {formatFieldName(fieldObj.fieldName)} *
+                    {/* {formatFieldName(fieldObj.fieldName)} * */}
+                    {(fieldObj.fieldName)}
                   </label>
                   {isNonEditable ? (
                     // Read-only field with owner/default value
@@ -1020,7 +1021,7 @@ const UserCardWithForm: React.FC = () => {
                       value={values[fieldObj.fieldName] || ""}
                       onChange={(e) => handleChange(fieldObj.fieldName, e.target.value)}
                       disabled={isAnyLoading}
-                      placeholder={`Enter ${formatFieldName(fieldObj.fieldName).toLowerCase()}`}
+                      // placeholder={`Enter ${formatFieldName(fieldObj.fieldName).toLowerCase()}`}
                     />
                   )}
                 </div>

@@ -36,7 +36,7 @@ interface EditProjectProps {
     cardType?: string
     address?: string
     contactPhone?: string
-    additionalFields?: string[] // store internally as array
+    additionalFields?: { _id?: string; fieldName: string; defaultValue: string }[] // store as array of objects
   }
 }
 
@@ -93,17 +93,21 @@ export function EditProject({ isOpen, onClose, onSubmit, initialData }: EditProj
     })
   }
 
-  const handleAdditionalFieldsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const values = e.target.value.split(",").map(f => f.trim())
-    setFormData({ ...formData, additionalFields: values })
+  const handleAdditionalFieldsChange = (index: number, value: string) => {
+    const updatedFields = [...formData.additionalFields]
+    updatedFields[index] = { ...updatedFields[index], defaultValue: value }
+    setFormData({ ...formData, additionalFields: updatedFields })
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Convert additionalFields to string for backend
+    // If backend expects string: join values
     const payload = {
       ...formData,
-      additionalFields: formData.additionalFields.join(", "),
+      additionalFields: formData.additionalFields.map(f => (typeof f === "string" ? f : {
+        fieldName: f.fieldName,
+        defaultValue: f.defaultValue,
+      })),
     }
     onSubmit(payload)
     onClose()
@@ -113,8 +117,8 @@ export function EditProject({ isOpen, onClose, onSubmit, initialData }: EditProj
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
-      <div className="relative bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg mx-4 animate-scaleIn">
-        <button
+      <div className="relative bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg mx-4 animate-scaleIn 
+  max-h-[90vh] overflow-y-auto">        <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition"
         >
@@ -133,6 +137,7 @@ export function EditProject({ isOpen, onClose, onSubmit, initialData }: EditProj
               value={formData.batchId}
               onChange={handleChange}
               placeholder="Batch ID"
+              className='bg-gray-100'
             />
           </div>
 
@@ -145,6 +150,7 @@ export function EditProject({ isOpen, onClose, onSubmit, initialData }: EditProj
               value={formData.projectName}
               onChange={handleChange}
               placeholder="Project Name"
+              className='bg-gray-100'
             />
           </div>
 
@@ -157,6 +163,7 @@ export function EditProject({ isOpen, onClose, onSubmit, initialData }: EditProj
               value={formData.institutionName}
               onChange={handleChange}
               placeholder="Institution Name"
+              className='bg-gray-100'
             />
           </div>
 
@@ -169,6 +176,7 @@ export function EditProject({ isOpen, onClose, onSubmit, initialData }: EditProj
               value={formData.institutionLogoUrl}
               onChange={handleChange}
               placeholder="Institution Logo URL"
+              className='bg-gray-100'
             />
           </div>
 
@@ -181,6 +189,7 @@ export function EditProject({ isOpen, onClose, onSubmit, initialData }: EditProj
               value={formData.institutionSignUrl.signUrl}
               onChange={handleSignChange}
               placeholder="Institution Sign URL"
+              className='bg-gray-100'
             />
           </div>
 
@@ -193,18 +202,7 @@ export function EditProject({ isOpen, onClose, onSubmit, initialData }: EditProj
               value={formData.institutionSignUrl.roleName}
               onChange={handleSignChange}
               placeholder="Sign Role Name"
-            />
-          </div>
-
-          {/* Contact Phone */}
-          <div className="space-y-1">
-            <label htmlFor="contactPhone" className="text-sm font-medium text-gray-700">Contact Phone</label>
-            <Input
-              id="contactPhone"
-              name="contactPhone"
-              value={formData.contactPhone}
-              onChange={handleChange}
-              placeholder="Contact Phone"
+              className='bg-gray-100'
             />
           </div>
 
@@ -217,6 +215,7 @@ export function EditProject({ isOpen, onClose, onSubmit, initialData }: EditProj
               value={formData.address}
               onChange={handleChange}
               placeholder="Address"
+              className='bg-gray-100'
             />
           </div>
 
@@ -230,6 +229,7 @@ export function EditProject({ isOpen, onClose, onSubmit, initialData }: EditProj
               value={formData.cardQuantity}
               onChange={handleChange}
               placeholder="Card Quantity"
+              className='bg-gray-100'
             />
           </div>
 
@@ -242,20 +242,22 @@ export function EditProject({ isOpen, onClose, onSubmit, initialData }: EditProj
               value={formData.cardType}
               onChange={handleChange}
               placeholder="Card Type"
+              className='bg-gray-100'
             />
           </div>
 
           {/* Additional Fields */}
-          <div className="space-y-1">
-            <label htmlFor="additionalFields" className="text-sm font-medium text-gray-700">Additional Fields</label>
-            <Input
-              id="additionalFields"
-              name="additionalFields"
-              value={formData.additionalFields.join(", ")}
-              onChange={handleAdditionalFieldsChange}
-              placeholder="Additional Fields (comma separated)"
-            />
-          </div>
+          {formData.additionalFields.map((field, index) => (
+            <div key={field._id || index} className="space-y-1">
+              <label className="text-sm font-medium text-gray-700">{field.fieldName}</label>
+              <Input
+                value={field.defaultValue}
+                onChange={(e) => handleAdditionalFieldsChange(index, e.target.value)}
+                placeholder={`Enter ${field.fieldName}`}
+                className='bg-gray-100'
+              />
+            </div>
+          ))}
 
           <Button
             type="submit"

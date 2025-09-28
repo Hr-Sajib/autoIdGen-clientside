@@ -30,7 +30,7 @@ export function EditCard({
   const [formData, setFormData] = useState({ ...initialData, additionalFields: initialData.additionalFields || [] });
 
 
-  console.log(33, formData)
+  // console.log(33, formData)
 
 
   useEffect(() => {
@@ -140,13 +140,13 @@ export function EditCard({
 
     const payload: Partial<Card> = {
       ...formData,
-      _id: formData._id || undefined,
-      name: formData.name?.trim(),
+      _id: form._id || undefined,
+      name: form.name?.trim(),
       personalPhotoUrl: form.personalPhotoUrl?.trim(),
       additionalfieldValues: Object.entries(formData.additionalFields || {}).map(
         ([fieldName, fieldValue]) => ({
           fieldName,
-          fieldValue: (fieldValue as string).trim(),
+          fieldValue: (fieldValue as unknown as string).trim(),
           setBy: "owner",
         })
       ),
@@ -218,7 +218,7 @@ export function EditCard({
             {/* Preview uploaded image */}
             {form.personalPhotoUrl && (
               <img
-                src={form.personalPhotoUrl}
+                src={formData.personalPhotoUrl}
                 alt="Profile"
                 className="w-24 h-24 object-cover rounded-lg mb-2 border border-gray-200"
               />
@@ -241,7 +241,7 @@ export function EditCard({
               </Label>
               <Input
                 id={`field-${index}`}
-                value={value as string}
+                value={value as unknown as string}
                 // value={formData.additionalFields[field.fieldName] || field.fieldValue}
                 onChange={(e) => {
                   handleFieldChange(prop, e.target.value)

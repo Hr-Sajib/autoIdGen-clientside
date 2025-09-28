@@ -124,24 +124,138 @@ export function EditProject({ isOpen, onClose, onSubmit, initialData }: EditProj
         <h2 className="text-xl font-bold text-gray-900 mb-6">Edit Project</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* <Input name="userId" value={formData.userId} onChange={handleChange} placeholder="User ID" /> */}
-          <Input name="templateId" value={formData.templateId} onChange={handleChange} placeholder="Template ID" />
-          <Input name="batchId" value={formData.batchId} onChange={handleChange} placeholder="Batch ID" />
-          <Input name="projectName" value={formData.projectName} onChange={handleChange} placeholder="Project Name" />
-          <Input name="institutionName" value={formData.institutionName} onChange={handleChange} placeholder="Institution Name" />
-          <Input name="institutionLogoUrl" value={formData.institutionLogoUrl} onChange={handleChange} placeholder="Institution Logo URL" />
-          <Input name="signUrl" value={formData.institutionSignUrl.signUrl} onChange={handleSignChange} placeholder="Institution Sign URL" />
-          <Input name="roleName" value={formData.institutionSignUrl.roleName} onChange={handleSignChange} placeholder="Sign Role Name" />
-          <Input name="contactPhone" value={formData.contactPhone} onChange={handleChange} placeholder="Contact Phone" />
-          <Input name="address" value={formData.address} onChange={handleChange} placeholder="Address" />
-          <Input type="number" name="cardQuantity" value={formData.cardQuantity} onChange={handleChange} placeholder="Card Quantity" />
-          <Input name="cardType" value={formData.cardType} onChange={handleChange} placeholder="Card Type" />
-          <Input
-            name="additionalFields"
-            value={formData.additionalFields.join(", ")}
-            onChange={handleAdditionalFieldsChange}
-            placeholder="Additional Fields (comma separated)"
-          />
+          {/* Batch ID */}
+          <div className="space-y-1">
+            <label htmlFor="batchId" className="text-sm font-medium text-gray-700">Batch ID</label>
+            <Input
+              id="batchId"
+              name="batchId"
+              value={formData.batchId}
+              onChange={handleChange}
+              placeholder="Batch ID"
+            />
+          </div>
+
+          {/* Project Name */}
+          <div className="space-y-1">
+            <label htmlFor="projectName" className="text-sm font-medium text-gray-700">Project Name</label>
+            <Input
+              id="projectName"
+              name="projectName"
+              value={formData.projectName}
+              onChange={handleChange}
+              placeholder="Project Name"
+            />
+          </div>
+
+          {/* Institution Name */}
+          <div className="space-y-1">
+            <label htmlFor="institutionName" className="text-sm font-medium text-gray-700">Institution Name</label>
+            <Input
+              id="institutionName"
+              name="institutionName"
+              value={formData.institutionName}
+              onChange={handleChange}
+              placeholder="Institution Name"
+            />
+          </div>
+
+          {/* Institution Logo URL */}
+          <div className="space-y-1">
+            <label htmlFor="institutionLogoUrl" className="text-sm font-medium text-gray-700">Institution Logo URL</label>
+            <Input
+              id="institutionLogoUrl"
+              name="institutionLogoUrl"
+              value={formData.institutionLogoUrl}
+              onChange={handleChange}
+              placeholder="Institution Logo URL"
+            />
+          </div>
+
+          {/* Institution Sign URL */}
+          <div className="space-y-1">
+            <label htmlFor="signUrl" className="text-sm font-medium text-gray-700">Institution Sign URL</label>
+            <Input
+              id="signUrl"
+              name="signUrl"
+              value={formData.institutionSignUrl.signUrl}
+              onChange={handleSignChange}
+              placeholder="Institution Sign URL"
+            />
+          </div>
+
+          {/* Sign Role Name */}
+          <div className="space-y-1">
+            <label htmlFor="roleName" className="text-sm font-medium text-gray-700">Sign Role Name</label>
+            <Input
+              id="roleName"
+              name="roleName"
+              value={formData.institutionSignUrl.roleName}
+              onChange={handleSignChange}
+              placeholder="Sign Role Name"
+            />
+          </div>
+
+          {/* Contact Phone */}
+          <div className="space-y-1">
+            <label htmlFor="contactPhone" className="text-sm font-medium text-gray-700">Contact Phone</label>
+            <Input
+              id="contactPhone"
+              name="contactPhone"
+              value={formData.contactPhone}
+              onChange={handleChange}
+              placeholder="Contact Phone"
+            />
+          </div>
+
+          {/* Address */}
+          <div className="space-y-1">
+            <label htmlFor="address" className="text-sm font-medium text-gray-700">Address</label>
+            <Input
+              id="address"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              placeholder="Address"
+            />
+          </div>
+
+          {/* Card Quantity */}
+          <div className="space-y-1">
+            <label htmlFor="cardQuantity" className="text-sm font-medium text-gray-700">Card Quantity</label>
+            <Input
+              id="cardQuantity"
+              type="number"
+              name="cardQuantity"
+              value={formData.cardQuantity}
+              onChange={handleChange}
+              placeholder="Card Quantity"
+            />
+          </div>
+
+          {/* Card Type */}
+          <div className="space-y-1">
+            <label htmlFor="cardType" className="text-sm font-medium text-gray-700">Card Type</label>
+            <Input
+              id="cardType"
+              name="cardType"
+              value={formData.cardType}
+              onChange={handleChange}
+              placeholder="Card Type"
+            />
+          </div>
+
+          {/* Additional Fields */}
+          <div className="space-y-1">
+            <label htmlFor="additionalFields" className="text-sm font-medium text-gray-700">Additional Fields</label>
+            <Input
+              id="additionalFields"
+              name="additionalFields"
+              value={formData.additionalFields.join(", ")}
+              onChange={handleAdditionalFieldsChange}
+              placeholder="Additional Fields (comma separated)"
+            />
+          </div>
 
           <Button
             type="submit"
@@ -150,6 +264,7 @@ export function EditProject({ isOpen, onClose, onSubmit, initialData }: EditProj
             Save Changes
           </Button>
         </form>
+
       </div>
     </div>
   )

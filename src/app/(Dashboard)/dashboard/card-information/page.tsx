@@ -152,8 +152,8 @@ export default function InstituteTemplateSetupPage() {
   // Sync additionalFields defaultValues with formData on mount
   useEffect(() => {
     const fieldKeys = ["department", "rollNumber", "bloodGroup", "dateOfBirth", "phone"];
-    setAdditionalFields((prev) =>
-      prev.map((field, index: number) => ({
+    setAdditionalFields((prev: any) =>
+      prev.map((field: any, index: number) => ({
         ...field,
         defaultValue: formData[fieldKeys[index]] || field.defaultValue,
       }))
@@ -408,7 +408,7 @@ export default function InstituteTemplateSetupPage() {
                       <label className="block text-base font-medium text-gray-800"> {/* {customLabels.studentName} */} Name </label>
                       <span className="text-xs text-gray-500 ml-2">(Fixed)</span>
                     </div>
-                    {additionalFields.map((field, index) => (
+                    {additionalFields.map((field: any, index: number) => (
                       <div key={index}>
                         {/* Editable Field Name */}
                         <div className="flex items-center gap-2 mb-2">

@@ -74,6 +74,10 @@ export interface Card {
   name: string;
   setBy: string;
   personalPhotoUrl: string;
+  additionalFields: Array<{
+    fieldName: string;
+    fieldValue: string;
+  }>;
   additionalfieldValues: Array<{
     fieldName: string;
     fieldValue: string;

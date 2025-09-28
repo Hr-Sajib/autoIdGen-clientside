@@ -27,6 +27,12 @@ export function EditCard({
   const [form, setForm] = useState<Partial<Card>>(initialData)
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
 
+  const [formData, setFormData] = useState({ ...initialData, additionalFields: initialData.additionalFields || [] });
+
+
+  console.log(33, formData)
+
+
   useEffect(() => {
     if (isOpen) {
       // Merge existing values with project fields
@@ -40,11 +46,8 @@ export function EditCard({
         }
       })
 
-      setForm({
-        ...initialData,
-        additionalfieldValues: mergedFields,
-      })
-      setErrors({}) // Reset errors when modal opens
+      setFormData({ ...initialData, additionalFields: initialData.additionalFields || [] })
+      // Reset errors when modal opens
     }
   }, [isOpen, initialData])
 
@@ -53,11 +56,14 @@ export function EditCard({
     setErrors((prev) => ({ ...prev, [key]: "" }))
   }
 
-  const handleFieldChange = (index: number, value: string) => {
-    const updated = [...(form.additionalfieldValues || [])]
-    updated[index] = { ...updated[index], fieldValue: value }
-    setForm((prev) => ({ ...prev, additionalfieldValues: updated }))
-    setErrors((prev) => ({ ...prev, [`field-${index}`]: "" }))
+  const handleFieldChange = (prop: any, value: string) => {
+
+    setFormData((prev: any) => ({
+      ...prev, additionalFields: {
+        ...prev.additionalFields,
+        [prop]: value
+      }
+    }))
   }
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,16 +126,30 @@ export function EditCard({
       return
     }
 
+    // const payload: Partial<Card> = {
+    //   ...form,
+    //   _id: form._id || undefined,
+    //   name: form.name?.trim(),
+    //   personalPhotoUrl: form.personalPhotoUrl?.trim(),
+    //   additionalfieldValues: form.additionalfieldValues?.map((field) => ({
+    //     fieldName: field.fieldName,
+    //     fieldValue: field.fieldValue.trim(),
+    //     setBy: "owner",
+    //   })),
+    // }
+
     const payload: Partial<Card> = {
-      ...form,
-      _id: form._id || undefined,
-      name: form.name?.trim(),
+      ...formData,
+      _id: formData._id || undefined,
+      name: formData.name?.trim(),
       personalPhotoUrl: form.personalPhotoUrl?.trim(),
-      additionalfieldValues: form.additionalfieldValues?.map((field) => ({
-        fieldName: field.fieldName,
-        fieldValue: field.fieldValue.trim(),
-        setBy: "owner",
-      })),
+      additionalfieldValues: Object.entries(formData.additionalFields || {}).map(
+        ([fieldName, fieldValue]) => ({
+          fieldName,
+          fieldValue: (fieldValue as string).trim(),
+          setBy: "owner",
+        })
+      ),
     }
     console.dir({ submittedPayload: payload }, { depth: null })
 
@@ -162,7 +182,7 @@ export function EditCard({
             <Input
               id="serialOrRollNumber"
               type="number"
-              value={form.serialOrRollNumber || ""}
+              value={formData.serialOrRollNumber || ""}
               onChange={(e) => handleChange("serialOrRollNumber", Number(e.target.value))}
               className={`bg-gray-50 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 rounded-lg transition-colors ${errors.serialOrRollNumber ? "border-red-500" : ""
                 }`}
@@ -214,24 +234,27 @@ export function EditCard({
           </div>
 
           {/* Dynamic Additional Fields */}
-          {form.additionalfieldValues?.map((field, idx) => (
-            <div key={idx} className="space-y-1.5">
-              <Label htmlFor={`field-${idx}`} className="text-sm font-medium text-gray-700">
-                {projectAdditionalFields[idx] || field.fieldName}
+          {Object.entries(formData.additionalFields).map(([prop, value], index) => {
+            return <div key={index} className="space-y-1.5">
+              <Label htmlFor={`field-${index}`} className="text-sm font-medium text-gray-700">
+                {prop}
               </Label>
               <Input
-                id={`field-${idx}`}
-                value={field.fieldValue}
-                onChange={(e) => handleFieldChange(idx, e.target.value)}
-                className={`bg-gray-50 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 rounded-lg transition-colors ${errors[`field-${idx}`] ? "border-red-500" : ""
+                id={`field-${index}`}
+                value={value as string}
+                // value={formData.additionalFields[field.fieldName] || field.fieldValue}
+                onChange={(e) => {
+                  handleFieldChange(prop, e.target.value)
+                }}
+                className={`bg-gray-50 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 rounded-lg transition-colors ${errors[`field-${index}`] ? "border-red-500" : ""
                   }`}
-                placeholder={`Enter ${projectAdditionalFields[idx]?.toLowerCase() || field.fieldName.toLowerCase()}`}
+                placeholder={`Enter ${(prop as string)?.toLowerCase()}`}
               />
-              {errors[`field-${idx}`] && (
-                <p className="text-xs text-red-500 mt-1">{errors[`field-${idx}`]}</p>
+              {errors[`field-${index}`] && (
+                <p className="text-xs text-red-500 mt-1">{errors[`field-${index}`]}</p>
               )}
             </div>
-          ))}
+          })}
 
           {/* Actions */}
           <div className="flex justify-end gap-3 pt-5">

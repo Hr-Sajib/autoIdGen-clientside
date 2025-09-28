@@ -38,7 +38,7 @@ export default function ViewDetailsPage() {
   
   const { data: cardData, isLoading: cardLoading } = useGetCardByBatchIdQuery(batchId, {
     skip: !project?.batchId, // safe: hook order stays the same
-    pollingInterval: 5000,
+    // pollingInterval: 5000,
   });
   
   const [createCard] = useCreateCardMutation()

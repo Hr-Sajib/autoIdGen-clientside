@@ -48,33 +48,27 @@ export default function InstituteTemplateSetupPage() {
   const [formData, setFormData] = useState<any>({});
   const [cardOrientation, setCardOrientation] = useState("horizontal");
 
-
-  // Initialize customLabels from sessionStorage if available
-  const [customLabels, setCustomLabels] = useState(() => {
+  const [additionalFields, setAdditionalFields] = useState(() => {
     try {
-      const savedLabels = sessionStorage.getItem("customLabels");
-      if (savedLabels) {
-        return JSON.parse(savedLabels); // Use saved label names
-      }
+      const saved = sessionStorage.getItem("additionalFields");
+      if (saved) return JSON.parse(saved);
     } catch (err) {
-      console.error("Error reading customLabels from sessionStorage:", err);
+      console.error("Error reading additionalFields from sessionStorage:", err);
     }
 
-    // Default labels if no session storage
-    return {
-      // studentName: "Name",
-      department: "Department",
-      rollNumber: "Roll Number",
-      bloodGroup: "Blood Group",
-      dateOfBirth: "Date of Birth",
-      phone: "Phone"
-    };
+    // Default fields
+    return [
+      { fieldName: "Department", defaultValue: "" },
+      { fieldName: "Roll Number", defaultValue: "" },
+      { fieldName: "Blood Group", defaultValue: "" },
+      { fieldName: "Date of Birth", defaultValue: "" },
+      { fieldName: "Phone", defaultValue: "" },
+    ];
   });
 
-  // Save customLabels dynamically whenever it changes
   useEffect(() => {
-    sessionStorage.setItem("customLabels", JSON.stringify(customLabels));
-  }, [customLabels]);
+    sessionStorage.setItem("additionalFields", JSON.stringify(additionalFields));
+  }, [additionalFields]);
 
   useEffect(() => {
     try {
@@ -155,6 +149,17 @@ export default function InstituteTemplateSetupPage() {
     }
   }, [])
 
+  // Sync additionalFields defaultValues with formData on mount
+  useEffect(() => {
+    const fieldKeys = ["department", "rollNumber", "bloodGroup", "dateOfBirth", "phone"];
+    setAdditionalFields((prev: any) =>
+      prev.map((field: any, index: number) => ({
+        ...field,
+        defaultValue: formData[fieldKeys[index]] || field.defaultValue,
+      }))
+    );
+  }, [formData]); // Run when formData `changes (after load)
+
   // ✅ Hook for creating project
   const [createProject] = useCreateProjectMutation();
 
@@ -162,9 +167,26 @@ export default function InstituteTemplateSetupPage() {
     setFormData((prev: any) => ({ ...prev, [field]: value }));
   };
 
-  const handleLabelChange = (field: string, value: string) => {
-    setCustomLabels((prev: any) => ({ ...prev, [field]: value }))
-  }
+  const handleFieldNameChange = (index: number, newName: string) => {
+    setAdditionalFields((prev: any) =>
+      prev.map((field: any, i: number) =>
+        i === index ? { ...field, fieldName: newName } : field
+      )
+    );
+  };
+
+  const handleDefaultValueChange = (index: number, newValue: string) => {
+    setAdditionalFields((prev: any) =>
+      prev.map((field: any, i: number) =>
+        i === index ? { ...field, defaultValue: newValue } : field
+      )
+    );
+    const fieldKeys = ["department", "rollNumber", "bloodGroup", "dateOfBirth", "phone"];
+    const key = fieldKeys[index];
+    if (key) {
+      handleInputChange(key, newValue);
+    }
+  };
 
   const handlePrevious = () => {
     // Save current formData to sessionStorage
@@ -188,69 +210,79 @@ export default function InstituteTemplateSetupPage() {
   );
 
   // ✅ Final function to call API + save to session
-const handleGenerateProject = async (quantity: number) => {
-  if (!user || !user.userId) return;
+  const handleGenerateProject = async (quantity: number) => {
+    if (!user || !user.userId) return;
 
-  const templateId =
-    cardOrientation === "vertical"
-      ? "68b759c0fa9b3b1fd60fab77"
-      : "68b7582aaa0bc46f0acfb675";
+    const templateId =
+      cardOrientation === "vertical"
+        ? "68b759c0fa9b3b1fd60fab77"
+        : "68b7582aaa0bc46f0acfb675";
 
-  const payload = {
-    userId: user.userId,
-    projectName: `${projectName}`,
-    templateId,
-    institutionName: formData.instituteName,
-    cardType: formData.idCardType,
-    address: formData.address,
-    contactPhone: formData.phone,
-    institutionLogoUrl: formData.logoUrl,
-    institutionSignUrl: formData.signatureUrl,
-    signRoleName: formData.whoseSign,
-    personPhotoBGColorCode: formData.bgColor,
-    additionalFields: Object.entries(customLabels)
-      .filter(([key]) => key !== "name")
-      .map(([_, label]) => label),
-    cardQuantity: quantity,
+    const payload = {
+      userId: user.userId,
+      projectName: projectName,
+      templateId,
+      institutionName: formData.instituteName,
+      cardType: formData.idCardType,
+      address: formData.address,
+      institutionLogoUrl: formData.logoUrl,
+      institutionSignUrl: {
+        roleName: formData.whoseSign,
+        signUrl: formData.signatureUrl,
+      },
+      personPhotoBGColorCode: formData.bgColor,
+      additionalFields, // ✅ Already correct format
+      cardQuantity: quantity,
+    };
+
+    try {
+      // Show loading toast
+      const toastId = toast.loading("🚀 Creating project...", {
+        duration: 4000,
+        className: "bg-blue-600 text-white font-semibold text-center shadow-lg",
+      });
+
+      // Call API
+      await createProject(payload).unwrap();
+
+      // Success toast
+      toast.success("🎉 Project created successfully!", {
+        id: toastId,
+        duration: 6000,
+      });
+
+      // Clear session storage
+      sessionStorage.removeItem("formData");
+      sessionStorage.removeItem("selectedCard");
+      sessionStorage.removeItem("additionalFields");
+      sessionStorage.removeItem("cardOrientation");
+
+      // ✅ Only navigate on success
+      router.push("/dashboard");
+
+    } catch (err: any) {
+      // Show API error message
+      const errorMessage =
+        err?.data?.message || err?.error || "❌ Failed to create project. Please try again.";
+
+      toast.error(errorMessage, {
+        duration: 7000,
+        className: "bg-red-600 text-white font-semibold text-center shadow-lg",
+      });
+    }
   };
 
-  try {
-    // Show loading toast
-    const toastId = toast.loading("🚀 Creating project...", {
-      duration: 4000,
-      className: "bg-blue-600 text-white font-semibold text-center shadow-lg",
-    });
 
-    // Call API
-    await createProject(payload).unwrap();
-
-    // Success toast
-    toast.success("🎉 Project created successfully!", {
-      id: toastId,
-      duration: 6000,
-    });
-
-    // Clear session storage
-    sessionStorage.removeItem("formData");
-    sessionStorage.removeItem("selectedCard");
-    sessionStorage.removeItem("customLabels");
-    sessionStorage.removeItem("cardOrientation");
-
-    // ✅ Only navigate on success
-    router.push("/dashboard");
-
-  } catch (err: any) {
-    // Show API error message
-    const errorMessage =
-      err?.data?.message || err?.error || "❌ Failed to create project. Please try again.";
-
-    toast.error(errorMessage, {
-      duration: 7000,
-      className: "bg-red-600 text-white font-semibold text-center shadow-lg",
-    });
-  }
-};
-
+  // Compute field labels from additionalFields
+  const fieldLabels = {
+    studentName: "Name",
+    department: additionalFields[0]?.fieldName || "Department",
+    rollNumber: additionalFields[1]?.fieldName || "Roll Number",
+    employeeId: additionalFields[1]?.fieldName || "Employee ID",
+    bloodGroup: additionalFields[2]?.fieldName || "Blood Group",
+    dateOfBirth: additionalFields[3]?.fieldName || "Date of Birth",
+    phone: additionalFields[4]?.fieldName || "Phone",
+  };
 
   // Dynamic card rendering based on type and orientation from session storage
   const renderCard = () => {
@@ -271,7 +303,25 @@ const handleGenerateProject = async (quantity: number) => {
       whoseSign: formData.whoseSign
     }
 
-    // if (idCardType === "Student") {
+    const studentCustomLabels = {
+      studentName: fieldLabels.studentName,
+      department: fieldLabels.department,
+      rollNumber: fieldLabels.rollNumber,
+      bloodGroup: fieldLabels.bloodGroup,
+      dateOfBirth: fieldLabels.dateOfBirth,
+      phone: fieldLabels.phone,
+    }
+
+    const employeeCustomLabels = {
+      studentName: fieldLabels.studentName,
+      department: fieldLabels.department,
+      rollNumber: fieldLabels.rollNumber,
+      employeeId: fieldLabels.employeeId,
+      bloodGroup: fieldLabels.bloodGroup,
+      dateOfBirth: fieldLabels.dateOfBirth,
+      phone: fieldLabels.phone,
+    }
+
     if (selectedCard === "Student") {
       if (cardOrientation === "vertical") {
         return (
@@ -283,7 +333,7 @@ const handleGenerateProject = async (quantity: number) => {
             personImage={formData.profileUrl}
             logo={formData.logoUrl}
             signature={formData.signatureUrl}
-            customLabels={customLabels}
+            customLabels={employeeCustomLabels}
             orientation={cardOrientation}
           />
         )
@@ -293,12 +343,11 @@ const handleGenerateProject = async (quantity: number) => {
             {...cardProps}
             studentName={formData.studentName}
             roll={formData.rollNumber}
-            customLabels={customLabels}
+            customLabels={studentCustomLabels}
             orientation={cardOrientation}
           />
         )
       }
-      // } else if (idCardType === "Employee") {
     } else if (selectedCard === "Employee") {
       if (cardOrientation === "vertical") {
         return (
@@ -310,7 +359,7 @@ const handleGenerateProject = async (quantity: number) => {
             personImage={formData.profileUrl}
             logo={formData.logoUrl}
             signature={formData.signatureUrl}
-            customLabels={customLabels}
+            customLabels={employeeCustomLabels}
             orientation={cardOrientation}
           />
         )
@@ -320,7 +369,7 @@ const handleGenerateProject = async (quantity: number) => {
             {...cardProps}
             studentName={formData.studentName}
             roll={formData.rollNumber}
-            customLabels={customLabels}
+            customLabels={studentCustomLabels}
             orientation={cardOrientation}
           />
         )
@@ -333,7 +382,7 @@ const handleGenerateProject = async (quantity: number) => {
         {...cardProps}
         studentName={formData.studentName}
         roll={formData.rollNumber}
-        customLabels={customLabels}
+        customLabels={studentCustomLabels}
         orientation={cardOrientation}
       />
     )
@@ -353,227 +402,85 @@ const handleGenerateProject = async (quantity: number) => {
             <div className="grid lg:grid-cols-2 gap-8">
               {/* Form Section */}
               <div>
-                <div className="grid grid-cols-2 gap-5 mb-4">
-                  <div>
+                <div className="mb-6">
+                  <div className="grid grid-cols-2 gap-5">
                     <div className="flex items-center gap-2 mb-2">
-                      {/* Name field is static - no edit button */}
-                      <label className="block text-base font-medium text-gray-800">
-                        {/* {customLabels.studentName} */}
-                        Name
-                      </label>
+                      <label className="block text-base font-medium text-gray-800"> {/* {customLabels.studentName} */} Name </label>
                       <span className="text-xs text-gray-500 ml-2">(Fixed)</span>
                     </div>
-                    <Input
-                      hidden
-                      type="text"
-                      placeholder="Type Name"
-                      value={formData.studentName}
-                      onChange={(e) => handleInputChange("studentName", e.target.value)}
-                      className="w-full bg-gray-100 py-6 px-4 rounded-lg"
-                    />
+                    {additionalFields.map((field: any, index: number) => (
+                      <div key={index}>
+                        {/* Editable Field Name */}
+                        <div className="flex items-center gap-2 mb-2">
+                          {editingField === `fieldName-${index}` ? (
+                            <Input
+                              type="text"
+                              value={field.fieldName}
+                              onChange={(e) => handleFieldNameChange(index, e.target.value)}
+                              onBlur={() => setEditingField(null)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") setEditingField(null)
+                              }}
+                              autoFocus
+                              className="h-8"
+                            />
+                          ) : (
+                            <>
+                              <label className="block text-base font-medium text-gray-800">
+                                {field.fieldName}
+                              </label>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6"
+                                onClick={() => setEditingField(`fieldName-${index}`)}
+                              >
+                                <Pencil className="h-3 w-3" />
+                              </Button>
+                            </>
+                          )}
+                        </div>
+
+                        {/* Editable Default Value */}
+                        <div className="flex items-center gap-2 mb-2">
+                          {editingField === `defaultValue-${index}` ? (
+                            <Input
+                              type="text"
+                              value={field.defaultValue}
+                              onChange={(e) => handleDefaultValueChange(index, e.target.value)}
+                              onBlur={() => setEditingField(null)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") setEditingField(null)
+                              }}
+                              autoFocus
+                              className="h-8 bg-gray-200 border border-gray-600"
+                            />
+                          ) : (
+                            <>
+                              <Input
+                                type="text"
+                                value={field.defaultValue || ""}
+                                disabled
+                                className="h-8 text-gray-700 bg-gray-200"
+                              />
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6"
+                                onClick={() => setEditingField(`defaultValue-${index}`)}
+                              >
+                                <Pencil className="h-3 w-3" />
+                              </Button>
+                            </>
+                          )}
+                        </div>
+
+                      </div>
+                    ))}
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2 mb-2">
-                      {editingField === 'department' ? (
-                        <Input
-                          type="text"
-                          value={customLabels.department}
-                          onChange={(e) => handleLabelChange("department", e.target.value)}
-                          onBlur={() => setEditingField(null)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') setEditingField(null)
-                          }}
-                          autoFocus
-                          className="h-8"
-                        />
-                      ) : (
-                        <>
-                          <label className="block text-base font-medium text-gray-800">
-                            {customLabels.department}
-                          </label>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6"
-                            onClick={() => setEditingField('department')}
-                          >
-                            <Pencil className="h-3 w-3" />
-                          </Button>
-                        </>
-                      )}
-                    </div>
-                    <Input
-                      hidden
-                      type="text"
-                      placeholder={`Type ${customLabels.department}`}
-                      value={formData.department}
-                      onChange={(e) => handleInputChange("department", e.target.value)}
-                      className="w-full bg-gray-100 py-6 px-4 rounded-lg"
-                    />
-                  </div>
+
                 </div>
 
-                <div className="grid grid-cols-2 gap-5 mb-4">
-                  <div>
-                    <div className="flex items-center gap-2 mb-2">
-                      {editingField === 'rollNumber' ? (
-                        <Input
-                          type="text"
-                          value={customLabels.rollNumber || customLabels.employeeId}
-                          onChange={(e) => handleLabelChange("rollNumber", e.target.value)}
-                          onBlur={() => setEditingField(null)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') setEditingField(null)
-                          }}
-                          autoFocus
-                          className="h-8"
-                        />
-                      ) : (
-                        <>
-                          <label className="block text-base font-medium text-gray-800">
-                            {customLabels.rollNumber || customLabels.employeeId}
-                          </label>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6"
-                            onClick={() => setEditingField('rollNumber')}
-                          >
-                            <Pencil className="h-3 w-3" />
-                          </Button>
-                        </>
-                      )}
-                    </div>
-                    <Input
-                      hidden
-                      type="text"
-                      placeholder={`Type ${customLabels.rollNumber || customLabels.employeeId}`}
-                      value={formData.rollNumber}
-                      onChange={(e) => handleInputChange("rollNumber", e.target.value)}
-                      className="w-full bg-gray-100 py-6 px-4 rounded-lg"
-                    />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 mb-2">
-                      {editingField === 'bloodGroup' ? (
-                        <Input
-                          type="text"
-                          value={customLabels.bloodGroup}
-                          onChange={(e) => handleLabelChange("bloodGroup", e.target.value)}
-                          onBlur={() => setEditingField(null)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') setEditingField(null)
-                          }}
-                          autoFocus
-                          className="h-8"
-                        />
-                      ) : (
-                        <>
-                          <label className="block text-base font-medium text-gray-800">
-                            {customLabels.bloodGroup}
-                          </label>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6"
-                            onClick={() => setEditingField('bloodGroup')}
-                          >
-                            <Pencil className="h-3 w-3" />
-                          </Button>
-                        </>
-                      )}
-                    </div>
-                    <Input
-                      hidden
-                      type="text"
-                      placeholder={`Type ${customLabels.bloodGroup}`}
-                      value={formData.bloodGroup}
-                      onChange={(e) => handleInputChange("bloodGroup", e.target.value)}
-                      className="w-full bg-gray-100 py-6 px-4 rounded-lg"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-5 mb-4">
-                  <div>
-                    <div className="flex items-center gap-2 mb-2">
-                      {editingField === 'dateOfBirth' ? (
-                        <Input
-                          type="text"
-                          value={customLabels.dateOfBirth}
-                          onChange={(e) => handleLabelChange("dateOfBirth", e.target.value)}
-                          onBlur={() => setEditingField(null)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') setEditingField(null)
-                          }}
-                          autoFocus
-                          className="h-8"
-                        />
-                      ) : (
-                        <>
-                          <label className="block text-base font-medium text-gray-800">
-                            {customLabels.dateOfBirth}
-                          </label>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6"
-                            onClick={() => setEditingField('dateOfBirth')}
-                          >
-                            <Pencil className="h-3 w-3" />
-                          </Button>
-                        </>
-                      )}
-                    </div>
-                    <Input
-                      hidden
-                      type="text"
-                      placeholder={`Type ${customLabels.dateOfBirth}`}
-                      value={formData.dateOfBirth}
-                      onChange={(e) => handleInputChange("dateOfBirth", e.target.value)}
-                      className="w-full bg-gray-100 py-6 px-4 rounded-lg"
-                    />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 mb-2">
-                      {editingField === 'phone' ? (
-                        <Input
-                          type="text"
-                          value={customLabels.phone}
-                          onChange={(e) => handleLabelChange("phone", e.target.value)}
-                          onBlur={() => setEditingField(null)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') setEditingField(null)
-                          }}
-                          autoFocus
-                          className="h-8"
-                        />
-                      ) : (
-                        <>
-                          <label className="block text-base font-medium text-gray-800">
-                            {customLabels.phone}
-                          </label>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6"
-                            onClick={() => setEditingField('phone')}
-                          >
-                            <Pencil className="h-3 w-3" />
-                          </Button>
-                        </>
-                      )}
-                    </div>
-                    <Input
-                      hidden
-                      type="tel"
-                      placeholder={`Type ${customLabels.phone}`}
-                      value={formData.phone}
-                      onChange={(e) => handleInputChange("phone", e.target.value)}
-                      className="w-full bg-gray-100 py-6 px-4 rounded-lg"
-                    />
-                  </div>
-                </div>
 
                 {/* Add/Remove Field Section */}
                 {/* <div className="mb-6 p-4 bg-gray-50 rounded-lg">

@@ -41,14 +41,14 @@ const nextConfig: NextConfig = {
       }
     ],
   },
-  // async rewrites() {
-  //   return [
-  //     {
-  //       source: '/api/process-id-photo',
-  //       destination: `${process.env.NEXT_PUBLIC_AI_SERVER_URL}/process-id-photo`,
-  //     }
-  //   ];
-  // },
+  async rewrites() {
+    return [
+      {
+        source: '/api/process-id-photo',
+        destination: `${process.env.NEXT_PUBLIC_AI_SERVER_URL}/process-id-photo`,
+      }
+    ];
+  },
 };
 
 export default nextConfig;

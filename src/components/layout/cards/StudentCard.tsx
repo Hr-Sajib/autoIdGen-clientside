@@ -129,8 +129,8 @@ const StudentCard: React.FC<StudentCardProps> = ({
               <p className="my-1.5">:&nbsp;{department}</p>
               <p className="my-1.5">:&nbsp;{roll}</p>
               <p className="my-1.5">:&nbsp;{bloodGroup}</p>
-              <p className="my-1.5">:&nbsp;{dob}</p>
-              <p className="my-1.5">:&nbsp;{phone}</p>
+              {dob && <p className="my-1.5">:&nbsp;{dob}</p>}
+              {phone && <p className="my-1.5">:&nbsp;{phone}</p>}
             </div>
           </div>
         </div>

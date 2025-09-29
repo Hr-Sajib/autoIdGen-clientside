@@ -196,6 +196,10 @@ export default function InstituteTemplateSetupPage() {
     toast.success("Field removed successfully!");
   };
 
+  // console.log(additionalFields)
+  // console.log(additionalFields[2].fieldName)
+  // console.log(additionalFields[2].defaultValue)
+
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev: any) => ({ ...prev, [field]: value }));
   };
@@ -293,12 +297,12 @@ export default function InstituteTemplateSetupPage() {
 
   const fieldLabels = {
     studentName: "Name",
-    department: additionalFields[0]?.fieldName || "Department",
-    rollNumber: additionalFields[1]?.fieldName || "Roll Number",
-    employeeId: additionalFields[1]?.fieldName || "Employee ID",
-    bloodGroup: additionalFields[2]?.fieldName || "Blood Group",
-    dateOfBirth: additionalFields[3]?.fieldName || "Date of Birth",
-    phone: additionalFields[4]?.fieldName || "Phone",
+    department: additionalFields[0]?.fieldName,
+    rollNumber: additionalFields[1]?.fieldName,
+    employeeId: additionalFields[1]?.fieldName,
+    bloodGroup: additionalFields[2]?.fieldName,
+    dateOfBirth: additionalFields[3]?.fieldName,
+    phone: additionalFields[4]?.fieldName,
   };
 
   const renderCard = () => {

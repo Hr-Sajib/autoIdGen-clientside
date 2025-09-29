@@ -25,23 +25,23 @@ export function ProjectOverview() {
 
   // API gives { success, message, data: [...] }
   const projects = data?.data ?? []
-  
+
   // Filter projects based on search term
   const filteredProjects = projects.filter((project: Project) => {
     if (!searchTerm) return true
-    
+
     const searchLower = searchTerm.toLowerCase()
     const projectName = project.projectName?.toLowerCase() || ""
     const institutionName = project.institutionName?.toLowerCase() || ""
     const batchCode = project.batchId?.toString().toLowerCase() || ""
-    
-    return projectName.includes(searchLower) || 
-           institutionName.includes(searchLower) || 
-           batchCode.includes(searchLower)
+
+    return projectName.includes(searchLower) ||
+      institutionName.includes(searchLower) ||
+      batchCode.includes(searchLower)
   })
-  
+
   console.log("Projects data:", projects)
-  
+
   const handleCopy = async (text: string, id: string) => {
     try {
       await navigator.clipboard.writeText(text)
@@ -76,8 +76,10 @@ export function ProjectOverview() {
         templateId: original.templateId,
         institutionName: original.institutionName,
         institutionLogoUrl: original.institutionLogoUrl,
-        institutionSignUrl: original.institutionSignUrl.signUrl,
-        signRoleName: original.institutionSignUrl.roleName,
+        institutionSignUrl: {
+          roleName: original.institutionSignUrl.roleName,
+          signUrl: original.institutionSignUrl.signUrl,
+        },
         cardType: original.cardType,
         cardQuantity: original.cardQuantity,
         address: original.address,
@@ -115,7 +117,7 @@ export function ProjectOverview() {
 
   if (isLoading) {
     // return <p className="p-6 text-muted-foreground">Loading projects.sf..</p>
-    return <Loading/>
+    return <Loading />
   }
 
   if (isError) {
@@ -141,8 +143,8 @@ export function ProjectOverview() {
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
             </svg>
-            <Input 
-              placeholder="Search by project name, institution, or batch code" 
+            <Input
+              placeholder="Search by project name, institution, or batch code"
               className="pl-10 w-64 border border-gray-200"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}

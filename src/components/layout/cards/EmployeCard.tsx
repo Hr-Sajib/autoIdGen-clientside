@@ -46,7 +46,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
   phone = "+65-2131-XXXX",
   companyName = "ABC Group of Industries",
   // companyAddress = "Dummy address 21A/B mine union point, Singapore",
-  personImage = "https://i.ibb.co.com/ZzcCMzNx/3.webp",
+  personImage = "https://i.ibb.co.com/C3Dg8jpt/avatar5.jpg",
   logo = "https://i.postimg.cc/hthwhxwy/uni-logo.avif",
   signature = "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png",
   whoseSign,
@@ -104,7 +104,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
 
         {/* Employee ID Label */}
         <p className="absolute top-[3%] left-[12%] md:left-[12%] lg:left-[12%] text-[4px] md:text-[8px] lg:text-[11px] xl:text-[12px] text-gray-500 border border-gray-500 px-1 py-0.5 rounded-[3px] md:rounded text-center">
-          {idCardType}
+          {idCardType} ID
         </p>
 
         {/* Person Image */}

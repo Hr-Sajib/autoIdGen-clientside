@@ -284,14 +284,14 @@ const AccessForm: React.FC = () => {
           {/* Roll / Serial Number */}
           <div className="space-y-2">
             <Label htmlFor="rollSerial" className="text-sm font-medium text-black">
-              Roll / Serial Number
+              Serial Number
             </Label>
             <Input
               id="rollSerial"
               type="text"
               value={rollSerial}
               onChange={(e) => setRollSerial(e.target.value.replace(/[^0-9]/g, ""))}
-              placeholder="Type Roll / Serial Number"
+              placeholder="Type Serial Number"
               className="h-12 px-4 bg-gray-100/80 rounded-lg"
               inputMode="numeric"
               pattern="[0-9]*"

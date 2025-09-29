@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card } from "@/components/ui/card"
-import { Pencil } from "lucide-react"
-import { CardQuantityModal } from "../_components/quantity-modal"
-import { DashboardHeader } from "../_components/dashboard-header"
-import StudentCard from "@/components/layout/cards/StudentCard"
-import EmployeeCard from "@/components/layout/cards/EmployeCard"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import { Pencil } from "lucide-react";
+import { CardQuantityModal } from "../_components/quantity-modal";
+import { DashboardHeader } from "../_components/dashboard-header";
+import StudentCard from "@/components/layout/cards/StudentCard";
+import EmployeeCard from "@/components/layout/cards/EmployeCard";
 import { useCreateProjectMutation } from "@/lib/feature/Project/projectApi";
 import { RootState } from "@/lib/store";
 import { useSelector } from "react-redux";
@@ -16,33 +16,33 @@ import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 
 export default function InstituteTemplateSetupPage() {
-  const router = useRouter()
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [idCardType, setIdCardType] = useState("Student")
-  const [editingField, setEditingField] = useState<string | null>(null)
+  const router = useRouter();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [idCardType, setIdCardType] = useState("Student");
+  const [editingField, setEditingField] = useState<string | null>(null);
 
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
 
-  // ✅ ProjectName state (dynamic from sessionStorage or query param)
-  const [projectName, setProjectName] = useState("")
+  // ProjectName state
+  const [projectName, setProjectName] = useState("");
 
   useEffect(() => {
-    const queryProject = searchParams.get("project")
-    const savedFormData = sessionStorage.getItem("formData")
+    const queryProject = searchParams.get("project");
+    const savedFormData = sessionStorage.getItem("formData");
 
     if (queryProject) {
-      setProjectName(queryProject)
+      setProjectName(queryProject);
     } else if (savedFormData) {
       try {
-        const parsed = JSON.parse(savedFormData)
+        const parsed = JSON.parse(savedFormData);
         if (parsed.project) {
-          setProjectName(parsed.project)
+          setProjectName(parsed.project);
         }
       } catch (err) {
-        console.error("❌ Error parsing formData:", err)
+        console.error("❌ Error parsing formData:", err);
       }
     }
-  }, [searchParams])
+  }, [searchParams]);
 
   const [selectedCard, setSelectedCard] = useState<"Student" | "Employee">("Student");
   const [formData, setFormData] = useState<any>({});
@@ -72,7 +72,6 @@ export default function InstituteTemplateSetupPage() {
 
   useEffect(() => {
     try {
-      // Get card type from session storage
       const savedCardType = sessionStorage.getItem("selectedCard");
       const savedForm = sessionStorage.getItem("formData");
 
@@ -128,26 +127,24 @@ export default function InstituteTemplateSetupPage() {
     }
   }, []);
 
-
-  // ✅ Load from sessionStorage when component mounts
   useEffect(() => {
     try {
-      const saved = sessionStorage.getItem("formData")
+      const saved = sessionStorage.getItem("formData");
       if (saved) {
-        const parsed = JSON.parse(saved)
-        setFormData(parsed)
+        const parsed = JSON.parse(saved);
+        setFormData(parsed);
         if (parsed.cardOrientation) {
-          setCardOrientation(parsed.cardOrientation) // 👈 restore orientation
+          setCardOrientation(parsed.cardOrientation);
         }
         if (parsed.idCardType) {
-          setIdCardType(parsed.idCardType) // 👈 restore orientation
+          setIdCardType(parsed.idCardType);
         }
-        console.log("🔄 Loaded formData from sessionStorage:", parsed)
+        console.log("🔄 Loaded formData from sessionStorage:", parsed);
       }
     } catch (err) {
-      console.error("❌ Error reading formData from sessionStorage:", err)
+      console.error("❌ Error reading formData from sessionStorage:", err);
     }
-  }, [])
+  }, []);
 
   // Sync additionalFields defaultValues with formData on mount
   useEffect(() => {
@@ -158,10 +155,46 @@ export default function InstituteTemplateSetupPage() {
         defaultValue: formData[fieldKeys[index]] || field.defaultValue,
       }))
     );
-  }, [formData]); // Run when formData `changes (after load)
+  }, [formData]);
 
-  // ✅ Hook for creating project
   const [createProject] = useCreateProjectMutation();
+
+  const handleAddField = () => {
+    const newField = { fieldName: "New Field", defaultValue: "" };
+    const newKey = `customField${additionalFields.length}`; // Unique key for new field
+    setAdditionalFields((prev: any) => [...prev, newField]);
+    setFormData((prev: any) => ({
+      ...prev,
+      [newKey]: "",
+    }));
+    sessionStorage.setItem("additionalFields", JSON.stringify([...additionalFields, newField]));
+    sessionStorage.setItem("formData", JSON.stringify({ ...formData, [newKey]: "" }));
+    toast.success("New field added successfully!");
+  };
+
+  const handleRemoveField = (index: number) => {
+    if (additionalFields.length <= 3) {
+      toast.error("At least one additional field is required.");
+      return;
+    }
+
+    setAdditionalFields((prev: any) => {
+      const newFields = prev.filter((_: any, i: number) => i !== index);
+      const fieldKeys = ["department", "rollNumber", "bloodGroup", "dateOfBirth", "phone"];
+      const key = fieldKeys[index] || `customField${index}`;
+      if (key) {
+        setFormData((prev: any) => {
+          const newFormData = { ...prev };
+          delete newFormData[key];
+          sessionStorage.setItem("formData", JSON.stringify(newFormData));
+          return newFormData;
+        });
+      }
+      sessionStorage.setItem("additionalFields", JSON.stringify(newFields));
+      return newFields;
+    });
+    toast.success("Field removed successfully!");
+  };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev: any) => ({ ...prev, [field]: value }));
@@ -182,34 +215,27 @@ export default function InstituteTemplateSetupPage() {
       )
     );
     const fieldKeys = ["department", "rollNumber", "bloodGroup", "dateOfBirth", "phone"];
-    const key = fieldKeys[index];
+    const key = fieldKeys[index] || `customField${index}`;
     if (key) {
       handleInputChange(key, newValue);
     }
   };
 
   const handlePrevious = () => {
-    // Save current formData to sessionStorage
     const sessionData = {
       ...formData,
       cardOrientation,
-      idCardType
+      idCardType,
     };
     sessionStorage.setItem("formData", JSON.stringify(sessionData));
     console.log("💾 Saved formData before going back:", sessionData);
 
-    // Get the project name from formData or fallback
     const project = formData.project || "Project";
-
-    // Navigate to Institute Template Setup with project param
     router.push(`/dashboard/card-template-setup?project=${encodeURIComponent(project)}`);
   };
 
-  const { user } = useSelector(
-    (state: RootState) => state.auth
-  );
+  const { user } = useSelector((state: RootState) => state.auth);
 
-  // ✅ Final function to call API + save to session
   const handleGenerateProject = async (quantity: number) => {
     if (!user || !user.userId) return;
 
@@ -231,37 +257,30 @@ export default function InstituteTemplateSetupPage() {
         signUrl: formData.signatureUrl,
       },
       personPhotoBGColorCode: formData.bgColor,
-      additionalFields, // ✅ Already correct format
+      additionalFields,
       cardQuantity: quantity,
     };
 
     try {
-      // Show loading toast
       const toastId = toast.loading("🚀 Creating project...", {
         duration: 4000,
         className: "bg-blue-600 text-white font-semibold text-center shadow-lg",
       });
 
-      // Call API
       await createProject(payload).unwrap();
 
-      // Success toast
       toast.success("🎉 Project created successfully!", {
         id: toastId,
         duration: 6000,
       });
 
-      // Clear session storage
       sessionStorage.removeItem("formData");
       sessionStorage.removeItem("selectedCard");
       sessionStorage.removeItem("additionalFields");
       sessionStorage.removeItem("cardOrientation");
 
-      // ✅ Only navigate on success
       router.push("/dashboard");
-
     } catch (err: any) {
-      // Show API error message
       const errorMessage =
         err?.data?.message || err?.error || "❌ Failed to create project. Please try again.";
 
@@ -272,8 +291,6 @@ export default function InstituteTemplateSetupPage() {
     }
   };
 
-
-  // Compute field labels from additionalFields
   const fieldLabels = {
     studentName: "Name",
     department: additionalFields[0]?.fieldName || "Department",
@@ -284,7 +301,6 @@ export default function InstituteTemplateSetupPage() {
     phone: additionalFields[4]?.fieldName || "Phone",
   };
 
-  // Dynamic card rendering based on type and orientation from session storage
   const renderCard = () => {
     const cardProps = {
       name: formData.studentName,
@@ -300,8 +316,8 @@ export default function InstituteTemplateSetupPage() {
       profileUrl: formData.profileUrl,
       bgColor: formData.bgColor,
       qrData: formData.qrData,
-      whoseSign: formData.whoseSign
-    }
+      whoseSign: formData.whoseSign,
+    };
 
     const studentCustomLabels = {
       studentName: fieldLabels.studentName,
@@ -310,7 +326,7 @@ export default function InstituteTemplateSetupPage() {
       bloodGroup: fieldLabels.bloodGroup,
       dateOfBirth: fieldLabels.dateOfBirth,
       phone: fieldLabels.phone,
-    }
+    };
 
     const employeeCustomLabels = {
       studentName: fieldLabels.studentName,
@@ -320,7 +336,7 @@ export default function InstituteTemplateSetupPage() {
       bloodGroup: fieldLabels.bloodGroup,
       dateOfBirth: fieldLabels.dateOfBirth,
       phone: fieldLabels.phone,
-    }
+    };
 
     if (selectedCard === "Student") {
       if (cardOrientation === "vertical") {
@@ -336,7 +352,7 @@ export default function InstituteTemplateSetupPage() {
             customLabels={employeeCustomLabels}
             orientation={cardOrientation}
           />
-        )
+        );
       } else {
         return (
           <StudentCard
@@ -346,7 +362,7 @@ export default function InstituteTemplateSetupPage() {
             customLabels={studentCustomLabels}
             orientation={cardOrientation}
           />
-        )
+        );
       }
     } else if (selectedCard === "Employee") {
       if (cardOrientation === "vertical") {
@@ -362,7 +378,7 @@ export default function InstituteTemplateSetupPage() {
             customLabels={employeeCustomLabels}
             orientation={cardOrientation}
           />
-        )
+        );
       } else {
         return (
           <StudentCard
@@ -372,11 +388,10 @@ export default function InstituteTemplateSetupPage() {
             customLabels={studentCustomLabels}
             orientation={cardOrientation}
           />
-        )
+        );
       }
     }
 
-    // Default fallback
     return (
       <StudentCard
         {...cardProps}
@@ -385,9 +400,8 @@ export default function InstituteTemplateSetupPage() {
         customLabels={studentCustomLabels}
         orientation={cardOrientation}
       />
-    )
-  }
-
+    );
+  };
 
   return (
     <>
@@ -397,7 +411,6 @@ export default function InstituteTemplateSetupPage() {
         <main className="container mx-auto px-6 py-12">
           <div className="max-w-full mx-auto">
             <h1 className="text-2xl font-bold text-gray-900 mb-8">Contact Info Field Selection</h1>
-            {/* <CardPreview/> */}
 
             <div className="grid lg:grid-cols-2 gap-8">
               {/* Form Section */}
@@ -405,7 +418,7 @@ export default function InstituteTemplateSetupPage() {
                 <div className="mb-6">
                   <div className="grid grid-cols-2 gap-5">
                     <div className="flex items-center gap-2 mb-2">
-                      <label className="block text-base font-medium text-gray-800"> {/* {customLabels.studentName} */} Name </label>
+                      <label className="block text-base font-medium text-gray-800">Name</label>
                       <span className="text-xs text-gray-500 ml-2">(Fixed)</span>
                     </div>
                     {additionalFields.map((field: any, index: number) => (
@@ -419,7 +432,7 @@ export default function InstituteTemplateSetupPage() {
                               onChange={(e) => handleFieldNameChange(index, e.target.value)}
                               onBlur={() => setEditingField(null)}
                               onKeyDown={(e) => {
-                                if (e.key === "Enter") setEditingField(null)
+                                if (e.key === "Enter") setEditingField(null);
                               }}
                               autoFocus
                               className="h-8"
@@ -450,7 +463,7 @@ export default function InstituteTemplateSetupPage() {
                               onChange={(e) => handleDefaultValueChange(index, e.target.value)}
                               onBlur={() => setEditingField(null)}
                               onKeyDown={(e) => {
-                                if (e.key === "Enter") setEditingField(null)
+                                if (e.key === "Enter") setEditingField(null);
                               }}
                               autoFocus
                               className="h-8 bg-gray-200 border border-gray-600"
@@ -475,44 +488,51 @@ export default function InstituteTemplateSetupPage() {
                           )}
                         </div>
 
+                        {/* Remove Button */}
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          className="mt-2"
+                          onClick={() => handleRemoveField(index)}
+                          disabled={additionalFields.length <= 1}
+                        >
+                          Remove
+                        </Button>
                       </div>
                     ))}
                   </div>
 
+                  {/* Add Field Button */}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-4"
+                    onClick={handleAddField}
+                  >
+                    Add Field
+                  </Button>
                 </div>
 
-
-                {/* Add/Remove Field Section */}
-                {/* <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-                  <h3 className="text-md font-semibold text-gray-800 mb-3">Customize Form Fields</h3>
-                  <p className="text-sm text-gray-600 mb-3">Click the pencil icon next to any field label to rename it. The &quot;Name&quot; field cannot be changed.</p>
-                  
-            
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                      <span>Editable Fields: Department, Roll Number, Blood Group, Date of Birth, Phone</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 bg-red-500 rounded-full"></span>
-                      <span>Fixed Field: Name (cannot be changed)</span>
-                    </div>
-                  </div>
-                </div> */}
-
                 <div className="flex gap-4 mt-8">
-                  <Button onClick={handlePrevious} className="flex-1 h-14 text-gray-600 border border-gray-300 rounded-xl text-lg font-medium bg-white hover:bg-gray-100 hover:text-gray-900">Previous</Button>
-                  <Button onClick={() => setIsModalOpen(true)} className="flex-1 h-14 bg-[#4A61E4] hover:bg-[#4A61E6] text-white text-lg rounded-xl font-medium">Next</Button>
+                  <Button
+                    onClick={handlePrevious}
+                    className="flex-1 h-14 text-gray-600 border border-gray-300 rounded-xl text-lg font-medium bg-white hover:bg-gray-100 hover:text-gray-900"
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    onClick={() => setIsModalOpen(true)}
+                    className="flex-1 h-14 bg-[#4A61E4] hover:bg-[#4A61E6] text-white text-lg rounded-xl font-medium"
+                  >
+                    Next
+                  </Button>
                 </div>
               </div>
 
               {/* Right Preview Section */}
               <div className="flex flex-col items-center justify-start -mt-10">
                 <div className="mb-4">
-                  <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">
-                    Preview
-                  </h2>
-
+                  <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">Preview</h2>
                   <div className="flex justify-center mb-2">
                     <div className="bg-gray-100 p-1 rounded-lg flex">
                       <button
@@ -531,34 +551,17 @@ export default function InstituteTemplateSetupPage() {
                     </div>
                   </div>
                 </Card>
-
-                {/* Color Selection */}
-                {/* <div className="space-y-2">
-                  <p className="text-center text-sm font-medium text-gray-600">
-                    Select photo Background Color
-                  </p>
-                  <div className="flex justify-center gap-2">
-                    {["#0f172a", "#10b981", "#3b82f6", "#06b6d4", "#a855f7", "#ec4899"].map((color) => (
-                      <button
-                        key={color}
-                        className={`w-8 h-8 rounded-full border-2 transition-all ${
-                          formData.bgColor === color 
-                            ? 'border-gray-800 scale-110' 
-                            : 'border-gray-200 hover:border-gray-400'
-                        }`}
-                        style={{ backgroundColor: color }}
-                        onClick={() => handleInputChange("bgColor", color)}
-                      />
-                    ))}
-                  </div>
-                </div> */}
               </div>
             </div>
           </div>
         </main>
       </div>
 
-      <CardQuantityModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onGenerate={handleGenerateProject} />
+      <CardQuantityModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onGenerate={handleGenerateProject}
+      />
     </>
-  )
+  );
 }

@@ -24,14 +24,8 @@ export function EditCard({
   initialData,
   projectAdditionalFields,
 }: EditCardProps) {
-  const [form, setForm] = useState<Partial<Card>>(initialData)
+  const [formData, setFormData] = useState({ ...initialData, additionalFields: {} });
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
-
-  const [formData, setFormData] = useState({ ...initialData, additionalFields: initialData.additionalFields || [] });
-
-
-  // console.log(33, formData)
-
 
   useEffect(() => {
     if (isOpen) {
@@ -46,20 +40,23 @@ export function EditCard({
         }
       })
 
-      setFormData({ ...initialData, additionalFields: initialData.additionalFields || [] })
-      // Reset errors when modal opens
+      const additionalFieldsObj = mergedFields.reduce((acc, f) => ({...acc, [f.fieldName]: f.fieldValue}), {});
+
+      setFormData({ ...initialData, additionalFields: additionalFieldsObj })
+      setErrors({})
     }
-  }, [isOpen, initialData])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, projectAdditionalFields])
 
   const handleChange = <K extends keyof Card>(key: K, value: Card[K]) => {
-    setForm((prev) => ({ ...prev, [key]: value }))
+    setFormData((prev) => ({ ...prev, [key]: value }))
     setErrors((prev) => ({ ...prev, [key]: "" }))
   }
 
-  const handleFieldChange = (prop: any, value: string) => {
-
+  const handleFieldChange = (prop: string, value: string) => {
     setFormData((prev: any) => ({
-      ...prev, additionalFields: {
+      ...prev, 
+      additionalFields: {
         ...prev.additionalFields,
         [prop]: value
       }
@@ -85,26 +82,26 @@ export function EditCard({
     const newErrors: { [key: string]: string } = {}
 
     // Validate Serial/Roll Number
-    if (!form.serialOrRollNumber || form.serialOrRollNumber <= 0) {
+    if (!formData.serialOrRollNumber || formData.serialOrRollNumber <= 0) {
       newErrors.serialOrRollNumber = "Serial/Roll Number must be a positive number"
     }
 
     // Validate Name
-    if (!form.name?.trim()) {
+    if (!formData.name?.trim()) {
       newErrors.name = "Name is required"
     }
 
     // Optional Additional Fields Validation
-    form.additionalfieldValues?.forEach((field, idx) => {
-      if (field.fieldValue?.trim()) { // Only validate if user filled something
-        if (field.fieldName === "Contact no.") {
+    Object.entries(formData.additionalFields || {}).forEach(([fieldName, fieldValue], idx) => {
+      if ((fieldValue as string)?.trim()) { // Only validate if user filled something
+        if (fieldName === "Contact no.") {
           const phoneRegex = /^(0|\+)[0-9X-]{7,}$/
-          if (!phoneRegex.test(field.fieldValue)) {
+          if (!phoneRegex.test(fieldValue as string)) {
             newErrors[`field-${idx}`] = "Invalid phone number format (e.g., 01XXXXXXX)"
           }
-        } else if (field.fieldName === "Date of Birth") {
+        } else if (fieldName === "Date of Birth") {
           const dateRegex = /^[0-9a-zA-Z/-]+$/
-          if (!dateRegex.test(field.fieldValue)) {
+          if (!dateRegex.test(fieldValue as string)) {
             newErrors[`field-${idx}`] = "Invalid date format (e.g., DD/MM/YYYY)"
           }
         }
@@ -126,27 +123,15 @@ export function EditCard({
       return
     }
 
-    // const payload: Partial<Card> = {
-    //   ...form,
-    //   _id: form._id || undefined,
-    //   name: form.name?.trim(),
-    //   personalPhotoUrl: form.personalPhotoUrl?.trim(),
-    //   additionalfieldValues: form.additionalfieldValues?.map((field) => ({
-    //     fieldName: field.fieldName,
-    //     fieldValue: field.fieldValue.trim(),
-    //     setBy: "owner",
-    //   })),
-    // }
-
     const payload: Partial<Card> = {
       ...formData,
-      _id: form._id || undefined,
-      name: form.name?.trim(),
-      personalPhotoUrl: form.personalPhotoUrl?.trim(),
+      _id: formData._id || undefined,
+      name: formData.name?.trim(),
+      personalPhotoUrl: formData.personalPhotoUrl?.trim(),
       additionalfieldValues: Object.entries(formData.additionalFields || {}).map(
         ([fieldName, fieldValue]) => ({
           fieldName,
-          fieldValue: (fieldValue as unknown as string).trim(),
+          fieldValue: (fieldValue as string).trim(),
           setBy: "owner",
         })
       ),
@@ -170,7 +155,7 @@ export function EditCard({
         </button>
 
         <h2 className="text-xl font-bold text-gray-900 mb-5">
-          {initialData?._id ? "Edit Card" : "Create Card"}
+          {formData?._id ? "Edit Card" : "Create Card"}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -200,7 +185,7 @@ export function EditCard({
             </Label>
             <Input
               id="name"
-              value={form.name || ""}
+              value={formData.name || ""}
               onChange={(e) => handleChange("name", e.target.value)}
               className={`bg-gray-50 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 rounded-lg transition-colors ${errors.name ? "border-red-500" : ""
                 }`}
@@ -216,7 +201,7 @@ export function EditCard({
             </Label>
 
             {/* Preview uploaded image */}
-            {form.personalPhotoUrl && (
+            {formData.personalPhotoUrl && (
               <img
                 src={formData.personalPhotoUrl}
                 alt="Profile"
@@ -234,21 +219,20 @@ export function EditCard({
           </div>
 
           {/* Dynamic Additional Fields */}
-          {Object.entries(formData.additionalFields).map(([prop, value], index) => {
+          {Object.entries(formData.additionalFields || {}).map(([prop, value], index) => {
             return <div key={index} className="space-y-1.5">
               <Label htmlFor={`field-${index}`} className="text-sm font-medium text-gray-700">
                 {prop}
               </Label>
               <Input
                 id={`field-${index}`}
-                value={value as unknown as string}
-                // value={formData.additionalFields[field.fieldName] || field.fieldValue}
+                value={value as string}
                 onChange={(e) => {
                   handleFieldChange(prop, e.target.value)
                 }}
                 className={`bg-gray-50 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 rounded-lg transition-colors ${errors[`field-${index}`] ? "border-red-500" : ""
                   }`}
-                placeholder={`Enter ${(prop as string)?.toLowerCase()}`}
+                placeholder={`Enter ${prop?.toLowerCase()}`}
               />
               {errors[`field-${index}`] && (
                 <p className="text-xs text-red-500 mt-1">{errors[`field-${index}`]}</p>
@@ -270,7 +254,7 @@ export function EditCard({
               type="submit"
               className="h-10 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-sm transition-colors"
             >
-              {initialData?._id ? "Update" : "Create"}
+              {formData?._id ? "Update" : "Create"}
             </Button>
           </div>
         </form>

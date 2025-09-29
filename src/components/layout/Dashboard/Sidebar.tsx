@@ -145,7 +145,7 @@ export function Sidebar({ onToggle }: SidebarProps) {
                       </span>
                     </Link>
                   )}
-                  <span className="text-[20px] text-[#4A61E4]">AutoIDGen</span>
+                  <Link href="/" className="text-[20px] text-[#4A61E4]">AutoIDGen</Link>
                 </div>
               </div>
             </div>

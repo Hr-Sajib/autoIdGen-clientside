@@ -34,6 +34,7 @@ export const analyticsApi = baseApi.injectEndpoints({
         url: "/analytics/projects/count",
         method: "GET",
       }),
+      providesTags: ["Analytics"],
     }),
 
     getGeneratedCards: builder.query<GeneratedCardsResponse, void>({
@@ -41,6 +42,7 @@ export const analyticsApi = baseApi.injectEndpoints({
         url: "/analytics/cards/generated",
         method: "GET",
       }),
+      providesTags: ["Analytics"],
     }),
 
     getPendingCards: builder.query<PendingCardsResponse, void>({
@@ -48,6 +50,7 @@ export const analyticsApi = baseApi.injectEndpoints({
         url: "/analytics/cards/pending",
         method: "GET",
       }),
+      providesTags: ["Analytics"],
     }),
 
     getSubmissions: builder.query<SubmissionsResponse, void>({
@@ -55,6 +58,7 @@ export const analyticsApi = baseApi.injectEndpoints({
         url: "/analytics/cards/submissions",
         method: "GET",
       }),
+      providesTags: ["Analytics"],
     }),
   }),
 });

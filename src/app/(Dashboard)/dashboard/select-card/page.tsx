@@ -41,26 +41,13 @@ export default function SelectCardPage() {
     if (savedCard) setSelectedCard(savedCard);
   }, []);
 
-  const handleContinue = () => {
-    sessionStorage.setItem("selectedCard", selectedCard || "")
-
+  const handleCardClick = (cardId: string) => {
+    setSelectedCard(cardId)
+    sessionStorage.setItem("selectedCard", cardId)
     router.push(
-      `/dashboard/card-template-setup?project=${projectName}&type=${selectedCard}`
+      `/dashboard/card-template-setup?project=${projectName}&type=${cardId}`
     )
   }
-
-  // const handleContinue = () => {
-  //   sessionStorage.setItem("selectedCard", selectedCard || "Student")
-  //   if (selectedCard === "Student") {
-  //     router.push(
-  //       `/dashboard/institute-template-setup?project=${projectName}&type=${selectedCard}`
-  //     )
-  //   } else if (selectedCard === "Employee") {
-  //     router.push(
-  //       `/dashboard/company-template-setup?project=${projectName}&type=${selectedCard}`
-  //     )
-  //   }
-  // }
 
   return (
     <div className="min-h-screen bg-background">
@@ -80,7 +67,7 @@ export default function SelectCardPage() {
                 ? "ring-2 ring-blue-500 bg-blue-50"
                 : "hover:bg-gray-50"
                 }`}
-              onClick={() => setSelectedCard(card.id)}
+              onClick={() => handleCardClick(card.id)}
             >
               <div className="text-center pb-0">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">{card.title}</h3>
@@ -121,22 +108,17 @@ export default function SelectCardPage() {
 
           <div className="space-y-4">
             <div className="flex gap-2 mb-4">
-              <Button
-                variant={selectedCard === "Student" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCard("Student")}
-                className={selectedCard === "Student" ? "bg-blue-600 text-white" : ""}
-              >
-                Student ID Card
-              </Button>
-              <Button
-                variant={selectedCard === "Employee" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCard("Employee")}
-                className={selectedCard === "Employee" ? "bg-blue-600 text-white" : ""}
-              >
-                Employee ID Card
-              </Button>
+              {cardTypes.map((card) => (
+                <Button
+                  key={card.id}
+                  variant={selectedCard === card.id ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => handleCardClick(card.id)}
+                  className={selectedCard === card.id ? "bg-blue-600 text-white" : ""}
+                >
+                  {card.title}
+                </Button>
+              ))}
             </div>
 
             {selectedCard && (
@@ -156,18 +138,6 @@ export default function SelectCardPage() {
             )}
           </div>
         </div>
-
-        {/* Continue Button */}
-        {selectedCard && (
-          <div className="flex justify-center mt-8">
-            <Button
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2"
-              onClick={handleContinue}
-            >
-              Continue
-            </Button>
-          </div>
-        )}
       </main>
     </div>
   )

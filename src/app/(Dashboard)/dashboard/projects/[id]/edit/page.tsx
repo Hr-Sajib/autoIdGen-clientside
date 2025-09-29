@@ -24,27 +24,27 @@ export default function ViewDetailsPage() {
   const [editProjectModalOpen, setEditProjectModalOpen] = useState(false)
   const [selectedCard, setSelectedCard] = useState<Card | null>(null)
 
-  
+
   const params = useParams()
   const id = params?.id as string
-  
+
   const { data: projectData, isLoading: projectLoading, error: projectError } = useGetSpecificProjectQuery(id)
   const [updateProject] = useUpdateProjectMutation()
   const project = projectData?.data
-  
+
   const batchId = project?.batchId ?? ""; // always a string
   console.log("Batch ID:", batchId);
   console.log("Project", project);
-  
+
   const { data: cardData, isLoading: cardLoading } = useGetCardByBatchIdQuery(batchId, {
     skip: !project?.batchId, // safe: hook order stays the same
-    // pollingInterval: 5000,
+    // pollingInterval: 10000,
   });
-  
+
   const [createCard] = useCreateCardMutation()
   const [updateCard] = useUpdateCardMutation()
   const [deleteCard] = useDeleteCardMutation()
-  
+
   useEffect(() => {
     if (!project) return
 
@@ -68,16 +68,16 @@ export default function ViewDetailsPage() {
         additionalfieldValues: [] as Card["additionalfieldValues"],
       }
     })
-    
+
     cardData?.data?.forEach((card: Card) => {
       const index = card.serialOrRollNumber - 1
       if (!rows[index]) return
-      
+
       const fields: Record<string, string> = {}
       card.additionalfieldValues?.forEach((f) => {
         fields[f.fieldName] = f.fieldValue
       })
-      
+
       rows[index] = {
         ...card,
         serialStr: card.serialOrRollNumber.toString().padStart(2, "0"),
@@ -86,24 +86,24 @@ export default function ViewDetailsPage() {
         additionalFields: fields,
       }
     })
-    
+
     setCards(rows)
   }, [cardData, project])
-  
+
   // Filter cards based on search term
   const filteredCards = cards.filter((card) => {
     if (!search) return true
-    
+
     const searchLower = search.toLowerCase()
     const name = card.name?.toLowerCase() || ""
     const serialStr = card.serialStr?.toLowerCase() || ""
     const serialNumber = card.serialOrRollNumber?.toString().toLowerCase() || ""
-    
+
     return name.includes(searchLower) ||
-    serialStr.includes(searchLower) ||
-    serialNumber.includes(searchLower)
+      serialStr.includes(searchLower) ||
+      serialNumber.includes(searchLower)
   })
-  
+
   const handleEditProject = () => setEditProjectModalOpen(true)
   const handleProjectUpdate = async (formData: Project) => {
     if (!project?._id) return
@@ -114,12 +114,12 @@ export default function ViewDetailsPage() {
       console.error("Failed to update project", err)
     }
   }
-  
+
   const handleEditCard = (card: Card) => {
     setSelectedCard(card)
     setEditCardModalOpen(true)
   }
-  
+
   const handleUpdate = async (formData: Partial<Card>) => {
     try {
       if (selectedCard?._id) {
@@ -135,12 +135,12 @@ export default function ViewDetailsPage() {
     }
   }
   console.log(selectedCard)
-  
+
   const handleDeleteCard = async (card: Card) => {
     if (!card._id) return; // safety check
     try {
       await deleteCard(card._id).unwrap(); // pass ID directly
-      
+
       // Remove card from local state to update UI immediately
       setCards((prev) => prev.filter((c) => c._id !== card._id));
     } catch (error) {
@@ -250,7 +250,7 @@ export default function ViewDetailsPage() {
                 </tr>
               ) : filteredCards.length > 0 ? (
                 filteredCards.map((card, idx) => (
-                  <tr key={idx} className="hover:bg-gray-50 transition-colors">
+                  <tr key={idx} className={`${idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-200 transition-colors`}>
                     <td className="px-4 py-2 border-b">{card.serialStr}</td>
                     <td className="px-4 py-2 border-b">{card.batchId}</td>
                     <td className="px-4 py-2 border-b">{card.name}</td>

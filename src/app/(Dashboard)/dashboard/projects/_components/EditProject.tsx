@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { X } from "lucide-react"
+import { Pencil, X } from "lucide-react"
 
 interface EditProjectProps {
   isOpen: boolean
@@ -56,6 +56,7 @@ export function EditProject({ isOpen, onClose, onSubmit, initialData }: EditProj
     contactPhone: initialData?.contactPhone || "",
     additionalFields: initialData?.additionalFields || [],
   })
+  const [editingIndex, setEditingIndex] = useState<number | null>(null)
 
   useEffect(() => {
     if (isOpen) {
@@ -91,6 +92,12 @@ export function EditProject({ isOpen, onClose, onSubmit, initialData }: EditProj
       ...formData,
       institutionSignUrl: { ...formData.institutionSignUrl, [name]: value },
     })
+  }
+
+  const handleAdditionalFieldsNameChange = (index: number, value: string) => {
+    const updatedFields = [...formData.additionalFields]
+    updatedFields[index] = { ...updatedFields[index], fieldName: value }
+    setFormData({ ...formData, additionalFields: updatedFields })
   }
 
   const handleAdditionalFieldsChange = (index: number, value: string) => {
@@ -248,13 +255,37 @@ export function EditProject({ isOpen, onClose, onSubmit, initialData }: EditProj
 
           {/* Additional Fields */}
           {formData.additionalFields.map((field, index) => (
-            <div key={field._id || index} className="space-y-1">
-              <label className="text-sm font-medium text-gray-700">{field.fieldName}</label>
+            <div key={field._id || index} className="space-y-2">
+              <div className="flex items-center gap-2">
+                {editingIndex === index ? (
+                  <Input
+                    value={field.fieldName}
+                    onChange={(e) => handleAdditionalFieldsNameChange(index, e.target.value)}
+                    onBlur={() => setEditingIndex(null)} // exit edit mode on blur
+                    placeholder="Enter field name"
+                    className="bg-white"
+                    autoFocus
+                  />
+                ) : (
+                  <span className="text-sm font-medium text-gray-700">
+                    {field.fieldName}
+                  </span>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => setEditingIndex(index)}
+                  className="p-1 rounded hover:bg-gray-200 transition"
+                >
+                  <Pencil className="w-4 h-4 text-gray-600" />
+                </button>
+              </div>
+
               <Input
                 value={field.defaultValue}
                 onChange={(e) => handleAdditionalFieldsChange(index, e.target.value)}
                 placeholder={`Enter ${field.fieldName}`}
-                className='bg-gray-100'
+                className="bg-gray-100"
               />
             </div>
           ))}

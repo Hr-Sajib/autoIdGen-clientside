@@ -97,7 +97,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
         {/* Student Photo */}
         <div className="absolute top-[145px] left-1/2 -translate-x-1/2 w-[160px] h-[160px] rounded-full border-[6px] border-[#2E9DA6] bg-white overflow-hidden">
           <Image
-            src={profileUrl || "https://i.ibb.co.com/ZzcCMzNx/3.webp"}
+            src={profileUrl || "https://i.ibb.co.com/C3Dg8jpt/avatar5.jpg"}
             alt="Student"
             fill
             className="object-cover object-center"
@@ -133,7 +133,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
 
                   {/* ID Type */}
           <p className="absolute bottom-[30px] rounded border border-gray-300 px-2 py-[2px] text-[11px] text-gray-100 bg-black/30">
-            {idCardType}
+            {idCardType} ID
           </p>
 
         {/* QR Code */}

@@ -23,9 +23,9 @@ export function DashboardHeader() {
             {/* Mobile: Show AutoIDGen branding */}
             <div className="md:hidden flex items-center gap-2 ml-12">
               <Link href="/" className="flex items-center text-[#4A61E4] space-x-2 font-bold text-lg">
-            <span><BiIdCard size={30} /></span>
-            <span className="text-[20px]">AutoIDGen</span>
-          </Link>
+                <span><BiIdCard size={30} /></span>
+                <span className="text-[20px]">AutoIDGen</span>
+              </Link>
             </div>
 
             {/* Desktop: Show Dashboard title */}

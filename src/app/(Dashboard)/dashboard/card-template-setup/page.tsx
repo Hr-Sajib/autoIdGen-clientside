@@ -343,7 +343,7 @@ export default function InstituteTemplateSetupPage() {
     router.push(`/dashboard/card-information?project=${project}`);
   }
 
-  const colors = ["#0f172a", "#10b981", "#3b82f6", "#06b6d4", "#a855f7"]
+  const colors = ["#ffffff" ,"#0f172a", "#10b981", "#3b82f6", "#06b6d4", "#a855f7"]
 
   return (
     <div className="min-h-screen bg-white">

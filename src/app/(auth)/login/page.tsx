@@ -397,7 +397,7 @@ const AutoIDGenLogin: React.FC = () => {
           <span>
             <BiIdCard size={30} />
           </span>
-          <span className="text-[20px]">AutoIDGen</span>
+          <Link href="/" className="text-[20px]">AutoIDGen</Link>
         </Link>
 
         <h1 className="text-[34px] font-bold text-center mb-12 text-gray-900">

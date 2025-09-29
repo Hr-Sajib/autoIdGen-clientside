@@ -46,7 +46,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
   dob,
   phone,
   qrData,
-  // bgColor,
+  bgColor,
   whoseSign,
   customLabels = {
     department: "Department",
@@ -56,6 +56,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
     phone: "Phone"
   }
 }) => {
+  // console.log("bgColor", bgColor)
   return (
     <div
       className="calibri relative w-[350px] h-[600px] rounded-lg overflow-hidden shadow-lg font-sans"
@@ -95,9 +96,12 @@ const StudentCard: React.FC<StudentCardProps> = ({
         </div>
 
         {/* Student Photo */}
-        <div className="absolute top-[145px] left-1/2 -translate-x-1/2 w-[160px] h-[160px] rounded-full border-[6px] border-[#2E9DA6] bg-white overflow-hidden">
+        <div
+          className={`absolute top-[145px] left-1/2 -translate-x-1/2 w-[160px] h-[160px] rounded-full border-[6px] border-[#2E9DA6] overflow-hidden`}
+          style={{ backgroundColor: bgColor || "#ffffff" }} // fallback if null
+        >
           <Image
-            src={profileUrl || "https://i.ibb.co.com/C3Dg8jpt/avatar5.jpg"}
+            src={profileUrl || "https://i.ibb.co.com/kgtgSzxt/avatar.png"}
             alt="Student"
             fill
             className="object-cover object-center"
@@ -131,10 +135,10 @@ const StudentCard: React.FC<StudentCardProps> = ({
           </div>
         </div>
 
-                  {/* ID Type */}
-          <p className="absolute bottom-[30px] rounded border border-gray-300 px-2 py-[2px] text-[11px] text-gray-100 bg-black/30">
-            {idCardType} ID
-          </p>
+        {/* ID Type */}
+        <p className="absolute bottom-[30px] rounded border border-gray-300 px-2 py-[2px] text-[11px] text-gray-100 bg-black/30">
+          {idCardType} ID
+        </p>
 
         {/* QR Code */}
         <div className="absolute bottom-[60px] left-1/2 -translate-x-1/2">

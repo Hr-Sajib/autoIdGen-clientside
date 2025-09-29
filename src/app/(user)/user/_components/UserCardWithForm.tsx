@@ -15,6 +15,7 @@ import Link from "next/link";
 import ErrorImage from "@/../public/images/error_id_card.png";
 import Loading from "@/app/loading";
 import { AiOutlineExclamationCircle } from 'react-icons/ai';
+import { IoCameraOutline } from "react-icons/io5";
 
 // ===========================
 // Type Definitions
@@ -244,7 +245,7 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({ finalImageUrl, st
               disabled={isDownloading}
             >
               <Image src={DownloadImage} width={26} height={14} alt="" />
-              {isDownloading ? "Downloading..." : "Export"}
+              {isDownloading ? "Downloading..." : "Download"}
             </Button>
             <Button
               onClick={() => window.open(finalImageUrl, '_blank')}
@@ -336,7 +337,7 @@ const UserCardWithForm: React.FC = () => {
 
         if (apiResponse.success) {
           setProjectData(apiResponse.data);
-          
+
           // After getting project data, try to fetch existing card data
           if (rollSerial) {
             await fetchExistingCardData(batchCode, rollSerial);
@@ -358,18 +359,18 @@ const UserCardWithForm: React.FC = () => {
         console.log("🔍 Checking for existing card data...");
 
         const existingCardResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}card/getSpecificCard/${batchCode}/${rollSerial}`);
-        
+
         if (existingCardResponse.ok) {
           const existingCardResult: ExistingCardResponse = await existingCardResponse.json();
-          
+
           if (existingCardResult.status === "success" && existingCardResult.data) {
             console.log("✅ Existing card data found:", existingCardResult.data);
             setExistingCardData(existingCardResult.data);
-            
+
             // Populate form with existing data
             setStudentName(existingCardResult.data.name);
             setProfileUrl(existingCardResult.data.personalPhotoUrl);
-            
+
             // Set user-entered field values only
             const userValues: { [key: string]: string } = {};
             existingCardResult.data.additionalfieldValues.forEach(field => {
@@ -378,7 +379,7 @@ const UserCardWithForm: React.FC = () => {
               }
             });
             setValues(userValues);
-            
+
             console.log("✅ Form populated with existing data");
           }
         } else {
@@ -499,7 +500,8 @@ const UserCardWithForm: React.FC = () => {
       });
 
       // Make API request to remove background using proxy
-      const apiResponse = await fetch(`/api/process-id-photo`, {
+      // const apiResponse = await fetch(`/api/process-id-photo`, {
+      const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_AI_SERVER_URL}/process-id-photo`, {
         method: 'POST',
         body: formData,
       });
@@ -679,11 +681,11 @@ const UserCardWithForm: React.FC = () => {
       const existingField = existingCardData?.additionalfieldValues?.find(
         existing => existing.fieldName === fieldObj.fieldName
       );
-      
+
       // Determine value and setBy
       let fieldValue: string;
       let setBy: "owner" | "user";
-      
+
       if (existingField && existingField.setBy === "owner") {
         // Keep existing owner value
         fieldValue = existingField.fieldValue;
@@ -697,7 +699,7 @@ const UserCardWithForm: React.FC = () => {
         fieldValue = values[fieldObj.fieldName] || "";
         setBy = "user";
       }
-      
+
       return {
         fieldName: fieldObj.fieldName,
         fieldValue: fieldValue,
@@ -714,7 +716,7 @@ const UserCardWithForm: React.FC = () => {
     };
 
     console.log("🔄 Generating ID card:", responseData);
-    
+
     // If existing card found, show update message
     if (existingCardData) {
       console.log("🔄 Updating existing card:", existingCardData._id);
@@ -810,11 +812,12 @@ const UserCardWithForm: React.FC = () => {
   }, [imageSrc, photoPreview, finalImageUrl]);
 
   // Helper function to format field names for display
-  // const formatFieldName = (fieldName: string): string => {
-  //   return fieldName
-  //     .replace(/([A-Z])/g, " $1")
-  //     .replace(/^./, str => str.toUpperCase());
-  // };
+  const formatFieldName = (fieldName?: string): string => {
+    if (!fieldName) return ""; // fallback if it's undefined/null
+    return fieldName
+      .replace(/([A-Z])/g, " $1")
+      .replace(/^./, str => str.toUpperCase());
+  };
 
   // Show success page when image is ready
   if (showSuccessPage && finalImageUrl) {
@@ -829,85 +832,85 @@ const UserCardWithForm: React.FC = () => {
 
   // Loading state
   if (isLoading) {
-    return <Loading/>;
+    return <Loading />;
   }
 
-    // Error state
-    if (error) {
-        {
-            console.error('❌ Error: from UserCardWithForm error state', error);
-        }
-        return (
-            <>
-                <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-6">
-                    <div className="text-center">
-                        {/* Error image */}
-                        <div className="flex justify-center mb-6">
-                            <Image
-                                src={ErrorImage}
-                                alt="Error illustration"
-                                width={600}
-                                height={400}
-                                className="rounded-lg object-cover"
-                                priority
-                            />
-                        </div>
-
-                        {/* Error message */}
-                        <p className="text-gray-600 mb-6 break-words text-sm sm:text-base">
-                            {error}
-                        </p>
-
-                        {/* Retry button */}
-                        <Link href="/">
-                            <Button
-                                className="px-6 py-2 bg-blue-600/60 text-white font-medium rounded-lg hover:bg-blue-700/80 focus:ring-2 focus:ring-red-400 focus:outline-none transition-colors duration-200"
-                            >
-                                Try Again
-                            </Button>
-                        </Link>
-                    </div>
-                </div>
-            </>
-        );
+  // Error state
+  if (error) {
+    {
+      console.error('❌ Error: from UserCardWithForm error state', error);
     }
+    return (
+      <>
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-6">
+          <div className="text-center">
+            {/* Error image */}
+            <div className="flex justify-center mb-6">
+              <Image
+                src={ErrorImage}
+                alt="Error illustration"
+                width={600}
+                height={400}
+                className="rounded-lg object-cover"
+                priority
+              />
+            </div>
 
-    // No project data
-    if (!projectData) {
-        return (
-            <>
-                <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-6">
-                    <div className="text-center">
-                        {/* Error image */}
-                        <div className="flex justify-center mb-6">
-                            <Image
-                                src={ErrorImage}
-                                alt="Error illustration"
-                                width={600}
-                                height={400}
-                                className="rounded-lg object-cover"
-                                priority
-                            />
-                        </div>
+            {/* Error message */}
+            <p className="text-gray-600 mb-6 break-words text-sm sm:text-base">
+              {error}
+            </p>
 
-                        {/* Error message */}
-                        <p className="text-gray-600 mb-6 break-words text-sm sm:text-base">
-                            No project data found for this batch code.
-                        </p>
+            {/* Retry button */}
+            <Link href="/">
+              <Button
+                className="px-6 py-2 bg-blue-600/60 text-white font-medium rounded-lg hover:bg-blue-700/80 focus:ring-2 focus:ring-red-400 focus:outline-none transition-colors duration-200"
+              >
+                Try Again
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </>
+    );
+  }
 
-                        {/* Retry button */}
-                        <Link href="/">
-                            <Button
-                                className="px-6 py-2 bg-blue-600/60 text-white font-medium rounded-lg hover:bg-blue-700/80 focus:ring-2 focus:ring-red-400 focus:outline-none transition-colors duration-200"
-                            >
-                                Try Again
-                            </Button>
-                        </Link>
-                    </div>
-                </div>
-            </>
-        );
-    }
+  // No project data
+  if (!projectData) {
+    return (
+      <>
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-6">
+          <div className="text-center">
+            {/* Error image */}
+            <div className="flex justify-center mb-6">
+              <Image
+                src={ErrorImage}
+                alt="Error illustration"
+                width={600}
+                height={400}
+                className="rounded-lg object-cover"
+                priority
+              />
+            </div>
+
+            {/* Error message */}
+            <p className="text-gray-600 mb-6 break-words text-sm sm:text-base">
+              No project data found for this batch code.
+            </p>
+
+            {/* Retry button */}
+            <Link href="/">
+              <Button
+                className="px-6 py-2 bg-blue-600/60 text-white font-medium rounded-lg hover:bg-blue-700/80 focus:ring-2 focus:ring-red-400 focus:outline-none transition-colors duration-200"
+              >
+                Try Again
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   // Check if any loading operation is in progress
   const isAnyLoading = isCropping || isProcessingBackground || isUploadingImage || isSaving;
@@ -978,25 +981,25 @@ const UserCardWithForm: React.FC = () => {
                 onChange={(e) => setStudentName(e.target.value)}
                 disabled={isAnyLoading}
                 placeholder={`Enter ${projectData.cardType.toLowerCase()} name`}
+                className="bg-gray-100 text-black"
               />
             </div>
-            
+
             {/* Dynamic Fields */}
             {projectData.additionalFields.length > 0 && projectData.additionalFields.map((fieldObj) => {
               // Check if this field has an existing owner-set value
               const existingOwnerField = existingCardData?.additionalfieldValues?.find(
                 existing => existing.fieldName === fieldObj.fieldName && existing.setBy === "owner"
               );
-              
+
               // Determine the non-editable value (either from project default or existing owner data)
               const nonEditableValue = existingOwnerField?.fieldValue || fieldObj.defaultValue;
               const isNonEditable = !!nonEditableValue;
-              
+
               return (
                 <div key={fieldObj._id} className="flex flex-col space-y-4">
-                  <label className="text-sm ml-4 font-medium text-gray-700">
-                    {/* {formatFieldName(fieldObj.fieldName)} * */}
-                    {(fieldObj.fieldName)}
+                  <label className="text-sm ml-1 font-medium text-gray-700">
+                    {formatFieldName(fieldObj?.fieldName) || "Loading..."} *
                   </label>
                   {isNonEditable ? (
                     // Read-only field with owner/default value
@@ -1004,10 +1007,10 @@ const UserCardWithForm: React.FC = () => {
                       <Input
                         value={nonEditableValue}
                         disabled={true}
-                        className="bg-gray-100 text-gray-600 cursor-not-allowed"
+                        className="bg-gray-200 text-black cursor-not-allowed"
                       />
                       <span className="absolute inset-y-0 right-0 flex items-center pr-3">
-                        <AiOutlineExclamationCircle  className="h-5 w-5 text-red-500 cursor-help" />
+                        <AiOutlineExclamationCircle className="h-5 w-5 text-red-500 cursor-help" />
                       </span>
                       {/* Tooltip */}
                       <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
@@ -1021,7 +1024,8 @@ const UserCardWithForm: React.FC = () => {
                       value={values[fieldObj.fieldName] || ""}
                       onChange={(e) => handleChange(fieldObj.fieldName, e.target.value)}
                       disabled={isAnyLoading}
-                      // placeholder={`Enter ${formatFieldName(fieldObj.fieldName).toLowerCase()}`}
+                      placeholder={`Enter ${formatFieldName(fieldObj?.fieldName)?.toLowerCase() ?? ""}`}
+                      className="bg-gray-100 text-black"
                     />
                   )}
                 </div>
@@ -1029,7 +1033,7 @@ const UserCardWithForm: React.FC = () => {
             })}
           </div>
 
-          <div className="flex flex-wrap gap-3 mt-4">
+          <div className="flex flex-wrap items-center gap-4 mt-8">
             <label className={`flex items-center  justify-center border border-transparent hover:border-gray-300 rounded-2xl px-6 py-3 cursor-pointer hover:bg-gray-50 transition ${isAnyLoading ? 'opacity-50 pointer-events-none' : ''}`}>
               <input
                 type="file"
@@ -1047,10 +1051,12 @@ const UserCardWithForm: React.FC = () => {
             <button
               onClick={handleTakePhoto}
               disabled={isAnyLoading}
-              className="px-6 py-6 rounded-2xl shadow-none border border-transparent hover:border-gray-300 hover:bg-white  hover:text-black flex gap-2 items-center font-semibold"
+              className="px-6 py-3 rounded-2xl shadow-none border border-transparent hover:border-gray-300 hover:bg-white  hover:text-black flex gap-2 items-center font-semibold"
             >
-              <Image src={TripodImage} width={26} height={14} alt="" />
-              Take Photo
+              <div className="flex items-center gap-2">
+                <IoCameraOutline size={26} className="text-2xl" />
+                <span>Take Photo</span>
+              </div>
             </button>
 
             <Button
@@ -1061,7 +1067,7 @@ const UserCardWithForm: React.FC = () => {
               {isSaving ? "⏳ Generating..." : (
                 <>
                   <Image src={DownloadImage} width={26} height={14} alt="" />
-                  Export
+                  Download
                 </>
               )}
             </Button>
@@ -1204,7 +1210,7 @@ const UserCardWithForm: React.FC = () => {
               <Button
                 variant="outline"
                 onClick={() => setShowCropper(false)}
-                disabled={isCropping || isProcessingBackground || isUploadingImage}
+              // disabled={isCropping || isProcessingBackground || isUploadingImage}
               >
                 Cancel
               </Button>

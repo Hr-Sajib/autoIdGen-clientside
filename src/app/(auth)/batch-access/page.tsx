@@ -166,6 +166,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation"; // 👈 Router import
+import { AiOutlineExclamationCircle, AiOutlineQuestionCircle } from "react-icons/ai";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const AccessForm: React.FC = () => {
   const router = useRouter(); // 👈 router hook
@@ -244,7 +246,7 @@ const AccessForm: React.FC = () => {
 
       // 👇 Redirect with query params
       const query = new URLSearchParams(formData).toString();
-      router.push(`/user?${query}`); 
+      router.push(`/user?${query}`);
     } else {
       toast.error("Please fix the errors before submitting ❌");
     }
@@ -282,23 +284,44 @@ const AccessForm: React.FC = () => {
           </div>
 
           {/* Roll / Serial Number */}
-          <div className="space-y-2">
-            <Label htmlFor="rollSerial" className="text-sm font-medium text-black">
-              Serial Number
-            </Label>
-            <Input
-              id="rollSerial"
-              type="text"
-              value={rollSerial}
-              onChange={(e) => setRollSerial(e.target.value.replace(/[^0-9]/g, ""))}
-              placeholder="Type Serial Number"
-              className="h-12 px-4 bg-gray-100/80 rounded-lg"
-              inputMode="numeric"
-              pattern="[0-9]*"
-            />
-            {errors.rollSerial && (
-              <p className="text-red-500 text-xs mt-1">{errors.rollSerial}</p>
-            )}
+          <div>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <Label htmlFor="rollSerial" className="text-sm font-medium text-black">
+                  Serial Number
+                </Label>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <span className="inset-y-0 right-0 flex items-center pr-3">
+                      <AiOutlineQuestionCircle className="h-5 w-5 text-red-500 cursor-help" />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <div className="max-w-[320px]">
+                      <span className="text-pretty">Serial Number is a way to keep each card unique. Institutions may use Student/Employee ID, Roll No., Card No., or Registration No. instead.</span>
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+              <Input
+                id="rollSerial"
+                type="text"
+                value={rollSerial}
+                onChange={(e) => setRollSerial(e.target.value.replace(/[^0-9]/g, ""))}
+                placeholder="Type Serial Number"
+                className="h-12 px-4 bg-gray-100/80 rounded-lg"
+                inputMode="numeric"
+                pattern="[0-9]*"
+              />
+              {errors.rollSerial && (
+                <p className="text-red-500 text-xs mt-1">{errors.rollSerial}</p>
+              )}
+            </div>
+            <div>
+              <p className="text-xs text-gray-700 mt-3 pl-2">
+                Serial Number simply means a unique reference (Roll, ID, Card, Reg. No.).
+              </p>
+            </div>
           </div>
 
           {/* Submit */}
@@ -309,8 +332,8 @@ const AccessForm: React.FC = () => {
             Access My Form
           </Button>
         </form>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 

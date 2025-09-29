@@ -29,7 +29,7 @@ interface EmployeeCardProps {
   customLabels?: {
     department: string;
     rollNumber: string;
-    employeeId: string;  
+    employeeId: string;
     bloodGroup: string;
     dateOfBirth: string;
     phone: string;
@@ -46,11 +46,12 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
   phone = "+65-2131-XXXX",
   companyName = "ABC Group of Industries",
   // companyAddress = "Dummy address 21A/B mine union point, Singapore",
-  personImage = "https://i.ibb.co.com/C3Dg8jpt/avatar5.jpg",
+  personImage = "https://i.ibb.co.com/kgtgSzxt/avatar.png",
   logo = "https://i.postimg.cc/hthwhxwy/uni-logo.avif",
   signature = "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png",
   whoseSign,
   idCardType,
+  bgColor,
   address,
   customLabels = {
     studentName: "Name",
@@ -108,7 +109,9 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
         </p>
 
         {/* Person Image */}
-        <div className="absolute top-[20%] left-[6%] md:left-[4%] lg:left-[6%] xl:left-[5%]">
+        <div className="absolute top-[20%] left-[6%] md:left-[4%] lg:left-[6%] xl:left-[5%] rounded-full"
+          style={{ backgroundColor: bgColor || "#ffffff" }} // fallback if null
+        >
           <Image
             src={personImage}
             alt="Employee Photo"

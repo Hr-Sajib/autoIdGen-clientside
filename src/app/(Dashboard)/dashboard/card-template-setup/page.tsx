@@ -518,7 +518,7 @@ export default function InstituteTemplateSetupPage() {
                 {form.cardOrientation === "vertical" ? (
                   <EmployeeCard
                     name="Name"
-                    companyName={form.instituteName || "SM Technology, bdCalling IT Ltd."}
+                    companyName={form.instituteName || "Example Company"}
                     address={form.address || "21A/B mine union point, Singapore"}
                     idCardType={form.idCardType || "Employee"}
                     employeeName="Name"
@@ -532,7 +532,7 @@ export default function InstituteTemplateSetupPage() {
                     profileUrl={form.profileUrl}
                     bgColor={form.bgColor}
                     qrData={form.qrData}
-                    whoseSign={form.whoseSign || "General Manager"}
+                    whoseSign={form.whoseSign}
                     personImage={form.profileUrl}
                     logo={form.logoUrl}
                     signature={form.signatureUrl}

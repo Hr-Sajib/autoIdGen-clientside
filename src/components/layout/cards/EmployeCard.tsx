@@ -39,11 +39,11 @@ interface EmployeeCardProps {
 
 const EmployeeCard: React.FC<EmployeeCardProps> = ({
   // name = "Name",
-  department = "Sales",
-  employeeId = "1233",
-  bloodGroup = "B+",
-  dob = "12-12-2000",
-  phone = "+65-2131-XXXX",
+  department = "",
+  employeeId = "",
+  bloodGroup = "",
+  dob = "",
+  phone = "",
   companyName = "ABC Group of Industries",
   // companyAddress = "Dummy address 21A/B mine union point, Singapore",
   personImage = "https://i.ibb.co.com/kgtgSzxt/avatar.png",
@@ -138,11 +138,11 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
           </div>
 
           <div className="w-7/12 pl-1 md:pl-2 lg:pl-2 xl:pl-2 text-left space-y-0.5">
-            <p>: {department}</p>
-            <p>: {employeeId}</p>
-            <p>: {bloodGroup}</p>
-            <p>: {dob}</p>
-            <p>: {phone}</p>
+            <p className="my-1.5">:&nbsp;{department}</p>
+            <p className="my-1.5">:&nbsp;{employeeId}</p>
+              <p className="my-1.5">:&nbsp;{bloodGroup}</p>
+              {dob && <p className="my-1.5">:&nbsp;{dob}</p>}
+              {phone && <p className="my-1.5">:&nbsp;{phone}</p>}
           </div>
         </div>
 

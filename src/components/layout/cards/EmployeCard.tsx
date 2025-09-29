@@ -138,11 +138,11 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
           </div>
 
           <div className="w-7/12 pl-1 md:pl-2 lg:pl-2 xl:pl-2 text-left space-y-0.5">
-            <p className="my-1.5">:&nbsp;{department}</p>
-            <p className="my-1.5">:&nbsp;{employeeId}</p>
-              <p className="my-1.5">:&nbsp;{bloodGroup}</p>
-              {dob && <p className="my-1.5">:&nbsp;{dob}</p>}
-              {phone && <p className="my-1.5">:&nbsp;{phone}</p>}
+            <p className="my-0">:&nbsp;{department}</p>
+            <p className="my-0">:&nbsp;{employeeId}</p>
+              <p className="my-0">:&nbsp;{bloodGroup}</p>
+              {dob && <p className="my-0">:&nbsp;{dob}</p>}
+              {phone && <p className="my-0">:&nbsp;{phone}</p>}
           </div>
         </div>
 

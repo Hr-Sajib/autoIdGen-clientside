@@ -40,16 +40,43 @@ export function ProjectOverview() {
       batchCode.includes(searchLower)
   })
 
-  console.log("Projects data:", projects)
+  // console.log("Projects data:", projects)
+
+  // const handleCopy = async (text: string, id: string) => {
+  //   try {
+  //     await navigator.clipboard.writeText(text)
+  //     setCopiedId(id)
+
+  //     setTimeout(() => setCopiedId(null), 2000)
+  //   } catch (err) {
+  //     console.error("Failed to copy text: ", err)
+  //   }
+  // }
 
   const handleCopy = async (text: string, id: string) => {
-    try {
-      await navigator.clipboard.writeText(text)
-      setCopiedId(id)
+    // 1. Ensure running in browser
+    if (typeof window === "undefined") {
+      console.error("Clipboard API not available on server-side")
+      return
+    }
 
+    // 2. Ensure Clipboard API exists
+    if (!navigator?.clipboard) {
+      console.error("Clipboard API is not supported in this browser or context")
+      return
+    }
+
+    try {
+      // 3. Copy to clipboard
+      await navigator.clipboard.writeText(text)
+
+      // 4. Show copied checkmark
+      setCopiedId(id)
       setTimeout(() => setCopiedId(null), 2000)
+
+      console.log("Copied successfully:", text)
     } catch (err) {
-      console.error("Failed to copy text: ", err)
+      console.error("❌ Failed to copy text:", err)
     }
   }
 

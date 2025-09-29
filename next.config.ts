@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   eslint: {
-    ignoreDuringBuilds: true, // ✅ disables lint errors on Vercel build
+    ignoreDuringBuilds: true,
   },
   images: {
     remotePatterns: [

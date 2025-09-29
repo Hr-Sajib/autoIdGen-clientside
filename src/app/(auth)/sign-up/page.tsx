@@ -19,7 +19,7 @@ const AutoIDGenSignup: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [agree, setAgree] = useState(false);
 
-  console.log({fullName, email, password, confirmPassword, agree});
+  // console.log({fullName, email, password, confirmPassword, agree});
 //  return;
   const [register, { isLoading }] = useRegisterMutation(); // ✅ mutation hook
 
@@ -43,7 +43,7 @@ const AutoIDGenSignup: React.FC = () => {
       const res = await register(payload).unwrap();
 
       toast.success("Account created successfully!");
-      console.log("Signup success:", res);
+      // console.log("Signup success:", res);
 
       // Optional: Redirect after success
       window.location.href = "/login";

@@ -69,9 +69,9 @@ export default function EmployeeInformationPage() {
   const batchCode = searchParams.get("batchCode");
   const rollSerial = searchParams.get("rollSerial");
 
-  console.log("Role:", role);
-  console.log("Batch Code:", batchCode);
-  console.log("Roll Serial:", rollSerial);
+  // console.log("Role:", role);
+  // console.log("Batch Code:", batchCode);
+  // console.log("Roll Serial:", rollSerial);
 
   const [formData, setFormData] = useState({
     employeeName: "",
@@ -236,7 +236,7 @@ export default function EmployeeInformationPage() {
     const requiredFields = ["employeeName", "department", "rollNumber"]
     const missingFields = requiredFields.filter((f) => !formData[f as keyof typeof formData])
     if (missingFields.length > 0) return alert(`Fill required fields: ${missingFields.join(", ")}`)
-    console.log("Exporting data:", formData)
+    // console.log("Exporting data:", formData)
     alert("✅ Data exported! Check console")
   }
 

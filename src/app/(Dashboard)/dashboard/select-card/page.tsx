@@ -19,7 +19,7 @@ export default function SelectCardPage() {
   const projectName = queryProjectName || sessionProjectName || ""  // fallback to empty string
 
   useEffect(() => {
-    console.log("👉 Project Name:", projectName)
+    // console.log("👉 Project Name:", projectName)
   }, [projectName])
 
   const cardTypes = [

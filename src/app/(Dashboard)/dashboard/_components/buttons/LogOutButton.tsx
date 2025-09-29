@@ -18,14 +18,14 @@ const LogOutButton: React.FC = ({ isDesktopCollapsed }: LogOutButtonProps) => {
 
   // 🔹 যখন user বা isAuthenticated change হবে তখন console.log করবে
   useEffect(() => {
-    console.log("👉 Current User:", user);
-    console.log("👉 Is Authenticated:", isAuthenticated);
+    // console.log("👉 Current User:", user);
+    // console.log("👉 Is Authenticated:", isAuthenticated);
   }, [user, isAuthenticated]);
 
   // 🔹 Logout বাটনে ক্লিক করলে এই ফাংশন রান করবে
   const handleLogout = () => {
     dispatch(logout());
-    console.log("🚪 User logged out!");
+    // console.log("🚪 User logged out!");
   };
 
   return (

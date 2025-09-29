@@ -11,7 +11,7 @@ export function DashboardHeader() {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const handleCreateProject = (projectName: string) => {
-    console.log("Creating project:", projectName)
+    // console.log("Creating project:", projectName)
     // Here you would typically handle the project creation logic
   }
 

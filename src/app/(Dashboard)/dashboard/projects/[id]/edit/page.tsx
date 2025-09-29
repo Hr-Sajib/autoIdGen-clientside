@@ -33,8 +33,8 @@ export default function ViewDetailsPage() {
   const project = projectData?.data
 
   const batchId = project?.batchId ?? ""; // always a string
-  console.log("Batch ID:", batchId);
-  console.log("Project", project);
+  // console.log("Batch ID:", batchId);
+  // console.log("Project", project);
 
   const { data: cardData, isLoading: cardLoading } = useGetCardByBatchIdQuery(batchId, {
     skip: !project?.batchId, // safe: hook order stays the same
@@ -134,7 +134,7 @@ export default function ViewDetailsPage() {
       console.error("Failed to save card", error)
     }
   }
-  console.log(selectedCard)
+  // console.log(selectedCard)
 
   const handleDeleteCard = async (card: Card) => {
     if (!card._id) return; // safety check

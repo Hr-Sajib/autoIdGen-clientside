@@ -15,10 +15,13 @@ const TemplateSelection: React.FC = () => {
     <div className="py-16">
       <div className="">
         {/* Section Header */}
-        <div className="text-center pb-16 relative">
-          <h2 className="text-[clamp(25px,2.5vw,30px)] font-medium text-[#4A61E4] mb-4 ">
+        <div className="text-center pt-16 pb-10 relative">
+          <h2 className="text-[clamp(25px,2.5vw,30px)] font-bold text-[#4A61E4] mb-2">
             Select Your Template
           </h2>
+          <p className="text-[clamp(16px,2.5vw,18px)] text-gray-500">
+            Choose A Proffessional Template To Get Started
+          </p>
           <div className="absolute bottom-0 left-0 w-full h-2 shadow-lg"></div>
         </div>
         <div className='bg-gradient-to-b from-black/2 to-white'>

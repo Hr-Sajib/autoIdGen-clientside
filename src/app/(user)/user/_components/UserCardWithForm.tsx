@@ -112,7 +112,7 @@ const imageUpload = async (file: File): Promise<string | null> => {
 
     const data = await response.json();
     if (data.success) {
-      // console.log("✅ Image uploaded to ImgBB:", data.data.url);
+      console.log("✅ Image uploaded to ImgBB:", data.data.url);
       return data.data.url;
     } else {
       throw new Error("Failed to upload image.");
@@ -309,9 +309,9 @@ const UserCardWithForm: React.FC = () => {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [showSuccessPage, setShowSuccessPage] = useState(false);
 
-  // console.log("Role:", role);
-  // console.log("Batch Code:", batchCode);
-  // console.log("Roll Serial:", rollSerial);
+  console.log("Role:", role);
+  console.log("Batch Code:", batchCode);
+  console.log("Roll Serial:", rollSerial);
 
   useEffect(() => {
     const fetchBatchData = async () => {
@@ -324,7 +324,7 @@ const UserCardWithForm: React.FC = () => {
       try {
         setIsLoading(true);
         setError(null);
-        // console.log("🔄 Fetching project data for batch:", batchCode);
+        console.log("🔄 Fetching project data for batch:", batchCode);
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}project/batch/${batchCode}`);
 
@@ -333,7 +333,7 @@ const UserCardWithForm: React.FC = () => {
         }
 
         const apiResponse: ApiResponse = await response.json();
-        // console.log("✅ Project data fetched:", apiResponse);
+        console.log("✅ Project data fetched:", apiResponse);
 
         if (apiResponse.success) {
           setProjectData(apiResponse.data);
@@ -356,7 +356,7 @@ const UserCardWithForm: React.FC = () => {
     const fetchExistingCardData = async (batchCode: string, rollSerial: string) => {
       try {
         setIsLoadingExistingCard(true);
-        // console.log("🔍 Checking for existing card data...");
+        console.log("🔍 Checking for existing card data...");
 
         const existingCardResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}card/getSpecificCard/${batchCode}/${rollSerial}`);
 
@@ -364,7 +364,7 @@ const UserCardWithForm: React.FC = () => {
           const existingCardResult: ExistingCardResponse = await existingCardResponse.json();
 
           if (existingCardResult.status === "success" && existingCardResult.data) {
-            // console.log("✅ Existing card data found:", existingCardResult.data);
+            console.log("✅ Existing card data found:", existingCardResult.data);
             setExistingCardData(existingCardResult.data);
 
             // Populate form with existing data
@@ -380,7 +380,7 @@ const UserCardWithForm: React.FC = () => {
             });
             setValues(userValues);
 
-            // console.log("✅ Form populated with existing data");
+            console.log("✅ Form populated with existing data");
           }
         } else {
           console.log("ℹ️ No existing card found, using fresh form");
@@ -443,7 +443,7 @@ const UserCardWithForm: React.FC = () => {
     if (!file.type.startsWith("image/")) return alert("Select a valid image");
     if (file.size > MAX_FILE_SIZE) return alert("Image < 10MB");
 
-    // console.log("📁 File selected:", file.name, `${(file.size / 1024 / 1024).toFixed(2)}MB`);
+    console.log("📁 File selected:", file.name, `${(file.size / 1024 / 1024).toFixed(2)}MB`);
     const imgUrl = URL.createObjectURL(file);
     setImageSrc(imgUrl);
     setShowCropper(true);
@@ -462,346 +462,362 @@ const UserCardWithForm: React.FC = () => {
    */
 
   // Testing
-  // const handleCropSave = async () => {
-  //   if (!imageSrc || !croppedAreaPixels) return alert("Select area to crop");
+  const handleCropSave = async () => {
+    if (!imageSrc || !croppedAreaPixels) return alert("Select area to crop");
 
-  //   let croppedImage: string | null = null;
+    let croppedImage: string | null = null;
 
-  //   try {
-  //     // Step 1: Start cropping
-  //     setIsCropping(true);
-  //     console.log("✂️ Starting crop process...", croppedAreaPixels);
+    try {
+      // Step 1: Start cropping
+      setIsCropping(true);
+      console.log("✂️ Starting crop process...", croppedAreaPixels);
 
-  //     croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
-  //     console.log("✅ Image cropped successfully");
-  //     setPhotoPreview(croppedImage);
-  //     setIsCropping(false);
+      croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
+      console.log("✅ Image cropped successfully");
+      setPhotoPreview(croppedImage);
+      setIsCropping(false);
 
-  //     // Step 2: Background removal
-  //     setIsProcessingBackground(true);
-  //     console.log("🎨 Starting background removal...");
+      // Step 2: Background removal
+      setIsProcessingBackground(true);
+      console.log("🎨 Starting background removal...");
 
-  //     // Clean up blob URLs after setting preview
-  //     if (imageSrc.startsWith("blob:")) URL.revokeObjectURL(imageSrc);
-  //     if (photoPreview && photoPreview.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
+      // Clean up blob URLs after setting preview
+      if (imageSrc.startsWith("blob:")) URL.revokeObjectURL(imageSrc);
+      if (photoPreview && photoPreview.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
 
-  //     const blob = dataURLtoBlob(croppedImage);
-  //     console.log("📦 Created blob:", `${(blob.size / 1024).toFixed(2)}KB`);
+      const blob = dataURLtoBlob(croppedImage);
+      console.log("📦 Created blob:", `${(blob.size / 1024).toFixed(2)}KB`);
 
-  //     // Prepare FormData for API request
-  //     const formData = new FormData();
-  //     formData.append('file', blob, 'profile-image.jpg');
-  //     formData.append('background_color', projectData?.personPhotoBGColorCode || "#ffffff");
-  //     formData.append('width', "200");
-  //     formData.append('height', "200");
-  //     formData.append('enhance_quality', "true");
-  //     formData.append('center_face', "false");
+      // Prepare FormData for API request
+      const formData = new FormData();
+      formData.append('file', blob, 'profile-image.jpg');
+      formData.append('background_color', projectData?.personPhotoBGColorCode || "#ffffff");
+      formData.append('width', "200");
+      formData.append('height', "200");
+      formData.append('enhance_quality', "true");
+      formData.append('center_face', "false");
 
-  //     console.log("🔄 Background removal request:", {
-  //       backgroundColor: projectData?.personPhotoBGColorCode || "#ffffff",
-  //       dimensions: "200x200"
-  //     });
+      console.log("🔄 Background removal request:", {
+        backgroundColor: projectData?.personPhotoBGColorCode || "#ffffff",
+        dimensions: "200x200"
+      });
 
-  //     // Make API request to remove background using proxy
-  //     // const apiResponse = await fetch(`/api/process-id-photo`, {
-  //     const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_AI_SERVER_URL}/process-id-photo`, {
-  //       method: 'POST',
-  //       body: formData,
-  //     });
+      // Make API request to remove background using proxy
+      // const apiResponse = await fetch(`/api/process-id-photo`, {
+      const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_AI_SERVER_URL}/process-id-photo`, {
+        method: 'POST',
+        body: formData,
+      });
 
-  //     console.log("📡 API Response:", apiResponse.status);
+      console.log("📡 API Response:", apiResponse.status);
 
-  //     if (!apiResponse.ok) {
-  //       const errorText = await apiResponse.text();
-  //       console.log("❌ API Error:", errorText);
-  //       throw new Error(`API Error! status: ${apiResponse.status}, message: ${errorText}`);
-  //     }
+      if (!apiResponse.ok) {
+        const errorText = await apiResponse.text();
+        console.log("❌ API Error:", errorText);
+        throw new Error(`API Error! status: ${apiResponse.status}, message: ${errorText}`);
+      }
 
-  //     // Process response
-  //     let processedImageBlob: Blob | null = null;
-  //     const contentType = apiResponse.headers.get('content-type');
-  //     console.log("Response Content-Type:", contentType);
+      // Process response
+      let processedImageBlob: Blob | null = null;
+      const contentType = apiResponse.headers.get('content-type');
+      console.log("Response Content-Type:", contentType);
 
-  //     if (contentType && contentType.includes('application/json')) {
-  //       const apiResult = await apiResponse.json();
-  //       console.log("📄 JSON Response:", apiResult);
+      if (contentType && contentType.includes('application/json')) {
+        const apiResult = await apiResponse.json();
+        console.log("📄 JSON Response:", apiResult);
 
-  //       if (apiResult.imageUrl || apiResult.processedImageUrl || apiResult.image_url) {
-  //         const processedImageUrl = apiResult.imageUrl || apiResult.processedImageUrl || apiResult.image_url;
-  //         const imageResponse = await fetch(processedImageUrl);
-  //         processedImageBlob = await imageResponse.blob();
-  //       }
-  //     } else if (contentType && contentType.includes('image')) {
-  //       processedImageBlob = await apiResponse.blob();
-  //       const processedImageUrl = URL.createObjectURL(processedImageBlob);
-  //       console.log("🖼️ Direct image response");
-  //       setPhotoPreview(processedImageUrl);
-  //     }
+        if (apiResult.imageUrl || apiResult.processedImageUrl || apiResult.image_url) {
+          const processedImageUrl = apiResult.imageUrl || apiResult.processedImageUrl || apiResult.image_url;
+          const imageResponse = await fetch(processedImageUrl);
+          processedImageBlob = await imageResponse.blob();
+        }
+      } else if (contentType && contentType.includes('image')) {
+        processedImageBlob = await apiResponse.blob();
+        const processedImageUrl = URL.createObjectURL(processedImageBlob);
+        console.log("🖼️ Direct image response");
+        setPhotoPreview(processedImageUrl);
+      }
 
-  //     setIsProcessingBackground(false);
+      setIsProcessingBackground(false);
 
-  //     // Step 3: Upload to imgbb
-  //     if (processedImageBlob) {
-  //       setIsUploadingImage(true);
-  //       console.log("☁️ Uploading to ImgBB...");
+      // Step 3: Upload to imgbb
+      if (processedImageBlob) {
+        setIsUploadingImage(true);
+        console.log("☁️ Uploading to ImgBB...");
 
-  //       const processedFile = new File([processedImageBlob], 'processed-image.png', {
-  //         type: processedImageBlob.type || 'image/png'
-  //       });
+        const processedFile = new File([processedImageBlob], 'processed-image.png', {
+          type: processedImageBlob.type || 'image/png'
+        });
 
-  //       const hostedUrl = await imageUpload(processedFile);
+        const hostedUrl = await imageUpload(processedFile);
 
-  //       if (hostedUrl) {
-  //         console.log("✅ HOSTED URL:", hostedUrl);
-  //         setProfileUrl(hostedUrl);
-  //         setPhotoPreview(hostedUrl);
-  //       } else {
-  //         console.log("❌ Failed to upload to imgbb");
-  //       }
-  //       setIsUploadingImage(false);
-  //     } else {
-  //       console.log("⚠️ No processed image, using fallback");
+        if (hostedUrl) {
+          console.log("✅ HOSTED URL:", hostedUrl);
+          setProfileUrl(hostedUrl);
+          setPhotoPreview(hostedUrl);
+        } else {
+          console.log("❌ Failed to upload to imgbb");
+        }
+        setIsUploadingImage(false);
+      } else {
+        console.log("⚠️ No processed image, using fallback");
 
-  //       // Fallback: upload cropped image
-  //       try {
-  //         setIsUploadingImage(true);
-  //         const croppedBlob = dataURLtoBlob(croppedImage);
-  //         const croppedFile = new File([croppedBlob], 'cropped-image.jpg', { type: 'image/jpeg' });
-  //         const hostedUrl = await imageUpload(croppedFile);
+        // Fallback: upload cropped image
+        try {
+          setIsUploadingImage(true);
+          const croppedBlob = dataURLtoBlob(croppedImage);
+          const croppedFile = new File([croppedBlob], 'cropped-image.jpg', { type: 'image/jpeg' });
+          const hostedUrl = await imageUpload(croppedFile);
 
-  //         if (hostedUrl) {
-  //           console.log("✅ FALLBACK HOSTED URL:", hostedUrl);
-  //           setProfileUrl(hostedUrl);
-  //           setPhotoPreview(hostedUrl);
-  //         }
-  //       } catch (uploadError) {
-  //         console.error("❌ Fallback upload failed:", uploadError);
-  //       } finally {
-  //         setIsUploadingImage(false);
-  //       }
-  //     }
+          if (hostedUrl) {
+            console.log("✅ FALLBACK HOSTED URL:", hostedUrl);
+            setProfileUrl(hostedUrl);
+            setPhotoPreview(hostedUrl);
+          }
+        } catch (uploadError) {
+          console.error("❌ Fallback upload failed:", uploadError);
+        } finally {
+          setIsUploadingImage(false);
+        }
+      }
 
-  //     // Close cropper and cleanup
-  //     setShowCropper(false);
-  //     setImageSrc(null);
-  //     console.log("✅ Process completed successfully");
+      // Close cropper and cleanup
+      setShowCropper(false);
+      setImageSrc(null);
+      console.log("✅ Process completed successfully");
 
-  //   } catch (error) {
-  //     console.error("❌ Error in crop save:", error);
+    } catch (error) {
+      console.error("❌ Error in crop save:", error);
 
-  //     // Reset all loading states
-  //     setIsCropping(false);
-  //     setIsProcessingBackground(false);
-  //     setIsUploadingImage(false);
+      // Reset all loading states
+      setIsCropping(false);
+      setIsProcessingBackground(false);
+      setIsUploadingImage(false);
 
-  //     // Still set the cropped image as preview even if API fails
-  //     if (croppedImage) {
-  //       console.log("🔄 Setting cropped image as fallback");
-  //       setPhotoPreview(croppedImage);
+      // Still set the cropped image as preview even if API fails
+      if (croppedImage) {
+        console.log("🔄 Setting cropped image as fallback");
+        setPhotoPreview(croppedImage);
 
-  //       // Try to upload the cropped image to imgbb as fallback
-  //       try {
-  //         setIsUploadingImage(true);
-  //         const croppedBlob = dataURLtoBlob(croppedImage);
-  //         const croppedFile = new File([croppedBlob], 'cropped-image.jpg', { type: 'image/jpeg' });
-  //         const hostedUrl = await imageUpload(croppedFile);
+        // Try to upload the cropped image to imgbb as fallback
+        try {
+          setIsUploadingImage(true);
+          const croppedBlob = dataURLtoBlob(croppedImage);
+          const croppedFile = new File([croppedBlob], 'cropped-image.jpg', { type: 'image/jpeg' });
+          const hostedUrl = await imageUpload(croppedFile);
 
-  //         if (hostedUrl) {
-  //           console.log("✅ ERROR FALLBACK HOSTED URL:", hostedUrl);
-  //           setProfileUrl(hostedUrl);
-  //           setPhotoPreview(hostedUrl);
-  //         }
-  //       } catch (uploadError) {
-  //         console.error("❌ Error fallback upload failed:", uploadError);
-  //       } finally {
-  //         setIsUploadingImage(false);
-  //       }
-  //     }
+          if (hostedUrl) {
+            console.log("✅ ERROR FALLBACK HOSTED URL:", hostedUrl);
+            setProfileUrl(hostedUrl);
+            setPhotoPreview(hostedUrl);
+          }
+        } catch (uploadError) {
+          console.error("❌ Error fallback upload failed:", uploadError);
+        } finally {
+          setIsUploadingImage(false);
+        }
+      }
 
-  //     setShowCropper(false);
-  //     setImageSrc(null);
-  //     alert(`Failed to process image: ${(error as Error).message}`);
-  //   }
-  // };
+      setShowCropper(false);
+      setImageSrc(null);
+      alert(`Failed to process image: ${(error as Error).message}`);
+    }
+  };
+
+
+
+
+
+
+
+
+
+
 
   //! Try - 1
   // utils/processIdPhoto.ts
-  const handleCropSave = async () => {
-  if (!imageSrc || !croppedAreaPixels) {
-    alert("Select area to crop");
-    return;
-  }
 
-  let croppedImage: string | null = null;
 
-  try {
-    // Step 1: Start cropping
-    setIsCropping(true);
-    // console.log("✂️ Starting crop process...", croppedAreaPixels);
 
-    croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
-    // console.log("✅ Image cropped successfully");
-    setPhotoPreview(croppedImage);
-    setIsCropping(false);
 
-    // Step 2: Background removal
-    setIsProcessingBackground(true);
-    // console.log("🎨 Starting background removal...");
 
-    // Clean up blob URLs after setting preview
-    if (imageSrc.startsWith("blob:")) URL.revokeObjectURL(imageSrc);
-    if (photoPreview && photoPreview.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
 
-    const blob = dataURLtoBlob(croppedImage);
-    // console.log("📦 Created blob:", `${(blob.size / 1024).toFixed(2)}KB`);
+//   const handleCropSave = async () => {
+//   if (!imageSrc || !croppedAreaPixels) {
+//     alert("Select area to crop");
+//     return;
+//   }
 
-    // Prepare FormData for API request
-    const formData = new FormData();
-    formData.append("file", blob, "profile-image.jpg");
-    formData.append("background_color", projectData?.personPhotoBGColorCode || "#ffffff");
-    formData.append("width", "200");
-    formData.append("height", "200");
-    formData.append("enhance_quality", "true");
-    formData.append("center_face", "false");
+//   let croppedImage: string | null = null;
 
-    // console.log("🔄 Background removal request:", {
-    //   backgroundColor: projectData?.personPhotoBGColorCode || "#ffffff",
-    //   dimensions: "200x200",
-    // });
+//   try {
+//     // Step 1: Start cropping
+//     setIsCropping(true);
+//     console.log("✂️ Starting crop process...", croppedAreaPixels);
 
-    // Call your Next.js API route (proxy)
-    const res = await fetch("/api/process-id-photo", {
-      method: "POST",
-      body: formData,
-    });
+//     croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
+//     console.log("✅ Image cropped successfully");
+//     setPhotoPreview(croppedImage);
+//     setIsCropping(false);
 
-    if (!res.ok) {
-      const errorText = await res.text();
-      throw new Error(`API Error! status: ${res.status}, message: ${errorText}`);
-    }
+//     // Step 2: Background removal
+//     setIsProcessingBackground(true);
+//     console.log("🎨 Starting background removal...");
 
-    // Step 3: Handle response
-    const contentType = res.headers.get("content-type");
-    let processedImageBlob: Blob | null = null;
+//     // Clean up blob URLs after setting preview
+//     if (imageSrc.startsWith("blob:")) URL.revokeObjectURL(imageSrc);
+//     if (photoPreview && photoPreview.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
 
-    if (contentType && contentType.includes("application/json")) {
-      const apiResult = await res.json();
-      // console.log("📄 JSON Response:", apiResult);
+//     const blob = dataURLtoBlob(croppedImage);
+//     console.log("📦 Created blob:", `${(blob.size / 1024).toFixed(2)}KB`);
 
-      if (apiResult.imageUrl || apiResult.processedImageUrl || apiResult.image_url) {
-        const processedImageUrl =
-          apiResult.imageUrl || apiResult.processedImageUrl || apiResult.image_url;
-        const imageResponse = await fetch(processedImageUrl);
-        processedImageBlob = await imageResponse.blob();
-      }
-    } else if (contentType && contentType.includes("image")) {
-      processedImageBlob = await res.blob();
-      const processedImageUrl = URL.createObjectURL(processedImageBlob);
-      // console.log("🖼️ Direct image response");
-      setPhotoPreview(processedImageUrl);
-    }
+//     // Prepare FormData for API request
+//     const formData = new FormData();
+//     formData.append("file", blob, "profile-image.jpg");
+//     formData.append("background_color", projectData?.personPhotoBGColorCode || "#ffffff");
+//     formData.append("width", "200");
+//     formData.append("height", "200");
+//     formData.append("enhance_quality", "true");
+//     formData.append("center_face", "false");
 
-    setIsProcessingBackground(false);
+//     console.log("🔄 Background removal request:", {
+//       backgroundColor: projectData?.personPhotoBGColorCode || "#ffffff",
+//       dimensions: "200x200",
+//     });
 
-    // Step 4: Upload to imgbb
-    if (processedImageBlob) {
-      setIsUploadingImage(true);
-      // console.log("☁️ Uploading to ImgBB...");
+//     // Call your Next.js API route (proxy)
+//     const res = await fetch("/api/process-id-photo", {
+//       method: "POST",
+//       body: formData,
+//     });
 
-      const processedFile = new File([processedImageBlob], "processed-image.png", {
-        type: processedImageBlob.type || "image/png",
-      });
+//     if (!res.ok) {
+//       const errorText = await res.text();
+//       throw new Error(`API Error! status: ${res.status}, message: ${errorText}`);
+//     }
 
-      const hostedUrl = await imageUpload(processedFile);
+//     // Step 3: Handle response
+//     const contentType = res.headers.get("content-type");
+//     let processedImageBlob: Blob | null = null;
 
-      if (hostedUrl) {
-        // console.log("✅ HOSTED URL:", hostedUrl);
-        setProfileUrl(hostedUrl);
-        setPhotoPreview(hostedUrl);
-      } else {
-        // console.log("❌ Failed to upload to imgbb");
-      }
-      setIsUploadingImage(false);
-    } else {
-      // console.log("⚠️ No processed image, using fallback");
+//     if (contentType && contentType.includes("application/json")) {
+//       const apiResult = await res.json();
+//       console.log("📄 JSON Response:", apiResult);
 
-      // Fallback: upload cropped image
-      try {
-        setIsUploadingImage(true);
-        const croppedBlob = dataURLtoBlob(croppedImage);
-        const croppedFile = new File([croppedBlob], "cropped-image.jpg", { type: "image/jpeg" });
-        const hostedUrl = await imageUpload(croppedFile);
+//       if (apiResult.imageUrl || apiResult.processedImageUrl || apiResult.image_url) {
+//         const processedImageUrl =
+//           apiResult.imageUrl || apiResult.processedImageUrl || apiResult.image_url;
+//         const imageResponse = await fetch(processedImageUrl);
+//         processedImageBlob = await imageResponse.blob();
+//       }
+//     } else if (contentType && contentType.includes("image")) {
+//       processedImageBlob = await res.blob();
+//       const processedImageUrl = URL.createObjectURL(processedImageBlob);
+//       console.log("🖼️ Direct image response");
+//       setPhotoPreview(processedImageUrl);
+//     }
 
-        if (hostedUrl) {
-          // console.log("✅ FALLBACK HOSTED URL:", hostedUrl);
-          setProfileUrl(hostedUrl);
-          setPhotoPreview(hostedUrl);
-        }
-      } catch (uploadError) {
-        console.error("❌ Fallback upload failed:", uploadError);
-      } finally {
-        setIsUploadingImage(false);
-      }
-    }
+//     setIsProcessingBackground(false);
 
-    // Cleanup
-    setShowCropper(false);
-    setImageSrc(null);
-    // console.log("✅ Process completed successfully");
-  } catch (error) {
-    console.error("❌ Error in crop save:", error);
+//     // Step 4: Upload to imgbb
+//     if (processedImageBlob) {
+//       setIsUploadingImage(true);
+//       console.log("☁️ Uploading to ImgBB...");
 
-    // Reset all loading states
-    setIsCropping(false);
-    setIsProcessingBackground(false);
-    setIsUploadingImage(false);
+//       const processedFile = new File([processedImageBlob], "processed-image.png", {
+//         type: processedImageBlob.type || "image/png",
+//       });
 
-    // Still set cropped image as fallback
-    if (croppedImage) {
-      // console.log("🔄 Setting cropped image as fallback");
-      setPhotoPreview(croppedImage);
+//       const hostedUrl = await imageUpload(processedFile);
 
-      try {
-        setIsUploadingImage(true);
-        const croppedBlob = dataURLtoBlob(croppedImage);
-        const croppedFile = new File([croppedBlob], "cropped-image.jpg", { type: "image/jpeg" });
-        const hostedUrl = await imageUpload(croppedFile);
+//       if (hostedUrl) {
+//         console.log("✅ HOSTED URL:", hostedUrl);
+//         setProfileUrl(hostedUrl);
+//         setPhotoPreview(hostedUrl);
+//       } else {
+//         console.log("❌ Failed to upload to imgbb");
+//       }
+//       setIsUploadingImage(false);
+//     } else {
+//       console.log("⚠️ No processed image, using fallback");
 
-        if (hostedUrl) {
-          // console.log("✅ ERROR FALLBACK HOSTED URL:", hostedUrl);
-          setProfileUrl(hostedUrl);
-          setPhotoPreview(hostedUrl);
-        }
-      } catch (uploadError) {
-        console.error("❌ Error fallback upload failed:", uploadError);
-      } finally {
-        setIsUploadingImage(false);
-      }
-    }
+//       // Fallback: upload cropped image
+//       try {
+//         setIsUploadingImage(true);
+//         const croppedBlob = dataURLtoBlob(croppedImage);
+//         const croppedFile = new File([croppedBlob], "cropped-image.jpg", { type: "image/jpeg" });
+//         const hostedUrl = await imageUpload(croppedFile);
 
-    setShowCropper(false);
-    setImageSrc(null);
-    alert(`Failed to process image: ${(error as Error).message}`);
-  }
-};
+//         if (hostedUrl) {
+//           console.log("✅ FALLBACK HOSTED URL:", hostedUrl);
+//           setProfileUrl(hostedUrl);
+//           setPhotoPreview(hostedUrl);
+//         }
+//       } catch (uploadError) {
+//         console.error("❌ Fallback upload failed:", uploadError);
+//       } finally {
+//         setIsUploadingImage(false);
+//       }
+//     }
+
+//     // Cleanup
+//     setShowCropper(false);
+//     setImageSrc(null);
+//     console.log("✅ Process completed successfully");
+//   } catch (error) {
+//     console.error("❌ Error in crop save:", error);
+
+//     // Reset all loading states
+//     setIsCropping(false);
+//     setIsProcessingBackground(false);
+//     setIsUploadingImage(false);
+
+//     // Still set cropped image as fallback
+//     if (croppedImage) {
+//       console.log("🔄 Setting cropped image as fallback");
+//       setPhotoPreview(croppedImage);
+
+//       try {
+//         setIsUploadingImage(true);
+//         const croppedBlob = dataURLtoBlob(croppedImage);
+//         const croppedFile = new File([croppedBlob], "cropped-image.jpg", { type: "image/jpeg" });
+//         const hostedUrl = await imageUpload(croppedFile);
+
+//         if (hostedUrl) {
+//           console.log("✅ ERROR FALLBACK HOSTED URL:", hostedUrl);
+//           setProfileUrl(hostedUrl);
+//           setPhotoPreview(hostedUrl);
+//         }
+//       } catch (uploadError) {
+//         console.error("❌ Error fallback upload failed:", uploadError);
+//       } finally {
+//         setIsUploadingImage(false);
+//       }
+//     }
+
+//     setShowCropper(false);
+//     setImageSrc(null);
+//     alert(`Failed to process image: ${(error as Error).message}`);
+//   }
+// };
 
 
 
   const handleRemovePhoto = () => {
-    // console.log("🗑️ Removing photo");
+    console.log("🗑️ Removing photo");
     setPhotoPreview(null);
     setProfileUrl(PLACEHOLDER_IMAGE);
   };
 
   const handleTakePhoto = async () => {
     try {
-      // console.log("📷 Requesting webcam...");
+      console.log("📷 Requesting webcam...");
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       streamRef.current = stream;
       setShowWebcam(true);
       if (videoRef.current) videoRef.current.srcObject = stream;
     } catch (err) {
-      // console.log("⚠️ Webcam failed, using file input");
+      console.log("⚠️ Webcam failed, using file input");
       fileInputRef.current?.click();
     }
   };
@@ -809,7 +825,7 @@ const UserCardWithForm: React.FC = () => {
   const handleCaptureFromWebcam = () => {
     if (!videoRef.current) return;
 
-    // console.log("📸 Capturing from webcam...");
+    console.log("📸 Capturing from webcam...");
     const video = videoRef.current;
     const canvas = document.createElement("canvas");
     canvas.width = video.videoWidth;
@@ -827,7 +843,7 @@ const UserCardWithForm: React.FC = () => {
   };
 
   const handleCloseWebcam = () => {
-    // console.log("❌ Closing webcam");
+    console.log("❌ Closing webcam");
     setShowWebcam(false);
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
@@ -909,11 +925,11 @@ const UserCardWithForm: React.FC = () => {
         const imageBlob = await response.blob();
         const imageUrl = URL.createObjectURL(imageBlob);
         setFinalImageUrl(imageUrl);
-        // console.log('✅ Generated image URL from blob');
+        console.log('✅ Generated image URL from blob');
       } else {
         // JSON response
         const result = await response.json();
-        // console.log('📄 Save data response:', result);
+        console.log('📄 Save data response:', result);
 
         // Check for different possible image URL fields
         if (result.imageUrl) {
@@ -935,7 +951,7 @@ const UserCardWithForm: React.FC = () => {
       // Show success page after successful generation
       setTimeout(() => {
         setShowSuccessPage(true);
-        // console.log(existingCardData ? '🎉 Card updated successfully' : '🎉 New card created successfully');
+        console.log(existingCardData ? '🎉 Card updated successfully' : '🎉 New card created successfully');
       }, 1000); // Small delay to show success message
 
     } catch (error) {
@@ -947,7 +963,7 @@ const UserCardWithForm: React.FC = () => {
   };
 
   const handleBackToForm = () => {
-    // console.log("🔄 Back to form");
+    console.log("🔄 Back to form");
     setShowSuccessPage(false);
     setFinalImageUrl(null);
     setSaveSuccess(false);
@@ -969,7 +985,7 @@ const UserCardWithForm: React.FC = () => {
 
   useEffect(() => {
     return () => {
-      // console.log("🧹 Cleanup");
+      console.log("🧹 Cleanup");
       if (imageSrc && imageSrc.startsWith("blob:")) URL.revokeObjectURL(imageSrc);
       if (photoPreview && photoPreview.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
       if (finalImageUrl && finalImageUrl.startsWith("blob:")) URL.revokeObjectURL(finalImageUrl);

@@ -218,12 +218,12 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({ finalImageUrl, st
 
   return (
     <div className="min-h-screen p-2 ">
-      <div className="md:hidden flex items-center gap-2 px-4 py-4">
+      {/* <div className="md:hidden flex items-center gap-2 px-4 py-4">
         <Link href="/" className="flex items-center text-[#4A61E4] space-x-2 font-bold text-lg">
           <BiIdCard size={24} />
           <span className="text-lg sm:text-xl">AutoIDGen</span>
         </Link>
-      </div>
+      </div> */}
       <div className="max-w-4xl  mx-auto">
         <div className="text-center mb-8">
           <div className="text-6xl mb-4">🎉</div>
@@ -928,12 +928,12 @@ const UserCardWithForm: React.FC = () => {
     return (
       <div className="min-h-screen bg-background">
         {/* Mobile: Show AutoIDGen branding */}
-        <div className="md:hidden flex items-center gap-2 px-4 py-4">
+        {/* <div className="flex items-center gap-2 px-4 py-4">
           <Link href="/" className="flex items-center text-[#4A61E4] space-x-2 font-bold text-lg">
             <BiIdCard size={24} />
             <span className="text-lg sm:text-xl">AutoIDGen</span>
           </Link>
-        </div>
+        </div> */}
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 mt-4 lg:mt-12">
           <div className="flex justify-center relative">
@@ -1014,12 +1014,12 @@ const UserCardWithForm: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Mobile: Show AutoIDGen branding */}
-      <div className="md:hidden flex items-center gap-2 px-4 py-4">
+      {/* <div className="md:hidden flex items-center gap-2 px-4 py-4">
         <Link href="/" className="flex items-center text-[#4A61E4] space-x-2 font-bold text-lg">
           <BiIdCard size={24} />
           <span className="text-lg sm:text-xl">AutoIDGen</span>
         </Link>
-      </div>
+      </div> */}
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">

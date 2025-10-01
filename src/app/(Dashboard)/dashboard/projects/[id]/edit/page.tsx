@@ -24,7 +24,6 @@ export default function ViewDetailsPage() {
   const [editProjectModalOpen, setEditProjectModalOpen] = useState(false)
   const [selectedCard, setSelectedCard] = useState<Card | null>(null)
 
-
   const params = useParams()
   const id = params?.id as string
 
@@ -32,13 +31,9 @@ export default function ViewDetailsPage() {
   const [updateProject] = useUpdateProjectMutation()
   const project = projectData?.data
 
-  const batchId = project?.batchId ?? ""; // always a string
-  // console.log("Batch ID:", batchId);
-  // console.log("Project", project);
-
+  const batchId = project?.batchId ?? "";
   const { data: cardData, isLoading: cardLoading } = useGetCardByBatchIdQuery(batchId, {
-    skip: !project?.batchId, // safe: hook order stays the same
-    // pollingInterval: 10000,
+    skip: !project?.batchId,
   });
 
   const [createCard] = useCreateCardMutation()
@@ -48,7 +43,6 @@ export default function ViewDetailsPage() {
   useEffect(() => {
     if (!project) return
 
-    // create empty rows based on cardQuantity
     const rows = Array.from({ length: project.cardQuantity }, (_, i) => {
       const additionalFieldsObj: Record<string, string> = {};
       project.additionalFields.forEach((field: any) => {
@@ -90,7 +84,6 @@ export default function ViewDetailsPage() {
     setCards(rows)
   }, [cardData, project])
 
-  // Filter cards based on search term
   const filteredCards = cards.filter((card) => {
     if (!search) return true
 
@@ -123,10 +116,8 @@ export default function ViewDetailsPage() {
   const handleUpdate = async (formData: Partial<Card>) => {
     try {
       if (selectedCard?._id) {
-        // Update existing card
         await updateCard({ id: selectedCard._id, data: formData }).unwrap()
       } else {
-        // Create new card
         await createCard({ ...formData, batchId: project?.batchId }).unwrap()
       }
       setEditCardModalOpen(false)
@@ -134,14 +125,11 @@ export default function ViewDetailsPage() {
       console.error("Failed to save card", error)
     }
   }
-  // console.log(selectedCard)
 
   const handleDeleteCard = async (card: Card) => {
-    if (!card._id) return; // safety check
+    if (!card._id) return;
     try {
-      await deleteCard(card._id).unwrap(); // pass ID directly
-
-      // Remove card from local state to update UI immediately
+      await deleteCard(card._id).unwrap();
       setCards((prev) => prev.filter((c) => c._id !== card._id));
     } catch (error) {
       console.error("Failed to delete card", error);
@@ -157,7 +145,7 @@ export default function ViewDetailsPage() {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `${card.serialOrRollNumber || card.batchId}-ID-Card.jpg`; // .jpg
+      link.download = `${card.serialOrRollNumber || card.batchId}-ID-Card.jpg`;
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -167,10 +155,8 @@ export default function ViewDetailsPage() {
     }
   };
 
-  // if (projectLoading) return <div className="p-6">Loading project...</div>
   if (projectLoading) return <Loading />
-  if (projectError) return <div className="p-6 text-red-500">Failed to load project</div>
-
+  if (projectError) return <div className="p-4 sm:p-6 text-red-500 text-center text-sm sm:text-base">Failed to load project</div>
   if (loading) return <ExportLoading />
 
   const handleExport = async () => {
@@ -183,81 +169,101 @@ export default function ViewDetailsPage() {
     <div className="min-h-screen bg-background">
       <DashboardHeader />
 
-      <div className="p-6 space-y-6">
+      <div className="p-4 sm:p-6 lg:p-8 space-y-6">
         {/* Project Info Card */}
         {project && (
-          <div className="flex flex-col md:flex-row items-center gap-6 bg-white p-6 rounded-xl shadow-md border border-gray-100">
-            <Image src={project.institutionLogoUrl} alt="Logo" width={100} height={100} className="w-20 h-20 object-contain rounded-lg border" />
-            <div className="flex-1 space-y-1">
-              <h2 className="text-2xl font-bold text-gray-800">{project.projectName}</h2>
-              <p className="text-gray-600">{project.institutionName}</p>
-              <p className="text-gray-500 text-sm">
-                Batch: <span className="font-medium">{project.batchId}</span> | Cards: <span className="font-medium">{project.cardQuantity}</span> | Type: <span className="font-medium">{project.cardType}</span>
-              </p>
-              <p className="text-gray-500 text-sm">Address: {project.address}</p>
+          <div className="flex flex-col md:flex-row items-center gap-4 sm:gap-6 bg-white p-4 sm:p-6 rounded-xl shadow-md border border-gray-100">
+            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full">
+              <Image
+                src={project.institutionLogoUrl}
+                alt="Logo"
+                width={80}
+                height={80}
+                className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-lg border"
+              />
+              <div className="flex-1 space-y-1 text-center sm:text-left">
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">{project.projectName}</h2>
+                <p className="text-sm sm:text-base text-gray-600">{project.institutionName}</p>
+                <p className="text-xs sm:text-sm text-gray-500">
+                  Batch: <span className="font-medium">{project.batchId}</span> | Cards: <span className="font-medium">{project.cardQuantity}</span> | Type: <span className="font-medium">{project.cardType}</span>
+                </p>
+                <p className="text-xs sm:text-sm text-gray-500">Address: {project.address}</p>
+              </div>
             </div>
             {project.institutionSignUrl?.signUrl && (
               <div className="text-center">
-                <Image src={project.institutionSignUrl.signUrl} alt="Sign" width={100} height={50} className="object-contain rounded-md border" />
-                <p className="text-xs text-gray-500">{project.institutionSignUrl.roleName}</p>
+                <Image
+                  src={project.institutionSignUrl.signUrl}
+                  alt="Sign"
+                  width={80}
+                  height={40}
+                  className="object-contain rounded-md border w-20 h-10 sm:w-24 sm:h-12"
+                />
+                <p className="text-xs text-gray-500 mt-1">{project.institutionSignUrl.roleName}</p>
               </div>
             )}
-            <button className="ml-auto text-indigo-600 hover:text-indigo-800 flex items-center gap-1" onClick={handleEditProject}>
-              <LucideEdit /> Edit Project
-            </button>
+            <Button
+              onClick={handleEditProject}
+              variant="ghost"
+              className="w-full sm:w-auto text-indigo-600 hover:text-indigo-800 flex items-center justify-center gap-1 text-sm sm:text-base"
+            >
+              <LucideEdit size={16} /> Edit Project
+            </Button>
           </div>
         )}
 
         {/* Search + Export */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-3 md:gap-0">
-          <div className="relative w-full md:w-64">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="relative w-full sm:w-64">
             <Input
-              placeholder="Search by Roll, Name, etc."
+              placeholder="Search by Roll, Name..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 bg-gray-100"
+              className="pl-10 bg-gray-100 text-sm sm:text-base"
             />
-
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
           </div>
-          <Button onClick={handleExport} variant="outline" className="bg-white hover:bg-gray-100 hover:text-gray-800">
+          <Button
+            onClick={handleExport}
+            variant="outline"
+            className="w-full sm:w-auto bg-white hover:bg-gray-100 hover:text-gray-800 text-sm sm:text-base px-3 sm:px-4 py-1 sm:py-2"
+          >
             Export All
           </Button>
         </div>
 
-        {/* Student Table */}
-        <div className="overflow-x-auto rounded-xl border border-gray-100 shadow-sm bg-white">
+        {/* Desktop: Table Layout */}
+        <div className="hidden sm:block rounded-xl border border-gray-100 shadow-sm bg-white">
           <table className="min-w-full text-left text-gray-700">
             <thead className="bg-gray-100 sticky top-0 z-10">
               <tr>
-                <th className="px-4 py-3 border-b">Sr.</th>
-                <th className="px-4 py-3 border-b">Batch</th>
-                <th className="px-4 py-3 border-b">Name</th>
+                <th className="px-4 py-3 border-b text-sm font-semibold text-muted-foreground">Sr.</th>
+                <th className="px-4 py-3 border-b text-sm font-semibold text-muted-foreground">Batch</th>
+                <th className="px-4 py-3 border-b text-sm font-semibold text-muted-foreground">Name</th>
                 {project?.additionalFields?.map((field: any, idx: number) => (
-                  <th key={idx} className="px-4 py-3 border-b">{field.fieldName}</th>
+                  <th key={idx} className="px-4 py-3 border-b text-sm font-semibold text-muted-foreground">{field.fieldName}</th>
                 ))}
-                <th className="px-4 py-3 border-b">Status</th>
-                <th className="px-4 py-3 border-b">Actions</th>
+                <th className="px-4 py-3 border-b text-sm font-semibold text-muted-foreground">Status</th>
+                <th className="px-4 py-3 border-b text-sm font-semibold text-muted-foreground">Actions</th>
               </tr>
             </thead>
             <tbody>
               {cardLoading ? (
-                <tr >
-                  <td colSpan={4 + (project?.additionalFields?.length || 0)} className="text-center py-6 h-[400px]" >
-                    {/* <Loader2 className="animate-spin mx-auto h-6 w-6 text-gray-500" /> */}
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <tr>
+                  <td colSpan={4 + (project?.additionalFields?.length || 0)} className="text-center py-12">
+                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto"></div>
                   </td>
                 </tr>
               ) : filteredCards.length > 0 ? (
                 filteredCards.map((card, idx) => (
                   <tr key={idx} className={`${idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-200 transition-colors`}>
-                    <td className="px-4 py-2 border-b">{card.serialStr}</td>
-                    <td className="px-4 py-2 border-b">{card.batchId}</td>
-                    <td className="px-4 py-2 border-b">{card.name}</td>
+                    <td className="px-4 py-3 border-b text-sm">{card.serialStr}</td>
+                    <td className="px-4 py-3 border-b text-sm">{card.batchId}</td>
+                    <td className="px-4 py-3 border-b text-sm">{card.name}</td>
                     {project?.additionalFields?.map((field: any, i: number) => (
-                      <td key={i} className="px-4 py-2 border-b">{card.additionalFields[field.fieldName] || "-"}</td>
+                      <td key={i} className="px-4 py-3 border-b text-sm">{card.additionalFields[field.fieldName] || "-"}</td>
                     ))}
-                    <td className="px-4 py-2 border-b">
+                    <td className="px-4 py-3 border-b">
                       {card.status === "processing" ? (
                         <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
                           Processing
@@ -267,35 +273,44 @@ export default function ViewDetailsPage() {
                           Generated
                         </span>
                       ) : (
-                        <span className="text-gray-500">-</span>
+                        <span className="text-gray-500 text-xs">-</span>
                       )}
                     </td>
-                    <td className="px-4 py-2 border-b">
-                      <>
-                        <button onClick={() => handleEditCard(card)} className="p-1 hover:bg-indigo-100 rounded">
-                          <LucideEdit size={18} className="text-indigo-600" />
-                        </button>
-                        {card._id ? (
+                    <td className="px-4 py-3 border-b">
+                      <div className="flex items-center gap-2">
+                        <Button
+                          onClick={() => handleEditCard(card)}
+                          variant="ghost"
+                          size="sm"
+                          className="h-9 w-9 p-0 hover:bg-indigo-100"
+                        >
+                          <LucideEdit size={16} className="text-indigo-600" />
+                        </Button>
+                        {card._id && (
                           <>
-                            <button onClick={() => handleDeleteCard(card)} className="p-1 hover:bg-red-100 rounded">
-                              <Trash2 size={18} className="text-red-600" />
-                            </button>
-                            <button
+                            <Button
+                              onClick={() => handleDeleteCard(card)}
+                              variant="ghost"
+                              size="sm"
+                              className="h-9 w-9 p-0 hover:bg-red-100"
+                            >
+                              <Trash2 size={16} className="text-red-600" />
+                            </Button>
+                            <Button
                               onClick={() => handleDownloadCard(card)}
-                              disabled={card.status.toLowerCase() === "processing"}
-                              className={`p-1 rounded ${card.status.toLowerCase() === "processing"
+                              variant="ghost"
+                              size="sm"
+                              className={`h-9 w-9 p-0 ${card.status.toLowerCase() === "processing"
                                 ? "text-gray-400 cursor-not-allowed bg-gray-100"
                                 : "text-gray-700 hover:bg-gray-100"
                                 }`}
+                              disabled={card.status.toLowerCase() === "processing"}
                             >
-                              <LucideDownload size={18} />
-                            </button>
+                              <LucideDownload size={16} />
+                            </Button>
                           </>
-                        ) : (
-                          // <span className="text-gray-500">—</span>
-                          null
                         )}
-                      </>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -307,9 +322,9 @@ export default function ViewDetailsPage() {
                         <Search className="h-6 w-6 text-gray-400" />
                       </div>
                       <div className="text-center">
-                        <h3 className="text-lg font-medium text-gray-700 mb-1">No results found</h3>
-                        <p className="text-gray-500">No student records found matching &quot;{search}&quot;</p>
-                        <p className="text-sm text-gray-400 mt-1">Try adjusting your search terms</p>
+                        <h3 className="text-base sm:text-lg font-medium text-gray-700 mb-1">No results found</h3>
+                        <p className="text-sm text-gray-500">No student records found matching &quot;{search}&quot;</p>
+                        <p className="text-xs sm:text-sm text-gray-400 mt-1">Try adjusting your search terms</p>
                       </div>
                     </div>
                   </td>
@@ -324,8 +339,8 @@ export default function ViewDetailsPage() {
                         </svg>
                       </div>
                       <div className="text-center">
-                        <h3 className="text-lg font-medium text-gray-700 mb-1">No student records</h3>
-                        <p className="text-gray-500">Start adding students to see them listed here</p>
+                        <h3 className="text-base sm:text-lg font-medium text-gray-700 mb-1">No student records</h3>
+                        <p className="text-sm text-gray-500">Start adding students to see them listed here</p>
                       </div>
                     </div>
                   </td>
@@ -333,6 +348,102 @@ export default function ViewDetailsPage() {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile: Card Layout */}
+        <div className="sm:hidden space-y-4">
+          {cardLoading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto"></div>
+            </div>
+          ) : filteredCards.length > 0 ? (
+            filteredCards.map((card, idx) => (
+              <div key={idx} className="bg-white rounded-lg border border-gray-100 shadow-sm p-4">
+                <div className="space-y-2">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-medium text-sm text-gray-800">{card.name}</h3>
+                      <p className="text-xs text-gray-500">Sr. {card.serialStr} | Batch: {card.batchId}</p>
+                    </div>
+                    <div className="flex gap-1">
+                      <Button
+                        onClick={() => handleEditCard(card)}
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0 hover:bg-indigo-100"
+                      >
+                        <LucideEdit size={14} className="text-indigo-600" />
+                      </Button>
+                      {card._id && (
+                        <>
+                          <Button
+                            onClick={() => handleDeleteCard(card)}
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0 hover:bg-red-100"
+                          >
+                            <Trash2 size={14} className="text-red-600" />
+                          </Button>
+                          <Button
+                            onClick={() => handleDownloadCard(card)}
+                            variant="ghost"
+                            size="sm"
+                            className={`h-8 w-8 p-0 ${card.status.toLowerCase() === "processing"
+                              ? "text-gray-400 cursor-not-allowed bg-gray-100"
+                              : "text-gray-700 hover:bg-gray-100"
+                              }`}
+                            disabled={card.status.toLowerCase() === "processing"}
+                          >
+                            <LucideDownload size={14} />
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-xs text-gray-700">
+                    {project?.additionalFields?.map((field: any, i: number) => (
+                      <div key={i}>
+                        <span className="font-medium">{field.fieldName}:</span> {card.additionalFields[field.fieldName] || "-"}
+                      </div>
+                    ))}
+                    <div>
+                      <span className="font-medium">Status:</span>{" "}
+                      {card.status === "processing" ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                          Processing
+                        </span>
+                      ) : card.status === "generated" ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                          Generated
+                        </span>
+                      ) : (
+                        <span className="text-gray-500">-</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : cards.length > 0 && search ? (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Search className="h-6 w-6 text-gray-400" />
+              </div>
+              <h3 className="text-base font-medium text-gray-700 mb-1">No results found</h3>
+              <p className="text-sm text-gray-500">No student records found matching &quot;{search}&quot;</p>
+              <p className="text-xs text-gray-400 mt-1">Try adjusting your search terms</p>
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg className="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                </svg>
+              </div>
+              <h3 className="text-base font-medium text-gray-700 mb-1">No student records</h3>
+              <p className="text-sm text-gray-500">Start adding students to see them listed here</p>
+            </div>
+          )}
         </div>
 
         {selectedCard && (

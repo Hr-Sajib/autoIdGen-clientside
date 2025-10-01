@@ -109,13 +109,13 @@ export function MetricsCards() {
                   </div>
                 </div>
                 <div>
-                  <p className="text-md font-medium text-gray-800">
+                  <p className="text-sm md:text-md font-medium text-gray-800">
                     {metric.title}
                   </p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-xl md:text-2xl font-bold text-gray-900">
                     {metric.value}
                   </p>
-                  <p className="text-sm text-gray-600">{metric.description}</p>
+                  <p className="mt-2 md:mt-0 text-xs md:text-sm text-gray-600">{metric.description}</p>
                 </div>
               </div>
             </CardContent>

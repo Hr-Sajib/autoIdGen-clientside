@@ -16,6 +16,7 @@ import ErrorImage from "@/../public/images/error_id_card.png";
 import Loading from "@/app/loading";
 import { AiOutlineExclamationCircle } from 'react-icons/ai';
 import { IoCameraOutline } from "react-icons/io5";
+import { BiIdCard } from "react-icons/bi";
 
 // ===========================
 // Type Definitions
@@ -217,6 +218,12 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({ finalImageUrl, st
 
   return (
     <div className="min-h-screen p-2 ">
+      <div className="md:hidden flex items-center gap-2 px-4 py-4">
+        <Link href="/" className="flex items-center text-[#4A61E4] space-x-2 font-bold text-lg">
+          <BiIdCard size={24} />
+          <span className="text-lg sm:text-xl">AutoIDGen</span>
+        </Link>
+      </div>
       <div className="max-w-4xl  mx-auto">
         <div className="text-center mb-8">
           <div className="text-6xl mb-4">🎉</div>
@@ -286,7 +293,6 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({ finalImageUrl, st
 // ===========================
 const UserCardWithForm: React.FC = () => {
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   const role = searchParams.get("role");
   const batchCode = searchParams.get("batchCode");
@@ -624,185 +630,6 @@ const UserCardWithForm: React.FC = () => {
     }
   };
 
-
-
-
-
-
-
-
-
-
-
-  //! Try - 1
-  // utils/processIdPhoto.ts
-
-
-
-
-
-
-//   const handleCropSave = async () => {
-//   if (!imageSrc || !croppedAreaPixels) {
-//     alert("Select area to crop");
-//     return;
-//   }
-
-//   let croppedImage: string | null = null;
-
-//   try {
-//     // Step 1: Start cropping
-//     setIsCropping(true);
-//     console.log("✂️ Starting crop process...", croppedAreaPixels);
-
-//     croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
-//     console.log("✅ Image cropped successfully");
-//     setPhotoPreview(croppedImage);
-//     setIsCropping(false);
-
-//     // Step 2: Background removal
-//     setIsProcessingBackground(true);
-//     console.log("🎨 Starting background removal...");
-
-//     // Clean up blob URLs after setting preview
-//     if (imageSrc.startsWith("blob:")) URL.revokeObjectURL(imageSrc);
-//     if (photoPreview && photoPreview.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
-
-//     const blob = dataURLtoBlob(croppedImage);
-//     console.log("📦 Created blob:", `${(blob.size / 1024).toFixed(2)}KB`);
-
-//     // Prepare FormData for API request
-//     const formData = new FormData();
-//     formData.append("file", blob, "profile-image.jpg");
-//     formData.append("background_color", projectData?.personPhotoBGColorCode || "#ffffff");
-//     formData.append("width", "200");
-//     formData.append("height", "200");
-//     formData.append("enhance_quality", "true");
-//     formData.append("center_face", "false");
-
-//     console.log("🔄 Background removal request:", {
-//       backgroundColor: projectData?.personPhotoBGColorCode || "#ffffff",
-//       dimensions: "200x200",
-//     });
-
-//     // Call your Next.js API route (proxy)
-//     const res = await fetch("/api/process-id-photo", {
-//       method: "POST",
-//       body: formData,
-//     });
-
-//     if (!res.ok) {
-//       const errorText = await res.text();
-//       throw new Error(`API Error! status: ${res.status}, message: ${errorText}`);
-//     }
-
-//     // Step 3: Handle response
-//     const contentType = res.headers.get("content-type");
-//     let processedImageBlob: Blob | null = null;
-
-//     if (contentType && contentType.includes("application/json")) {
-//       const apiResult = await res.json();
-//       console.log("📄 JSON Response:", apiResult);
-
-//       if (apiResult.imageUrl || apiResult.processedImageUrl || apiResult.image_url) {
-//         const processedImageUrl =
-//           apiResult.imageUrl || apiResult.processedImageUrl || apiResult.image_url;
-//         const imageResponse = await fetch(processedImageUrl);
-//         processedImageBlob = await imageResponse.blob();
-//       }
-//     } else if (contentType && contentType.includes("image")) {
-//       processedImageBlob = await res.blob();
-//       const processedImageUrl = URL.createObjectURL(processedImageBlob);
-//       console.log("🖼️ Direct image response");
-//       setPhotoPreview(processedImageUrl);
-//     }
-
-//     setIsProcessingBackground(false);
-
-//     // Step 4: Upload to imgbb
-//     if (processedImageBlob) {
-//       setIsUploadingImage(true);
-//       console.log("☁️ Uploading to ImgBB...");
-
-//       const processedFile = new File([processedImageBlob], "processed-image.png", {
-//         type: processedImageBlob.type || "image/png",
-//       });
-
-//       const hostedUrl = await imageUpload(processedFile);
-
-//       if (hostedUrl) {
-//         console.log("✅ HOSTED URL:", hostedUrl);
-//         setProfileUrl(hostedUrl);
-//         setPhotoPreview(hostedUrl);
-//       } else {
-//         console.log("❌ Failed to upload to imgbb");
-//       }
-//       setIsUploadingImage(false);
-//     } else {
-//       console.log("⚠️ No processed image, using fallback");
-
-//       // Fallback: upload cropped image
-//       try {
-//         setIsUploadingImage(true);
-//         const croppedBlob = dataURLtoBlob(croppedImage);
-//         const croppedFile = new File([croppedBlob], "cropped-image.jpg", { type: "image/jpeg" });
-//         const hostedUrl = await imageUpload(croppedFile);
-
-//         if (hostedUrl) {
-//           console.log("✅ FALLBACK HOSTED URL:", hostedUrl);
-//           setProfileUrl(hostedUrl);
-//           setPhotoPreview(hostedUrl);
-//         }
-//       } catch (uploadError) {
-//         console.error("❌ Fallback upload failed:", uploadError);
-//       } finally {
-//         setIsUploadingImage(false);
-//       }
-//     }
-
-//     // Cleanup
-//     setShowCropper(false);
-//     setImageSrc(null);
-//     console.log("✅ Process completed successfully");
-//   } catch (error) {
-//     console.error("❌ Error in crop save:", error);
-
-//     // Reset all loading states
-//     setIsCropping(false);
-//     setIsProcessingBackground(false);
-//     setIsUploadingImage(false);
-
-//     // Still set cropped image as fallback
-//     if (croppedImage) {
-//       console.log("🔄 Setting cropped image as fallback");
-//       setPhotoPreview(croppedImage);
-
-//       try {
-//         setIsUploadingImage(true);
-//         const croppedBlob = dataURLtoBlob(croppedImage);
-//         const croppedFile = new File([croppedBlob], "cropped-image.jpg", { type: "image/jpeg" });
-//         const hostedUrl = await imageUpload(croppedFile);
-
-//         if (hostedUrl) {
-//           console.log("✅ ERROR FALLBACK HOSTED URL:", hostedUrl);
-//           setProfileUrl(hostedUrl);
-//           setPhotoPreview(hostedUrl);
-//         }
-//       } catch (uploadError) {
-//         console.error("❌ Error fallback upload failed:", uploadError);
-//       } finally {
-//         setIsUploadingImage(false);
-//       }
-//     }
-
-//     setShowCropper(false);
-//     setImageSrc(null);
-//     alert(`Failed to process image: ${(error as Error).message}`);
-//   }
-// };
-
-
-
   const handleRemovePhoto = () => {
     console.log("🗑️ Removing photo");
     setPhotoPreview(null);
@@ -1097,346 +924,439 @@ const UserCardWithForm: React.FC = () => {
   // Check if any loading operation is in progress
   const isAnyLoading = isCropping || isProcessingBackground || isUploadingImage || isSaving;
 
-  return (
-    <div className="min-h-screen p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">{projectData.cardType} Information</h1>
-        {existingCardData && (
-          <div className="flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-            <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-            Existing Card Found
+  if (existingCardData) {
+    return (
+      <div className="min-h-screen bg-background">
+        {/* Mobile: Show AutoIDGen branding */}
+        <div className="md:hidden flex items-center gap-2 px-4 py-4">
+          <Link href="/" className="flex items-center text-[#4A61E4] space-x-2 font-bold text-lg">
+            <BiIdCard size={24} />
+            <span className="text-lg sm:text-xl">AutoIDGen</span>
+          </Link>
+        </div>
+
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 mt-4 lg:mt-12">
+          <div className="flex justify-center relative">
+            <div className="relative">
+              <div className="blur-sm pointer-events-none select-none">
+                {cardOrientation === "horizontal" ? (
+                  <HorizontalCardForUser
+                    instituteName={projectData.institutionName}
+                    address={projectData.address}
+                    idCardType={`${projectData.cardType} ID`}
+                    studentName={studentName || `${projectData.cardType} Name`}
+                    qrData={`${projectData.batchId}-${rollSerial || "000"}`}
+                    logoUrl={projectData.institutionLogoUrl}
+                    profileUrl={profileUrl}
+                    signatureUrl={projectData.institutionSignUrl.signUrl}
+                    whoseSign={projectData.institutionSignUrl.roleName}
+                    fields={fields}
+                    values={{
+                      ...values,
+                      ...projectData.additionalFields.reduce((acc: any, field: any) => {
+                        if (field.defaultValue) {
+                          acc[field.fieldName] = field.defaultValue;
+                        }
+                        return acc;
+                      }, {} as { [key: string]: string }),
+                      ...(existingCardData?.additionalfieldValues || []).reduce((acc: any, field: any) => {
+                        if (field.setBy === "owner") {
+                          acc[field.fieldName] = field.fieldValue;
+                        }
+                        return acc;
+                      }, {} as { [key: string]: string })
+                    }}
+                  />
+                ) : (
+                  <VerticalCardForUser
+                    instituteName={projectData.institutionName}
+                    address={projectData.address}
+                    idCardType={`${projectData.cardType} ID`}
+                    studentName={studentName || `${projectData.cardType} Name`}
+                    qrData={`${projectData.batchId}-${rollSerial || "000"}`}
+                    logoUrl={projectData.institutionLogoUrl}
+                    profileUrl={profileUrl}
+                    signatureUrl={projectData.institutionSignUrl.signUrl}
+                    whoseSign={projectData.institutionSignUrl.roleName}
+                    fields={fields}
+                    values={{
+                      ...values,
+                      ...projectData.additionalFields.reduce((acc: any, field: any) => {
+                        if (field.defaultValue) {
+                          acc[field.fieldName] = field.defaultValue;
+                        }
+                        return acc;
+                      }, {} as { [key: string]: string }),
+                      ...(existingCardData?.additionalfieldValues || []).reduce((acc: any, field: any) => {
+                        if (field.setBy === "owner") {
+                          acc[field.fieldName] = field.fieldValue;
+                        }
+                        return acc;
+                      }, {} as { [key: string]: string })
+                    }}
+                  />
+                )}
+              </div>
+
+              {/* Optional overlay text */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="bg-black bg-opacity-60 text-white text-sm sm:text-base px-4 py-2 rounded-md">
+                  ID Card Already Generated
+                </span>
+              </div>
+            </div>
           </div>
-        )}
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Mobile: Show AutoIDGen branding */}
+      <div className="md:hidden flex items-center gap-2 px-4 py-4">
+        <Link href="/" className="flex items-center text-[#4A61E4] space-x-2 font-bold text-lg">
+          <BiIdCard size={24} />
+          <span className="text-lg sm:text-xl">AutoIDGen</span>
+        </Link>
       </div>
 
-      {/* Loading indicator for existing card data */}
-      {isLoadingExistingCard && (
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 text-blue-700 rounded-lg">
-          <div className="flex items-center gap-2">
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-            Loading existing card data...
-          </div>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-0">
+            {projectData.cardType} Information
+          </h1>
+          {/* {existingCardData && (
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-100 text-blue-800 rounded-full text-xs sm:text-sm">
+              <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+              Existing Card Found
+            </div>
+          )} */}
         </div>
-      )}
 
-      {/* Loading Overlay when saving */}
-      {isSaving && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 text-center max-w-sm mx-4">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <h3 className="text-lg font-semibold mb-2">Generating ID Card...</h3>
-            <p className="text-gray-600">Please wait while we create your ID card</p>
+        {/* Loading indicator for existing card data */}
+        {isLoadingExistingCard && (
+          <div className="mb-4 p-3 bg-blue-50 border border-blue-200 text-blue-700 rounded-lg">
+            <div className="flex items-center gap-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+              <span className="text-sm">Loading existing card data...</span>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Loading Overlay for image processing */}
-      {(isCropping || isProcessingBackground || isUploadingImage) && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 text-center max-w-sm mx-4">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <h3 className="text-lg font-semibold mb-2">
-              {isCropping ? "Cropping Image..." :
-                isProcessingBackground ? "Processing Background..." :
-                  "Uploading Image..."}
-            </h3>
-            <p className="text-gray-600">
-              {isCropping ? "Applying your crop selection" :
-                isProcessingBackground ? "Removing background and enhancing photo" :
-                  "Saving processed image to cloud"}
-            </p>
+        {/* Loading Overlay when saving */}
+        {isSaving && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg p-6 text-center w-full max-w-[90%] sm:max-w-sm mx-4">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <h3 className="text-base sm:text-lg font-semibold mb-2">Generating ID Card...</h3>
+              <p className="text-sm text-gray-600">Please wait while we create your ID card</p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <div className="grid lg:grid-cols-2 gap-8">
-        {/* ---------- Form Section ---------- */}
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Student Name Field */}
-            <div className="flex flex-col space-y-4">
-              <label className="text-sm ml-4 font-medium text-gray-700">
-                {projectData.cardType} Name *
-              </label>
-              <Input
-                value={studentName}
-                onChange={(e) => setStudentName(e.target.value)}
-                disabled={isAnyLoading}
-                placeholder={`Enter ${projectData.cardType.toLowerCase()} name`}
-                className="bg-gray-100 text-black"
-              />
+        {/* Loading Overlay for image processing */}
+        {(isCropping || isProcessingBackground || isUploadingImage) && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg p-6 text-center w-full max-w-[90%] sm:max-w-sm mx-4">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <h3 className="text-base sm:text-lg font-semibold mb-2">
+                {isCropping ? "Cropping Image..." :
+                  isProcessingBackground ? "Processing Background..." :
+                    "Uploading Image..."}
+              </h3>
+              <p className="text-sm text-gray-600">
+                {isCropping ? "Applying your crop selection" :
+                  isProcessingBackground ? "Removing background and enhancing photo" :
+                    "Saving processed image to cloud"}
+              </p>
+            </div>
+          </div>
+        )}
+
+        <div className="flex flex-col lg:flex-row lg:gap-8">
+          {/* ---------- Form Section ---------- */}
+          <div className="w-full lg:w-1/2 space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Student Name Field */}
+              <div className="flex flex-col space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  {projectData.cardType} Name *
+                </label>
+                <Input
+                  value={studentName}
+                  onChange={(e) => setStudentName(e.target.value)}
+                  disabled={isAnyLoading}
+                  placeholder={`Enter ${projectData.cardType.toLowerCase()} name`}
+                  className="h-10 sm:h-12 bg-gray-100 text-black text-sm sm:text-base"
+                />
+              </div>
+
+              {/* Dynamic Fields */}
+              {projectData.additionalFields.length > 0 && projectData.additionalFields.map((fieldObj: any) => {
+                const existingOwnerField = existingCardData?.additionalfieldValues?.find(
+                  (existing: any) => existing.fieldName === fieldObj.fieldName && existing.setBy === "owner"
+                );
+                const nonEditableValue = existingOwnerField?.fieldValue || fieldObj.defaultValue;
+                const isNonEditable = !!nonEditableValue;
+
+                return (
+                  <div key={fieldObj._id} className="flex flex-col space-y-2">
+                    <label className="text-sm font-medium text-gray-700">
+                      {formatFieldName(fieldObj?.fieldName) || "Loading..."} *
+                    </label>
+                    {isNonEditable ? (
+                      <div className="relative group">
+                        <Input
+                          value={nonEditableValue}
+                          disabled={true}
+                          className="h-10 sm:h-12 bg-gray-200 text-black text-sm sm:text-base cursor-not-allowed"
+                        />
+                        <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+                          <AiOutlineExclamationCircle className="h-4 w-4 sm:h-5 sm:w-5 text-red-500 cursor-help" />
+                        </span>
+                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 sm:px-3 py-1 sm:py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                          This field is not editable
+                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                        </div>
+                      </div>
+                    ) : (
+                      <Input
+                        value={values[fieldObj.fieldName] || ""}
+                        onChange={(e) => handleChange(fieldObj.fieldName, e.target.value)}
+                        disabled={isAnyLoading}
+                        placeholder={`Enter ${formatFieldName(fieldObj?.fieldName)?.toLowerCase() ?? ""}`}
+                        className="h-10 sm:h-12 bg-gray-100 text-black text-sm sm:text-base"
+                      />
+                    )}
+                  </div>
+                );
+              })}
             </div>
 
-            {/* Dynamic Fields */}
-            {projectData.additionalFields.length > 0 && projectData.additionalFields.map((fieldObj) => {
-              // Check if this field has an existing owner-set value
-              const existingOwnerField = existingCardData?.additionalfieldValues?.find(
-                existing => existing.fieldName === fieldObj.fieldName && existing.setBy === "owner"
-              );
+            <div className="flex flex-col sm:flex-row flex-wrap items-center gap-3 sm:gap-4 mt-6 sm:mt-8">
+              <label
+                className={`flex items-center justify-center border border-transparent hover:border-gray-300 rounded-xl px-4 sm:px-6 py-2 sm:py-3 cursor-pointer hover:bg-gray-50 transition ${isAnyLoading ? 'opacity-50 pointer-events-none' : ''}`}
+              >
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+                  disabled={isAnyLoading}
+                />
+                <span className="flex items-center gap-2 font-semibold text-sm sm:text-base">
+                  <Image className="" src={UploadImage} width={20} height={20} alt="Upload" />
+                  Upload Image
+                </span>
+              </label>
 
-              // Determine the non-editable value (either from project default or existing owner data)
-              const nonEditableValue = existingOwnerField?.fieldValue || fieldObj.defaultValue;
-              const isNonEditable = !!nonEditableValue;
+              <button
+                onClick={handleTakePhoto}
+                disabled={isAnyLoading}
+                className="px-4 sm:px-6 py-2 sm:py-3 rounded-xl border border-transparent hover:border-gray-300 hover:bg-white hover:text-black flex gap-2 items-center font-semibold text-sm sm:text-base"
+              >
+                <IoCameraOutline size={20} className="text-xl sm:text-2xl" />
+                <span>Take Photo</span>
+              </button>
 
-              return (
-                <div key={fieldObj._id} className="flex flex-col space-y-4">
-                  <label className="text-sm ml-1 font-medium text-gray-700">
-                    {formatFieldName(fieldObj?.fieldName) || "Loading..."} *
-                  </label>
-                  {isNonEditable ? (
-                    // Read-only field with owner/default value
-                    <div className="relative group">
-                      <Input
-                        value={nonEditableValue}
-                        disabled={true}
-                        className="bg-gray-200 text-black cursor-not-allowed"
-                      />
-                      <span className="absolute inset-y-0 right-0 flex items-center pr-3">
-                        <AiOutlineExclamationCircle className="h-5 w-5 text-red-500 cursor-help" />
-                      </span>
-                      {/* Tooltip */}
-                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
-                        This field is not editable
-                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
-                      </div>
-                    </div>
-                  ) : (
-                    // Editable field for user input
-                    <Input
-                      value={values[fieldObj.fieldName] || ""}
-                      onChange={(e) => handleChange(fieldObj.fieldName, e.target.value)}
-                      disabled={isAnyLoading}
-                      placeholder={`Enter ${formatFieldName(fieldObj?.fieldName)?.toLowerCase() ?? ""}`}
-                      className="bg-gray-100 text-black"
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </div>
+              <Button
+                className="bg-[#4A61E4] hover:bg-blue-700 py-2 sm:py-3 px-4 sm:px-7 rounded-xl text-white text-sm sm:text-base"
+                onClick={handleSaveData}
+                disabled={isAnyLoading}
+              >
+                {isSaving ? "⏳ Generating..." : (
+                  <>
+                    <Image src={DownloadImage} width={20} height={20} alt="Download" />
+                    Download
+                  </>
+                )}
+              </Button>
 
-          <div className="flex flex-wrap items-center gap-4 mt-8">
-            <label className={`flex items-center  justify-center border border-transparent hover:border-gray-300 rounded-2xl px-6 py-3 cursor-pointer hover:bg-gray-50 transition ${isAnyLoading ? 'opacity-50 pointer-events-none' : ''}`}>
               <input
                 type="file"
                 accept="image/*"
-                className="hidden"
+                capture="environment"
+                ref={fileInputRef}
                 onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+                style={{ display: "none" }}
                 disabled={isAnyLoading}
               />
-              <span className="flex items-center gap-2 font-semibold ">
-                <Image className="" src={UploadImage} width={26} height={14} alt="" />
-                Upload Image
-              </span>
-            </label>
+            </div>
 
-            <button
-              onClick={handleTakePhoto}
-              disabled={isAnyLoading}
-              className="px-6 py-3 rounded-2xl shadow-none border border-transparent hover:border-gray-300 hover:bg-white  hover:text-black flex gap-2 items-center font-semibold"
-            >
-              <div className="flex items-center gap-2">
-                <IoCameraOutline size={26} className="text-2xl" />
-                <span>Take Photo</span>
+            {/* Success message */}
+            {saveSuccess && !showSuccessPage && (
+              <div className="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded-lg text-sm">
+                ✅ ID Card generated successfully! Redirecting...
               </div>
-            </button>
+            )}
 
-            <Button
-              className="bg-[#4A61E4] ml-4 hover:bg-blue-700 py-6 px-7 rounded-2xl text-white"
-              onClick={handleSaveData}
-              disabled={isAnyLoading}
-            >
-              {isSaving ? "⏳ Generating..." : (
-                <>
-                  <Image src={DownloadImage} width={26} height={14} alt="" />
-                  Download
-                </>
-              )}
-            </Button>
-
-            <input
-              type="file"
-              accept="image/*"
-              capture="environment"
-              ref={fileInputRef}
-              onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
-              style={{ display: "none" }}
-              disabled={isAnyLoading}
-            />
+            {photoPreview && (
+              <div className="mt-4">
+                <p className="text-sm text-gray-600 mb-2">📸 Current Photo:</p>
+                <div className="relative w-fit">
+                  <Image
+                    src={photoPreview}
+                    alt="Profile Preview"
+                    width={96}
+                    height={96}
+                    className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg border shadow"
+                    unoptimized
+                  />
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    className="absolute -top-2 -right-2 rounded-full h-6 w-6 sm:h-8 sm:w-8"
+                    onClick={handleRemovePhoto}
+                    disabled={isAnyLoading}
+                  >
+                    ✕
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Success message */}
-          {saveSuccess && !showSuccessPage && (
-            <div className="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
-              ✅ ID Card generated successfully! Redirecting...
+          {/* ---------- Card Preview Section ---------- */}
+          <div className="w-full lg:w-1/2 space-y-6 mt-6 lg:mt-0">
+            <div className="text-center mb-4 font-semibold text-gray-800 text-base sm:text-lg">
+              Live Preview
             </div>
-          )}
-
-          {photoPreview && (
-            <div className="mt-4">
-              <p className="text-sm text-gray-600 mb-2">📸 Current Photo:</p>
-              <div className="relative w-fit">
-                <Image
-                  src={photoPreview}
-                  alt="Profile Preview"
-                  width={128}
-                  height={128}
-                  className="w-32 h-32 object-cover rounded-lg border shadow"
-                  unoptimized
+            <div className="flex justify-center">
+              {cardOrientation === "horizontal" ? (
+                <HorizontalCardForUser
+                  instituteName={projectData.institutionName}
+                  address={projectData.address}
+                  idCardType={`${projectData.cardType} ID`}
+                  studentName={studentName || `${projectData.cardType} Name`}
+                  qrData={`${projectData.batchId}-${rollSerial || "000"}`}
+                  logoUrl={projectData.institutionLogoUrl}
+                  profileUrl={profileUrl}
+                  signatureUrl={projectData.institutionSignUrl.signUrl}
+                  whoseSign={projectData.institutionSignUrl.roleName}
+                  fields={fields}
+                  values={{
+                    ...values,
+                    ...projectData.additionalFields.reduce((acc: any, field: any) => {
+                      if (field.defaultValue) {
+                        acc[field.fieldName] = field.defaultValue;
+                      }
+                      return acc;
+                    }, {} as { [key: string]: string }),
+                    ...(existingCardData?.additionalfieldValues || []).reduce((acc: any, field: any) => {
+                      if (field.setBy === "owner") {
+                        acc[field.fieldName] = field.fieldValue;
+                      }
+                      return acc;
+                    }, {} as { [key: string]: string })
+                  }}
+                // className="w-full max-w-[320px] sm:max-w-[360px]"
                 />
+              ) : (
+                <VerticalCardForUser
+                  instituteName={projectData.institutionName}
+                  address={projectData.address}
+                  idCardType={`${projectData.cardType} ID`}
+                  studentName={studentName || `${projectData.cardType} Name`}
+                  qrData={`${projectData.batchId}-${rollSerial || "000"}`}
+                  logoUrl={projectData.institutionLogoUrl}
+                  profileUrl={profileUrl}
+                  signatureUrl={projectData.institutionSignUrl.signUrl}
+                  whoseSign={projectData.institutionSignUrl.roleName}
+                  fields={fields}
+                  values={{
+                    ...values,
+                    ...projectData.additionalFields.reduce((acc: any, field: any) => {
+                      if (field.defaultValue) {
+                        acc[field.fieldName] = field.defaultValue;
+                      }
+                      return acc;
+                    }, {} as { [key: string]: string }),
+                    ...(existingCardData?.additionalfieldValues || []).reduce((acc: any, field: any) => {
+                      if (field.setBy === "owner") {
+                        acc[field.fieldName] = field.fieldValue;
+                      }
+                      return acc;
+                    }, {} as { [key: string]: string })
+                  }}
+                // className="w-full max-w-[280px] sm:max-w-[320px]"
+                />
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* ---------- Cropper Modal ---------- */}
+        {showCropper && imageSrc && !isSaving && (
+          <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg w-full max-w-[90%] sm:max-w-2xl max-h-[90vh] overflow-hidden">
+              <div className="p-4 border-b">
+                <h3 className="text-base sm:text-lg font-semibold">Crop Your Image</h3>
+              </div>
+              <div className="relative h-64 sm:h-96 bg-gray-100">
+                <Cropper
+                  image={imageSrc}
+                  crop={crop}
+                  zoom={zoom}
+                  aspect={1}
+                  onCropChange={setCrop}
+                  onCropComplete={onCropComplete}
+                  onZoomChange={setZoom}
+                  showGrid={false}
+                />
+              </div>
+              <div className="p-4 border-t flex flex-col sm:flex-row justify-end gap-3">
                 <Button
-                  size="sm"
-                  variant="destructive"
-                  className="absolute -top-2 -right-2 rounded-full"
-                  onClick={handleRemovePhoto}
-                  disabled={isAnyLoading}
+                  variant="outline"
+                  onClick={() => setShowCropper(false)}
+                  className="h-10 sm:h-12 text-sm sm:text-base"
+                  disabled={isCropping || isProcessingBackground || isUploadingImage}
                 >
-                  ✕
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleCropSave}
+                  className="bg-blue-600 text-white h-10 sm:h-12 text-sm sm:text-base"
+                  disabled={isCropping || isProcessingBackground || isUploadingImage}
+                >
+                  {isCropping
+                    ? "Cropping..."
+                    : isProcessingBackground
+                      ? "Processing..."
+                      : isUploadingImage
+                        ? "Uploading..."
+                        : "Apply Crop"}
                 </Button>
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* ---------- Card Preview Section ---------- */}
-        <div className="space-y-6">
-          <div className="text-center mb-4 font-semibold text-gray-800">
-            Live Preview
+        {/* ---------- Webcam Modal ---------- */}
+        {showWebcam && !isSaving && (
+          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg w-full max-w-[90%] sm:max-w-md p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold mb-4">📷 Capture Photo</h3>
+              <video ref={videoRef} autoPlay playsInline className="w-full rounded-lg bg-black" />
+              <div className="flex flex-col sm:flex-row justify-end gap-3 mt-4">
+                <Button
+                  variant="outline"
+                  onClick={handleCloseWebcam}
+                  className="h-10 sm:h-12 text-sm sm:text-base"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleCaptureFromWebcam}
+                  className="bg-blue-600 text-white h-10 sm:h-12 text-sm sm:text-base"
+                >
+                  Capture
+                </Button>
+              </div>
+            </div>
           </div>
-          <div className="flex justify-center">
-            {cardOrientation === "horizontal" ? (
-              <HorizontalCardForUser
-                instituteName={projectData.institutionName}
-                address={projectData.address}
-                idCardType={`${projectData.cardType} ID`}
-                studentName={studentName || `${projectData.cardType} Name`}
-                qrData={`${projectData.batchId}-${rollSerial || "000"}`}
-                logoUrl={projectData.institutionLogoUrl}
-                profileUrl={profileUrl}
-                signatureUrl={projectData.institutionSignUrl.signUrl}
-                whoseSign={projectData.institutionSignUrl.roleName}
-                fields={fields}
-                values={{
-                  ...values,
-                  // Include default values from project data
-                  ...projectData.additionalFields.reduce((acc, field) => {
-                    if (field.defaultValue) {
-                      acc[field.fieldName] = field.defaultValue;
-                    }
-                    return acc;
-                  }, {} as { [key: string]: string }),
-                  // Include existing owner values (override defaults if present)
-                  ...(existingCardData?.additionalfieldValues || []).reduce((acc, field) => {
-                    if (field.setBy === "owner") {
-                      acc[field.fieldName] = field.fieldValue;
-                    }
-                    return acc;
-                  }, {} as { [key: string]: string })
-                }}
-              />
-            ) : (
-              <VerticalCardForUser
-                instituteName={projectData.institutionName}
-                address={projectData.address}
-                idCardType={`${projectData.cardType} ID`}
-                studentName={studentName || `${projectData.cardType} Name`}
-                qrData={`${projectData.batchId}-${rollSerial || "000"}`}
-                logoUrl={projectData.institutionLogoUrl}
-                profileUrl={profileUrl}
-                signatureUrl={projectData.institutionSignUrl.signUrl}
-                whoseSign={projectData.institutionSignUrl.roleName}
-                fields={fields}
-                values={{
-                  ...values,
-                  // Include default values from project data
-                  ...projectData.additionalFields.reduce((acc, field) => {
-                    if (field.defaultValue) {
-                      acc[field.fieldName] = field.defaultValue;
-                    }
-                    return acc;
-                  }, {} as { [key: string]: string }),
-                  // Include existing owner values (override defaults if present)
-                  ...(existingCardData?.additionalfieldValues || []).reduce((acc, field) => {
-                    if (field.setBy === "owner") {
-                      acc[field.fieldName] = field.fieldValue;
-                    }
-                    return acc;
-                  }, {} as { [key: string]: string })
-                }}
-              />
-            )}
-          </div>
-        </div>
+        )}
       </div>
-
-      {/* ---------- Cropper Modal ---------- */}
-      {showCropper && imageSrc && !isSaving && (
-        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden">
-            <div className="p-4 border-b">
-              <h3 className="text-lg font-semibold">Crop Your Image</h3>
-            </div>
-            <div className="relative h-96 bg-gray-100">
-              <Cropper
-                image={imageSrc}
-                crop={crop}
-                zoom={zoom}
-                aspect={1}
-                onCropChange={setCrop}
-                onCropComplete={onCropComplete}
-                onZoomChange={setZoom}
-                showGrid={false}
-              />
-            </div>
-            <div className="p-4 border-t flex justify-end gap-3">
-              <Button
-                variant="outline"
-                onClick={() => setShowCropper(false)}
-              // disabled={isCropping || isProcessingBackground || isUploadingImage}
-              >
-                Cancel
-              </Button>
-              {/* <Button
-                onClick={handleCropSave}
-                className="bg-blue-600 text-white"
-                disabled={isCropping || isProcessingBackground || isUploadingImage}
-              >
-                {isCropping ? "Cropping..." :
-                  isProcessingBackground ? "Processing..." :
-                    isUploadingImage ? "Uploading..." : "Apply Crop"}
-              </Button> */}
-              <Button
-                onClick={handleCropSave}
-                className="bg-blue-600 text-white"
-                disabled={isCropping || isProcessingBackground || isUploadingImage}
-              >
-                {isCropping
-                  ? "Cropping..."
-                  : isProcessingBackground
-                    ? "Processing..."
-                    : isUploadingImage
-                      ? "Uploading..."
-                      : "Apply Crop"}
-              </Button>
-
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ---------- Webcam Modal ---------- */}
-      {showWebcam && !isSaving && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-md p-4">
-            <h3 className="text-lg font-semibold mb-4">📷 Capture Photo</h3>
-            <video ref={videoRef} autoPlay playsInline className="w-full rounded-lg bg-black" />
-            <div className="flex justify-end gap-3 mt-4">
-              <Button variant="outline" onClick={handleCloseWebcam}>Cancel</Button>
-              <Button onClick={handleCaptureFromWebcam} className="bg-blue-600 text-white">Capture</Button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

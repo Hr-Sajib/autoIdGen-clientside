@@ -36,7 +36,7 @@ export function DashboardHeader() {
 
             <Button
               onClick={() => setIsModalOpen(true)}
-              className="bg-white hover:bg-blue-600 text-blue-600 hover:text-white font-bold border-2 border-blue-600">
+              className="bg-white hover:bg-blue-600 text-blue-600 hover:text-white font-bold border-2 border-blue-600 px-2 flex">
               <Plus className="mr-0 h-4 w-4" />
               New Project
             </Button>

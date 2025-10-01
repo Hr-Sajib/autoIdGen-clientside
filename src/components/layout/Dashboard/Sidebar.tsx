@@ -120,7 +120,7 @@ export function Sidebar({ onToggle }: SidebarProps) {
         className={cn(
           "fixed left-0 top-0 z-40 h-full bg-white border-r border-gray-200 transform transition-all duration-200 ease-in-out",
           "md:translate-x-0",
-          isDesktopCollapsed ? "md:w-16" : "md:w-64",
+          isDesktopCollapsed ? "md:w-18" : "md:w-64",
           isMobileOpen ? "translate-x-0 w-64" : "-translate-x-full w-64"
         )}
       >
@@ -143,16 +143,16 @@ export function Sidebar({ onToggle }: SidebarProps) {
                       <span className=" text-[#4A61E4]">
                         <BiIdCard size={30} />
                       </span>
+                      <span className="text-[20px] text-[#4A61E4]">AutoIDGen</span>
                     </Link>
                   )}
-                  <Link href="/" className="text-[20px] text-[#4A61E4]">AutoIDGen</Link>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Navigation */}
-          <nav className="p-4 pb-1">
+          <nav className="flex-1 p-4 pb-1">
             {
               pathname.includes('/dashboard') && (
                 <Button
@@ -181,33 +181,32 @@ export function Sidebar({ onToggle }: SidebarProps) {
               )
             }
           </nav>
-          <nav className="flex-1 p-4 pt-1">
-             {
-              pathname.includes('/dashboard') && (
-            <Button
-              variant="default"
-              className={cn(
-                "w-full bg-blue-400 hover:bg-blue-700 text-white transition-all duration-200",
-                isDesktopCollapsed
-                  ? "md:justify-center md:px-2"
-                  : "justify-start  gap-3"
-              )}
-            >
-              <LucideVerified />
+          {/* <nav className="flex-1 p-4 pt-1">
+            {pathname.includes('/dashboard') && (
+              <Button
+                variant="default"
+                className={cn(
+                  "w-full bg-blue-400 hover:bg-blue-700 text-white transition-all duration-200",
+                  isDesktopCollapsed
+                    ? "md:justify-center md:px-2"
+                    : "justify-start  gap-3"
+                )}
+              >
+                <LucideVerified />
 
-              <Link href="/dashboard/verify">
-                <span
-                  className={cn(
-                    "transition-opacity duration-200",
-                    isDesktopCollapsed ? "md:hidden" : "block"
-                  )}
-                >
-                  Verify ID Card
-                </span>
-              </Link>
-            </Button>
-              )}
-          </nav>
+                <Link href="/dashboard/verify">
+                  <span
+                    className={cn(
+                      "transition-opacity duration-200",
+                      isDesktopCollapsed ? "md:hidden" : "block"
+                    )}
+                  >
+                    Verify ID Card
+                  </span>
+                </Link>
+              </Button>
+            )}
+          </nav> */}
 
           {/* Footer */}
           <div className="p-4 border-t border-gray-200">

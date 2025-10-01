@@ -67,8 +67,8 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
 
   return (
     <div
-      className="calibri relative min-w-[262px]  h-[153px]
-                 sm:min-w-[290px] sm:h-[180px]
+      className="calibri relative min-w-[320px]  h-[170px]
+                 sm:min-w-[320px] sm:h-[210px]
                  md:min-w-[370px] md:h-[210px]
                  lg:min-w-[600px] lg:h-[350px]
                  xl:min-w-[650px] xl:h-[408px] rounded-[3px]

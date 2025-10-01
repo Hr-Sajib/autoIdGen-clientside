@@ -7,8 +7,17 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation"; // 👈 Router import
-import { AiOutlineExclamationCircle, AiOutlineQuestionCircle } from "react-icons/ai";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  AiOutlineExclamationCircle,
+  AiOutlineQuestionCircle,
+} from "react-icons/ai";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import Link from "next/link";
+import { BiIdCard } from "react-icons/bi";
 
 const AccessForm: React.FC = () => {
   const router = useRouter(); // 👈 router hook
@@ -16,7 +25,10 @@ const AccessForm: React.FC = () => {
 
   const [batchCode, setBatchCode] = useState(["", "", "", ""]);
   const [rollSerial, setRollSerial] = useState("");
-  const [errors, setErrors] = useState<{ batchCode?: string; rollSerial?: string }>({});
+  const [errors, setErrors] = useState<{
+    batchCode?: string;
+    rollSerial?: string;
+  }>({});
 
   const handleBatchCodeChange = (
     index: number,
@@ -47,7 +59,10 @@ const AccessForm: React.FC = () => {
 
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const pasteData = e.clipboardData.getData("text").replace(/[^0-9]/g, "").slice(0, 4);
+    const pasteData = e.clipboardData
+      .getData("text")
+      .replace(/[^0-9]/g, "")
+      .slice(0, 4);
     if (pasteData.length === 4) {
       setBatchCode(pasteData.split(""));
       const lastInput = document.getElementById(`batchCode-3`);
@@ -64,7 +79,7 @@ const AccessForm: React.FC = () => {
       valid = false;
     }
     if (!rollSerial.trim()) {
-      newErrors.rollSerial = "Roll / Serial Number is required";
+      newErrors.rollSerial = "Unique Number is required";
       valid = false;
     }
 
@@ -83,9 +98,6 @@ const AccessForm: React.FC = () => {
         rollSerial,
       };
 
-      // console.log("👉 Submitting:", formData);
-
-      // 👇 Redirect with query params
       const query = new URLSearchParams(formData).toString();
       router.push(`/user?${query}`);
     } else {
@@ -96,6 +108,17 @@ const AccessForm: React.FC = () => {
   return (
     <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <div className="w-full md:max-w-xl flex flex-col bg-white md:rounded-3xl md:shadow-lg sm:p-8 md:py-20">
+        {/* ✅ Logo Header */}
+        <div className="flex justify-center mb-8">
+          <Link
+            href="/"
+            className="flex items-center text-[#4A61E4] space-x-2 font-bold text-lg"
+          >
+            <BiIdCard size={28} />
+            <span className="text-xl sm:text-2xl">AutoIDGen</span>
+          </Link>
+        </div>
+
         <form className="space-y-6" onSubmit={handleSubmit}>
           {/* Batch Code */}
           <div className="space-y-2">
@@ -109,7 +132,9 @@ const AccessForm: React.FC = () => {
                   id={`batchCode-${index}`}
                   type="text"
                   value={value}
-                  onChange={(e) => handleBatchCodeChange(index, e.target.value, e)}
+                  onChange={(e) =>
+                    handleBatchCodeChange(index, e.target.value, e)
+                  }
                   onPaste={index === 0 ? handlePaste : undefined}
                   className="h-12 w-1/4 px-2 bg-gray-100/80 rounded-lg text-center"
                   maxLength={1}
@@ -128,8 +153,11 @@ const AccessForm: React.FC = () => {
           <div>
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
-                <Label htmlFor="rollSerial" className="text-sm font-medium text-black">
-                  Serial Number
+                <Label
+                  htmlFor="rollSerial"
+                  className="text-sm font-medium text-black"
+                >
+                  Unique Number
                 </Label>
                 <Tooltip>
                   <TooltipTrigger>
@@ -139,7 +167,11 @@ const AccessForm: React.FC = () => {
                   </TooltipTrigger>
                   <TooltipContent>
                     <div className="max-w-[320px]">
-                      <span className="text-pretty">Serial Number is a way to keep each card unique. Institutions may use Student/Employee ID, Roll No., Card No., or Registration No. instead.</span>
+                      <span className="text-pretty">
+                        Unique number refers to Roll No., Registration No.,
+                        Student ID, Employee ID, etc., as assigned by your
+                        organization.
+                      </span>
                     </div>
                   </TooltipContent>
                 </Tooltip>
@@ -148,8 +180,10 @@ const AccessForm: React.FC = () => {
                 id="rollSerial"
                 type="text"
                 value={rollSerial}
-                onChange={(e) => setRollSerial(e.target.value.replace(/[^0-9]/g, ""))}
-                placeholder="Type Serial Number"
+                onChange={(e) =>
+                  setRollSerial(e.target.value.replace(/[^0-9]/g, ""))
+                }
+                placeholder="Type Unique Number"
                 className="h-12 px-4 bg-gray-100/80 rounded-lg"
                 inputMode="numeric"
                 pattern="[0-9]*"
@@ -160,7 +194,8 @@ const AccessForm: React.FC = () => {
             </div>
             <div>
               <p className="text-xs text-gray-700 mt-3 pl-2">
-                Serial Number simply means a unique reference (Roll, ID, Card, Reg. No.).
+                Unique number simply means an unique reference (Roll, ID, Card,
+                Reg. No.).
               </p>
             </div>
           </div>
@@ -173,8 +208,8 @@ const AccessForm: React.FC = () => {
             Access My Form
           </Button>
         </form>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 };
 

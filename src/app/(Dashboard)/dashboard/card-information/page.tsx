@@ -14,6 +14,7 @@ import { RootState } from "@/lib/store";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 
 export default function InstituteTemplateSetupPage() {
   const router = useRouter();
@@ -22,8 +23,6 @@ export default function InstituteTemplateSetupPage() {
   const [editingField, setEditingField] = useState<string | null>(null);
 
   const searchParams = useSearchParams();
-
-  // ProjectName state
   const [projectName, setProjectName] = useState("");
 
   useEffect(() => {
@@ -56,7 +55,6 @@ export default function InstituteTemplateSetupPage() {
       console.error("Error reading additionalFields from sessionStorage:", err);
     }
 
-    // Default fields
     return [
       { fieldName: "Department", defaultValue: "" },
       { fieldName: "Roll Number", defaultValue: "" },
@@ -64,6 +62,11 @@ export default function InstituteTemplateSetupPage() {
       { fieldName: "Date of Birth", defaultValue: "" },
       { fieldName: "Phone", defaultValue: "" },
     ];
+  });
+
+  const [successModal, setSuccessModal] = useState<{ open: boolean; batchId?: string }>({
+    open: false,
+    batchId: "",
   });
 
   useEffect(() => {
@@ -146,7 +149,6 @@ export default function InstituteTemplateSetupPage() {
     }
   }, []);
 
-  // Sync additionalFields defaultValues with formData on mount
   useEffect(() => {
     const fieldKeys = ["department", "rollNumber", "bloodGroup", "dateOfBirth", "phone"];
     setAdditionalFields((prev: any) =>
@@ -161,7 +163,7 @@ export default function InstituteTemplateSetupPage() {
 
   const handleAddField = () => {
     const newField = { fieldName: "New Field", defaultValue: "" };
-    const newKey = `customField${additionalFields.length}`; // Unique key for new field
+    const newKey = `customField${additionalFields.length}`;
     setAdditionalFields((prev: any) => [...prev, newField]);
     setFormData((prev: any) => ({
       ...prev,
@@ -173,7 +175,7 @@ export default function InstituteTemplateSetupPage() {
   };
 
   const handleRemoveField = (index: number) => {
-    if (additionalFields.length <= 3) {
+    if (additionalFields.length <= 1) {
       toast.error("At least one additional field is required.");
       return;
     }
@@ -195,10 +197,6 @@ export default function InstituteTemplateSetupPage() {
     });
     toast.success("Field removed successfully!");
   };
-
-  // console.log(additionalFields)
-  // console.log(additionalFields[2].fieldName)
-  // console.log(additionalFields[2].defaultValue)
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev: any) => ({ ...prev, [field]: value }));
@@ -250,7 +248,7 @@ export default function InstituteTemplateSetupPage() {
 
     const payload = {
       userId: user.userId,
-      projectName: projectName,
+      projectName,
       templateId,
       institutionName: formData.instituteName,
       cardType: formData.idCardType,
@@ -271,19 +269,17 @@ export default function InstituteTemplateSetupPage() {
         className: "bg-blue-600 text-white font-semibold text-center shadow-lg",
       });
 
-      await createProject(payload).unwrap();
+      const res = await createProject(payload).unwrap();
 
-      toast.success("🎉 Project created successfully!", {
-        id: toastId,
-        duration: 6000,
-      });
+      toast.dismiss(toastId);
+
+      // ✅ Open success modal instead of redirecting immediately
+      setSuccessModal({ open: true, batchId: res.data.batchId });
 
       sessionStorage.removeItem("formData");
       sessionStorage.removeItem("selectedCard");
       sessionStorage.removeItem("additionalFields");
       sessionStorage.removeItem("cardOrientation");
-
-      router.push("/dashboard");
     } catch (err: any) {
       const errorMessage =
         err?.data?.message || err?.error || "❌ Failed to create project. Please try again.";
@@ -408,164 +404,210 @@ export default function InstituteTemplateSetupPage() {
   };
 
   return (
-    <>
-      <div className="min-h-screen bg-background">
-        <DashboardHeader />
+    <div className="min-h-screen bg-background">
+      <DashboardHeader />
 
-        <main className="container mx-auto px-6 py-12">
-          <div className="max-w-full mx-auto">
-            <h1 className="text-2xl font-bold text-gray-900 mb-8">Contact Info Field Selection</h1>
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="max-w-full mx-auto">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8">
+            Contact Info Field Selection
+          </h1>
 
-            <div className="grid lg:grid-cols-2 gap-8">
-              {/* Form Section */}
-              <div>
-                <div className="mb-6">
-                  <div className="grid grid-cols-2 gap-5">
-                    <div className="flex items-center gap-2 mb-2">
-                      <label className="block text-base font-medium text-gray-800">Name</label>
-                      <span className="text-xs text-gray-500 ml-2">(Fixed)</span>
-                    </div>
-                    {additionalFields.map((field: any, index: number) => (
-                      <div key={index}>
-                        {/* Editable Field Name */}
-                        <div className="flex items-center gap-2 mb-2">
-                          {editingField === `fieldName-${index}` ? (
-                            <Input
-                              type="text"
-                              value={field.fieldName}
-                              onChange={(e) => handleFieldNameChange(index, e.target.value)}
-                              onBlur={() => setEditingField(null)}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") setEditingField(null);
-                              }}
-                              autoFocus
-                              className="h-8"
-                            />
-                          ) : (
-                            <>
-                              <label className="block text-base font-medium text-gray-800">
-                                {field.fieldName}
-                              </label>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-6 w-6"
-                                onClick={() => setEditingField(`fieldName-${index}`)}
-                              >
-                                <Pencil className="h-3 w-3" />
-                              </Button>
-                            </>
-                          )}
-                        </div>
-
-                        {/* Editable Default Value */}
-                        <div className="flex items-center gap-2 mb-2">
-                          {editingField === `defaultValue-${index}` ? (
-                            <Input
-                              type="text"
-                              value={field.defaultValue}
-                              onChange={(e) => handleDefaultValueChange(index, e.target.value)}
-                              onBlur={() => setEditingField(null)}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") setEditingField(null);
-                              }}
-                              autoFocus
-                              className="h-8 bg-gray-200 border border-gray-600"
-                            />
-                          ) : (
-                            <>
-                              <Input
-                                type="text"
-                                value={field.defaultValue || ""}
-                                disabled
-                                className="h-8 text-gray-700 bg-gray-200"
-                              />
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-6 w-6"
-                                onClick={() => setEditingField(`defaultValue-${index}`)}
-                              >
-                                <Pencil className="h-3 w-3" />
-                              </Button>
-                            </>
-                          )}
-                        </div>
-
-                        {/* Remove Button */}
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          className="mt-2"
-                          onClick={() => handleRemoveField(index)}
-                          disabled={additionalFields.length <= 1}
-                        >
-                          Remove
-                        </Button>
-                      </div>
-                    ))}
+          <div className="flex flex-col lg:flex-row lg:gap-8">
+            {/* Form Section */}
+            <div className="w-full lg:w-1/2 space-y-6">
+              <div className="grid grid-cols-2 space-y-4 space-x-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <label className="text-sm sm:text-base font-medium text-gray-800">Name</label>
+                    <span className="text-xs text-gray-500">(Fixed)</span>
                   </div>
-
-                  {/* Add Field Button */}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="mt-4"
-                    onClick={handleAddField}
-                  >
-                    Add Field
-                  </Button>
                 </div>
+                {additionalFields.map((field: any, index: number) => (
+                  <div key={index} className="space-y-2">
+                    {/* Editable Field Name */}
+                    <div className="flex items-center gap-2">
+                      {editingField === `fieldName-${index}` ? (
+                        <Input
+                          type="text"
+                          value={field.fieldName}
+                          onChange={(e) => handleFieldNameChange(index, e.target.value)}
+                          onBlur={() => setEditingField(null)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") setEditingField(null);
+                          }}
+                          autoFocus
+                          className="h-10 sm:h-12 text-sm sm:text-base"
+                        />
+                      ) : (
+                        <>
+                          <label className="text-sm sm:text-base font-medium text-gray-800">
+                            {field.fieldName}
+                          </label>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 sm:h-9 sm:w-9 p-0"
+                            onClick={() => setEditingField(`fieldName-${index}`)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        </>
+                      )}
+                    </div>
 
-                <div className="flex gap-4 mt-8">
-                  <Button
-                    onClick={handlePrevious}
-                    className="flex-1 h-14 text-gray-600 border border-gray-300 rounded-xl text-lg font-medium bg-white hover:bg-gray-100 hover:text-gray-900"
-                  >
-                    Previous
-                  </Button>
-                  <Button
-                    onClick={() => setIsModalOpen(true)}
-                    className="flex-1 h-14 bg-[#4A61E4] hover:bg-[#4A61E6] text-white text-lg rounded-xl font-medium"
-                  >
-                    Next
-                  </Button>
-                </div>
+                    {/* Editable Default Value */}
+                    <div className="flex items-center gap-2">
+                      {editingField === `defaultValue-${index}` ? (
+                        <Input
+                          type="text"
+                          value={field.defaultValue || ""}
+                          onChange={(e) => handleDefaultValueChange(index, e.target.value)}
+                          onBlur={() => setEditingField(null)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") setEditingField(null);
+                          }}
+                          autoFocus
+                          className="h-10 sm:h-12 bg-gray-200 border border-gray-600 text-sm sm:text-base"
+                        />
+                      ) : (
+                        <>
+                          <Input
+                            type="text"
+                            value={field.defaultValue || ""}
+                            disabled
+                            className="h-10 sm:h-12 text-sm sm:text-base text-gray-700 bg-gray-200"
+                          />
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 sm:h-9 sm:w-9 p-0"
+                            onClick={() => setEditingField(`defaultValue-${index}`)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Remove Button */}
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="h-9 sm:h-10 text-sm w-full sm:w-auto"
+                      onClick={() => handleRemoveField(index)}
+                      disabled={additionalFields.length <= 1}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                ))}
+
+                {/* Add Field Button */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-9 sm:h-10 text-sm w-full sm:w-auto mt-4"
+                  onClick={handleAddField}
+                >
+                  Add Field
+                </Button>
               </div>
 
-              {/* Right Preview Section */}
-              <div className="flex flex-col items-center justify-start -mt-10">
-                <div className="mb-4">
-                  <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">Preview</h2>
-                  <div className="flex justify-center mb-2">
-                    <div className="bg-gray-100 p-1 rounded-lg flex">
-                      <button
-                        className="px-4 py-2 rounded-md text-sm font-medium transition-all bg-white text-gray-900 shadow-sm"
-                      >
-                        {cardOrientation === "vertical" ? "Vertical" : "Horizontal"} Layout
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <Card className="p-4 bg-white border-none shadow-none">
-                  <div className="w-full mx-auto flex justify-center">
-                    <div className={cardOrientation === "vertical" ? "scale-90" : "scale-100"}>
-                      {renderCard()}
-                    </div>
-                  </div>
-                </Card>
+              <div className="flex flex-col sm:flex-row gap-3 mt-6 sm:mt-8">
+                <Button
+                  onClick={handlePrevious}
+                  variant="outline"
+                  className="flex-1 h-10 sm:h-12 text-sm sm:text-base text-gray-600 border-gray-300 rounded-lg font-medium hover:bg-gray-100 hover:text-gray-900"
+                >
+                  Previous
+                </Button>
+                <Button
+                  onClick={() => setIsModalOpen(true)}
+                  className="flex-1 h-10 sm:h-12 text-sm sm:text-base bg-[#4A61E4] hover:bg-[#4A61E6] text-white rounded-lg font-medium"
+                >
+                  Next
+                </Button>
               </div>
             </div>
+
+            {/* Right Preview Section */}
+            <div className="w-full lg:w-1/2 space-y-6 mt-6 lg:mt-0">
+              <div>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 text-center mb-4">
+                  Preview
+                </h2>
+                <div className="flex justify-center mb-4">
+                  <div className="bg-gray-100 p-1 rounded-lg flex">
+                    <button
+                      className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-all ${cardOrientation === "horizontal"
+                        ? "bg-white text-gray-900 shadow-sm"
+                        : "text-gray-600 hover:text-gray-900"
+                        }`}
+                      onClick={() => setCardOrientation("horizontal")}
+                    >
+                      Horizontal
+                    </button>
+                    <button
+                      className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-all ${cardOrientation === "vertical"
+                        ? "bg-white text-gray-900 shadow-sm"
+                        : "text-gray-600 hover:text-gray-900"
+                        }`}
+                      onClick={() => setCardOrientation("vertical")}
+                    >
+                      Vertical
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <Card className="p-4 bg-white border-none shadow-none">
+                <div className="w-full flex justify-center">
+                  <div className={cardOrientation === "vertical" ? "scale-[0.85] sm:scale-90" : "scale-100"}>
+                    {renderCard()}
+                  </div>
+                </div>
+              </Card>
+            </div>
           </div>
-        </main>
-      </div>
+        </div>
+      </main>
 
       <CardQuantityModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onGenerate={handleGenerateProject}
       />
-    </>
+
+      {successModal.open && (
+        <Dialog open={successModal.open} onOpenChange={() => setSuccessModal({ open: false })}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-green-600 text-lg font-bold">
+                🎉 Project Created Successfully!
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3 text-center">
+              <p className="text-gray-700">Your project has been created successfully.</p>
+              <p className="text-lg font-semibold text-blue-600">
+                Batch ID: <span className="text-foreground">{successModal.batchId}</span>
+              </p>
+            </div>
+            <DialogFooter className="flex justify-center gap-4">
+              <Button
+                className="bg-blue-600 text-white hover:bg-blue-700"
+                onClick={() => {
+                  setSuccessModal({ open: false });
+                  router.push("/dashboard");
+                }}
+              >
+                Go to Dashboard
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+    </div>
+
   );
 }

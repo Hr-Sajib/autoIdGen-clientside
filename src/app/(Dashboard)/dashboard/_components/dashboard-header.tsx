@@ -21,7 +21,7 @@ export function DashboardHeader() {
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Mobile: Show AutoIDGen branding */}
-            <div className="md:hidden flex items-center gap-2 ml-12">
+            <div className="md:hidden flex items-center gap-2 ml-4 md:ml-12">
               <Link href="/" className="flex items-center text-[#4A61E4] space-x-2 font-bold text-lg">
                 <span><BiIdCard size={30} /></span>
                 <span className="text-[20px]">AutoIDGen</span>
@@ -36,8 +36,8 @@ export function DashboardHeader() {
 
             <Button
               onClick={() => setIsModalOpen(true)}
-              className="bg-white hover:bg-blue-600 text-blue-600 hover:text-white font-bold border-2 border-blue-600 px-2 flex">
-              <Plus className="mr-0 h-4 w-4" />
+              className="bg-white hover:bg-blue-600 text-blue-600 hover:text-white text-xs md:text-base font-bold border md:border-2 border-blue-600 p-0 md:px-2 flex">
+              <Plus className="mr-0 h-2 w-2" />
               New Project
             </Button>
           </div>

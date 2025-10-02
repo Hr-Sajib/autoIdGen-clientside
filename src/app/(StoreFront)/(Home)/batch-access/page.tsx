@@ -159,7 +159,7 @@ const AccessForm: React.FC = () => {
                 >
                   Unique Number
                 </Label>
-                <Tooltip>
+                {/* <Tooltip>
                   <TooltipTrigger>
                     <span className="inset-y-0 right-0 flex items-center pr-3">
                       <AiOutlineQuestionCircle className="h-5 w-5 text-red-500 cursor-help" />
@@ -174,7 +174,7 @@ const AccessForm: React.FC = () => {
                       </span>
                     </div>
                   </TooltipContent>
-                </Tooltip>
+                </Tooltip> */}
               </div>
               <Input
                 id="rollSerial"
@@ -194,8 +194,7 @@ const AccessForm: React.FC = () => {
             </div>
             <div>
               <p className="text-xs text-gray-700 mt-3 pl-2">
-                Unique number simply means an unique reference (Roll, ID, Card,
-                Reg. No.).
+                Unique number refers to Roll No., Registration No., Student ID, Employee ID, etc., as assigned by your organization.
               </p>
             </div>
           </div>

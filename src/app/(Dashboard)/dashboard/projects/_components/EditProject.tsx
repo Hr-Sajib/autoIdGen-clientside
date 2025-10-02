@@ -143,7 +143,7 @@ export function EditProject({ isOpen, onClose, onSubmit, initialData }: EditProj
               name="batchId"
               value={formData.batchId}
               onChange={handleChange}
-              placeholder="Batch ID"
+              placeholder="Batch Code"
               className='bg-gray-100'
             />
           </div>

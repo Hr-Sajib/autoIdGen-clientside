@@ -636,13 +636,38 @@ const UserCardWithForm: React.FC = () => {
     setProfileUrl(PLACEHOLDER_IMAGE);
   };
 
-  const handleTakePhoto = async () => {
+  // const handleTakePhoto = async () => {
+  //   try {
+  //     console.log("📷 Requesting webcam...");
+  //     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+  //     streamRef.current = stream;
+  //     setShowWebcam(true);
+  //     if (videoRef.current) videoRef.current.srcObject = stream;
+  //   } catch (err) {
+  //     console.log("⚠️ Webcam failed, using file input");
+  //     fileInputRef.current?.click();
+  //   }
+  // };
+
+
+
+
+
+   const handleTakePhoto = async () => {
     try {
       console.log("📷 Requesting webcam...");
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'user' } 
+      });
       streamRef.current = stream;
       setShowWebcam(true);
-      if (videoRef.current) videoRef.current.srcObject = stream;
+      
+      // Wait for next tick to ensure video element is rendered
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      }, 100);
     } catch (err) {
       console.log("⚠️ Webcam failed, using file input");
       fileInputRef.current?.click();
@@ -1165,10 +1190,10 @@ const UserCardWithForm: React.FC = () => {
                 onClick={handleSaveData}
                 disabled={isAnyLoading}
               >
-                {isSaving ? "⏳ Generating..." : (
+                {isSaving ? "⏳ Submitting..." : (
                   <>
-                    <Image src={DownloadImage} width={20} height={20} alt="Download" />
-                    Download
+                    <Image src={DownloadImage} width={20} height={20} alt="Submit" />
+                    Submit
                   </>
                 )}
               </Button>

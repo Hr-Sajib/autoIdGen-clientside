@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { parse } from "path";
 
 export default function InstituteTemplateSetupPage() {
   const router = useRouter();
@@ -29,6 +30,8 @@ export default function InstituteTemplateSetupPage() {
     const queryProject = searchParams.get("project");
     const savedFormData = sessionStorage.getItem("formData");
 
+    console.log ("id card type =========>",  idCardType);
+
     if (queryProject) {
       setProjectName(queryProject);
     } else if (savedFormData) {
@@ -37,6 +40,9 @@ export default function InstituteTemplateSetupPage() {
         if (parsed.project) {
           setProjectName(parsed.project);
         }
+        // if (parsed.idCardType){
+        //   console.log("parsed id card type =========>", parsed.idCardType);
+        // }
       } catch (err) {
         console.error("❌ Error parsing formData:", err);
       }
@@ -410,7 +416,7 @@ export default function InstituteTemplateSetupPage() {
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="max-w-full mx-auto">
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8">
-            Contact Info Field Selection
+            {idCardType === "employee" ? "Employee Information Form" : "Student Information Form"  }
           </h1>
 
           <div className="flex flex-col lg:flex-row lg:gap-8">
@@ -590,7 +596,7 @@ export default function InstituteTemplateSetupPage() {
             <div className="space-y-3 text-center">
               <p className="text-gray-700">Your project has been created successfully.</p>
               <p className="text-lg font-semibold text-blue-600">
-                Batch ID: <span className="text-foreground">{successModal.batchId}</span>
+                Batch Code: <span className="text-foreground">{successModal.batchId}</span>
               </p>
             </div>
             <DialogFooter className="flex justify-center gap-4">

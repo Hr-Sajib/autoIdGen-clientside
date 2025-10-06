@@ -419,7 +419,7 @@ export default function InstituteTemplateSetupPage() {
             {idCardType === "employee" ? "Employee Information Form" : "Student Information Form"  }
           </h1>
 
-          <div className="flex flex-col lg:flex-row lg:gap-8">
+          <div className="flex flex-col-reverse gap-10 lg:flex-row lg:gap-8">
             {/* Form Section */}
             <div className="w-full lg:w-1/2 space-y-6">
               <div className="grid grid-cols-2 space-y-4 space-x-4">

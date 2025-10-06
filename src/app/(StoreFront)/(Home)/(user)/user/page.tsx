@@ -2,7 +2,7 @@ import UserCardWithForm from './_components/UserCardWithForm';
 
 const page = () => {
     return (
-        <div>
+        <div className=''>
             {/* <UserDashboardHeader/> */}
             {/* <StudentFormPage/> */}
 

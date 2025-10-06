@@ -333,7 +333,7 @@ export default function InstituteTemplateSetupPage() {
 
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="max-w-full mx-auto">
-          <div className="flex flex-col lg:flex-row lg:gap-8">
+          <div className="flex flex-col-reverse gap-10  lg:flex-row lg:gap-8">
             {/* Left Form Section */}
             <div className="w-full lg:w-1/2 space-y-6">
               <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">

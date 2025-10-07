@@ -1,16 +1,19 @@
+
+
 // import baseApi from "@/lib/api/baseApi";
 
 // const authApi = baseApi.injectEndpoints({
 //     endpoints: (builder) => ({
+//         // ✅ Login endpoint - existing
 //         logIn: builder.mutation({
 //             query: ({ email, password }) => ({
 //                 url: "/auth/login",
 //                 method: "POST",
 //                 body: { email, password },
 //             }),
-
 //         }),
 
+//         // ✅ Register endpoint - existing
 //         register: builder.mutation({
 //             query: (formData) => ({
 //                 url: "/user",
@@ -19,6 +22,7 @@
 //             }),
 //         }),
 
+//         // ✅ Old forgot password endpoint - existing (kept for backward compatibility)
 //         forgatPassword: builder.mutation({
 //             query: ({ email, password }) => {
 //                 return {
@@ -29,6 +33,7 @@
 //             },
 //         }),
 
+//         // ✅ Old reset password endpoint - existing (kept for backward compatibility)
 //         resetPassword: builder.mutation({
 //             query: ({ userId, token, password }) => ({
 //                 url: "/auth/reset-password",
@@ -43,15 +48,37 @@
 //             }),
 //         }),
 
+//         // ✅ NEW: Send OTP for password reset
+//         sendResetOtp: builder.mutation({
+//             query: ({ email }) => ({
+//                 url: "/user/send-reset-otp",
+//                 method: "POST",
+//                 body: { email },
+//             }),
+//         }),
+
+//         // ✅ NEW: Reset password with OTP confirmation
+//         resetPasswordOtp: builder.mutation({
+//             query: ({ email, otp, newPassword }) => ({
+//                 url: "/user/reset-password-otp",
+//                 method: "POST",
+//                 body: { 
+//                     email, 
+//                     otp,
+//                     newPassword 
+//                 },
+//             }),
+//         }),
+
+//         // ✅ Get current user - existing
 //         getMeUser: builder.query({
 //             query: () => ({
 //                 url: "/auth/get-me",
 //                 method: "GET",
-
 //             }),
-
 //         }),
 
+//         // ✅ Change password - existing
 //         changePassword: builder.mutation({
 //             query: (data) => ({
 //                 url: "/auth/change-password",
@@ -59,25 +86,30 @@
 //                 body: data,
 //             }),
 //         }),
-
-
 //     }),
 //     overrideExisting: true,
 // });
 
+// // ✅ Export all hooks including new ones
 // export const { 
 //     useLogInMutation,
 //     useRegisterMutation,
 //     useForgatPasswordMutation,
 //     useGetMeUserQuery,
 //     useChangePasswordMutation,
-//     useResetPasswordMutation } = authApi;
+//     useResetPasswordMutation,
+//     useSendResetOtpMutation,       
+//     useResetPasswordOtpMutation,    
+// } = authApi;
 
 
 
 
 
 
+
+
+// lib/feature/Auth/authApi.ts
 
 import baseApi from "@/lib/api/baseApi";
 
@@ -101,18 +133,15 @@ const authApi = baseApi.injectEndpoints({
             }),
         }),
 
-        // ✅ Old forgot password endpoint - existing (kept for backward compatibility)
+        // ✅ Old forgot password endpoint - existing (optional)
         forgatPassword: builder.mutation({
-            query: ({ email, password }) => {
-                return {
-                    url: "/auth/forgot-password",
-                    method: "POST",
-                    body: { email, password }
-                };
-            },
+            query: ({ email, password }) => ({
+                url: "/auth/forgot-password",
+                method: "POST",
+                body: { email, password }
+            }),
         }),
 
-        // ✅ Old reset password endpoint - existing (kept for backward compatibility)
         resetPassword: builder.mutation({
             query: ({ userId, token, password }) => ({
                 url: "/auth/reset-password",
@@ -127,29 +156,27 @@ const authApi = baseApi.injectEndpoints({
             }),
         }),
 
-        // ✅ NEW: Send OTP for password reset
-        sendResetOtp: builder.mutation({
-            query: ({ email }) => ({
-                url: "/user/send-reset-otp",
-                method: "POST",
-                body: { email },
-            }),
-        }),
+        // ✅ ❌ OTP APIs — Now commented
+        // sendResetOtp: builder.mutation({
+        //     query: ({ email }) => ({
+        //         url: "/user/send-reset-otp",
+        //         method: "POST",
+        //         body: { email },
+        //     }),
+        // }),
 
-        // ✅ NEW: Reset password with OTP confirmation
-        resetPasswordOtp: builder.mutation({
-            query: ({ email, otp, newPassword }) => ({
-                url: "/user/reset-password-otp",
-                method: "POST",
-                body: { 
-                    email, 
-                    otp,
-                    newPassword 
-                },
-            }),
-        }),
+        // resetPasswordOtp: builder.mutation({
+        //     query: ({ email, otp, newPassword }) => ({
+        //         url: "/user/reset-password-otp",
+        //         method: "POST",
+        //         body: { 
+        //             email, 
+        //             otp,
+        //             newPassword 
+        //         },
+        //     }),
+        // }),
 
-        // ✅ Get current user - existing
         getMeUser: builder.query({
             query: () => ({
                 url: "/auth/get-me",
@@ -157,7 +184,6 @@ const authApi = baseApi.injectEndpoints({
             }),
         }),
 
-        // ✅ Change password - existing
         changePassword: builder.mutation({
             query: (data) => ({
                 url: "/auth/change-password",
@@ -169,7 +195,7 @@ const authApi = baseApi.injectEndpoints({
     overrideExisting: true,
 });
 
-// ✅ Export all hooks including new ones
+// ✅ Updated Export (removed commented hooks)
 export const { 
     useLogInMutation,
     useRegisterMutation,
@@ -177,6 +203,7 @@ export const {
     useGetMeUserQuery,
     useChangePasswordMutation,
     useResetPasswordMutation,
-    useSendResetOtpMutation,        // ✅ NEW: Hook for sending OTP
-    useResetPasswordOtpMutation,    // ✅ NEW: Hook for resetting password with OTP
+    // ❌ Removed
+    // useSendResetOtpMutation,       
+    // useResetPasswordOtpMutation,    
 } = authApi;

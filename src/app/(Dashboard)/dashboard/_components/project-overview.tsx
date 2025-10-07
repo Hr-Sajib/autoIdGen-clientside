@@ -114,6 +114,11 @@ export function ProjectOverview() {
     }
   }
 
+
+
+
+
+
   if (isLoading) {
     return <Loading />
   }
@@ -245,7 +250,8 @@ export function ProjectOverview() {
                         <h3 className="font-bold text-sm text-foreground">{project.projectName}</h3>
                         <p className="text-xs text-muted-foreground">{project.institutionName}</p>
                       </div>
-                      <div className="flex gap-1">
+                      <div className="flex gap-1"> 
+
                         <Button
                           variant="ghost"
                           size="sm"

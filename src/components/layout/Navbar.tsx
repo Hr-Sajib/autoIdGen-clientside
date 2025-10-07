@@ -1,8 +1,12 @@
 "use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { BiIdCard } from "react-icons/bi";
 
+
 export default function Navbar() {
+  const pathname = usePathname();
+  const isHomeath= pathname === "/"
   return (
     <nav className="bg-[#4A61E4] text-white">
       <div className="max-w-7xl mx-auto 
@@ -17,9 +21,9 @@ export default function Navbar() {
 
           {/* Center - Links */}
           <div className="flex space-x-8 text-[18px]">
-            <a href="#features" className="hover:opacity-80">Features</a>
-            <a href="#how-it-works" className="hover:opacity-80">How It Works</a>
-            <a href="/verify" className="hover:opacity-80">Verify ID Card</a>
+            <Link href={isHomeath ? "#features" : '/'}className="hover:opacity-80">Features</Link>
+            <Link href={isHomeath? "#how-it-works":'/'} className="hover:opacity-80">How It Works</Link>
+            <Link href="/verify" className="hover:opacity-80">Verify ID Card</Link>
           </div>
 
           {/* Right - Button */}
@@ -34,9 +38,9 @@ export default function Navbar() {
         <div className="flex flex-col md:hidden py-4 space-y-4">
           {/* Top - Links */}
           <div className="flex justify-center space-x-8 text-[clamp(12px,2vw,14px)]">
-            <a href="#features" className="hover:opacity-80">Features</a>
-            <a href="#how-it-works" className="hover:opacity-80">How It Works</a>
-            <a href="/verify" className="hover:opacity-80">Verify ID Card</a>
+          <Link href={isHomeath?"#features":'/'} className="hover:opacity-80">Features</Link>
+            <Link href={isHomeath?"#how-it-works":'/'} className="hover:opacity-80">How It Works</Link>
+            <Link href="/verify" className="hover:opacity-80">Verify ID Card</Link>
           </div>
 
           {/* Bottom - Logo + Button */}

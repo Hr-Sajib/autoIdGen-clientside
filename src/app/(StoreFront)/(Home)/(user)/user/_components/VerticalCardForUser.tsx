@@ -97,7 +97,27 @@ const VerticalCardForUser: React.FC<VerticalCardProps> = ({
         </p>
 
         {/* Dynamic Student Info */}
-        <div className="absolute top-[47%] left-[37%] w-[50%] flex text-white text-[6px] md:text-[8px] lg:text-[14px] xl:text-[16px]">
+        <div className="absolute top-[47%] left-[27%] w-[50%] flex text-white text-[6px] md:text-[8px] lg:text-[14px] xl:text-[16px]">
+          <div className="flex w-max mx-auto">
+   <div className="w-max">
+    {fields.map((field) => (
+    <div key={field} className="w-max">
+      {/* Label */}
+      <span className="flex-1 text-left">
+        {field.replace(/([A-Z])/g, " $1")}
+      </span>
+     
+    </div>
+  ))}
+  </div>
+  <div className="w-max">
+     {fields.map((field) => (
+              <p className="pl-2" key={field}><span className="pr-2">:</span>  {values[field] || "-"}</p>
+            ))}
+  </div>
+ </div>
+        </div>
+        {/* <div className="absolute top-[47%] left-[37%] w-[50%] flex text-white text-[6px] md:text-[8px] lg:text-[14px] xl:text-[16px]">
           <div className="w-5/12 pr-2 space-y-0.5 ">
             {fields.map((field) => (
               <p key={field}>{field.replace(/([A-Z])/g, " $1")}</p>
@@ -108,7 +128,7 @@ const VerticalCardForUser: React.FC<VerticalCardProps> = ({
               <p key={field}>: {values[field] || "-"}</p>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* Signature */}
         {signatureUrl && (

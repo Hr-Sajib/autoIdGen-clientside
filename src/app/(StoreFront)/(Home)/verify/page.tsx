@@ -37,8 +37,8 @@ export default function VerifyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex justify-center items-center min-h-screen">
+    <div className=" bg-white">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex justify-center items-center ">
         <div className="w-full max-w-[90%] sm:max-w-2xl space-y-6">
           {/* Header */}
           <div className="text-center space-y-4">

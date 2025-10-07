@@ -806,9 +806,13 @@ const UserCardWithForm: React.FC = () => {
         console.log(existingCardData ? '🎉 Card updated successfully' : '🎉 New card created successfully');
       }, 1000); // Small delay to show success message
 
-    } catch (error) {
-      console.error('❌ Failed to save data:', error);
-      alert('Failed to save data. Please try again.');
+   } catch (error: unknown) {
+     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    console.error(`❌ Failed to save data: ${errorMessage}` );
+    alert(`Failed to save data. Error: ${errorMessage}`);
+    // } catch (error) {
+    //   console.error(' Failed to save data:', error);
+    //   alert('Failed to save data. error.' error?.message || "Failed to save data.");
     } finally {
       setIsSaving(false);
     }
@@ -951,7 +955,7 @@ const UserCardWithForm: React.FC = () => {
 
   if (existingCardData) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className=" bg-background">
         {/* Mobile: Show AutoIDGen branding */}
         {/* <div className="flex items-center gap-2 px-4 py-4">
           <Link href="/" className="flex items-center text-[#4A61E4] space-x-2 font-bold text-lg">
@@ -1037,7 +1041,7 @@ const UserCardWithForm: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className=" bg-background">
       {/* Mobile: Show AutoIDGen branding */}
       {/* <div className="md:hidden flex items-center gap-2 px-4 py-4">
         <Link href="/" className="flex items-center text-[#4A61E4] space-x-2 font-bold text-lg">

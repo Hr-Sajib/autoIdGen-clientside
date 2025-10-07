@@ -8,7 +8,7 @@ import TemplateSelection from "./(_components)/TemplateSection";
 
 export default function Home() {
   return (
-    <div className="bg-white min-h-screen h-full">
+    <div className="bg-white ">
       <Hero/>
       <RoleLogger/>
       <Features/>

@@ -64,7 +64,7 @@ export default function HeroButtons() {
   };
 
   return (
-    <div className="mt-8 flex justify-center">
+    <div className="mt-8 flex justify-center ">
       <div className="relative flex border border-white rounded-xl overflow-hidden w-max">
         {/* Sliding background */}
         <div
@@ -80,7 +80,7 @@ export default function HeroButtons() {
         {/* Buttons */}
         <button
           onClick={() => handleClick("student")}
-          className={`relative z-10 py-4 px-6 font-semibold transition-colors duration-300 ease-in-out ${
+          className={`relative z-10 py-4 px-6 cursor-pointer font-semibold transition-colors duration-300 ease-in-out ${
             selected === "student" ? "text-[#4A61E4]" : "text-white"
           }`}
         >
@@ -88,7 +88,7 @@ export default function HeroButtons() {
         </button>
         <button
           onClick={() => handleClick("employee")}
-          className={`relative z-10 py-4 px-6 font-semibold transition-colors duration-300 ease-in-out ${
+          className={`relative z-10 py-4 px-6 cursor-pointer font-semibold transition-colors duration-300 ease-in-out ${
             selected === "employee" ? "text-[#4A61E4]" : "text-white"
           }`}
         >

@@ -1007,7 +1007,7 @@ const handleTakePhoto = async () => {
       <div className={`container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 ${isAnyLoading ? 'blur-sm pointer-events-none' : ''}`}>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-0">
-            {projectData.cardType} Information
+            {projectData.cardType === "Student" ? "Student" : "Employee"} Information
           </h1>
         </div>
 
@@ -1022,6 +1022,34 @@ const handleTakePhoto = async () => {
 
         <div className="flex flex-col-reverse gap-10 lg:flex-row lg:gap-8">
           <div className="w-full lg:w-1/2 space-y-6">
+          <div className="flex flex-col sm:flex-row flex-wrap items-center gap-3 sm:gap-4 mt-6 sm:mt-8">
+
+ <label
+                className={`flex items-center justify-center border border-transparent hover:border-gray-300 rounded-xl px-4 sm:px-6 py-2 sm:py-3 cursor-pointer hover:bg-gray-50 transition ${isAnyLoading ? 'opacity-50 pointer-events-none' : ''}`}
+              >
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+                  disabled={isAnyLoading}
+                />
+                <span className="flex items-center gap-2 font-semibold text-sm sm:text-base">
+                  <Image className="" src={UploadImage} width={20} height={20} alt="Upload" />
+                  Upload Image
+                </span>
+              </label>
+
+              <button
+                onClick={handleTakePhoto}
+                disabled={isAnyLoading}
+                className="px-4 sm:px-6 py-2 sm:py-3 rounded-xl border border-transparent hover:border-gray-300 hover:bg-white hover:text-black flex gap-2 items-center font-semibold text-sm sm:text-base"
+              >
+                <IoCameraOutline size={20} className="text-xl sm:text-2xl" />
+                <span>Take Photo</span>
+              </button>
+
+          </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col space-y-2">
                 <label className="text-sm font-medium text-gray-700">
@@ -1078,33 +1106,10 @@ const handleTakePhoto = async () => {
             </div>
 
             <div className="flex flex-col sm:flex-row flex-wrap items-center gap-3 sm:gap-4 mt-6 sm:mt-8">
-              <label
-                className={`flex items-center justify-center border border-transparent hover:border-gray-300 rounded-xl px-4 sm:px-6 py-2 sm:py-3 cursor-pointer hover:bg-gray-50 transition ${isAnyLoading ? 'opacity-50 pointer-events-none' : ''}`}
-              >
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
-                  disabled={isAnyLoading}
-                />
-                <span className="flex items-center gap-2 font-semibold text-sm sm:text-base">
-                  <Image className="" src={UploadImage} width={20} height={20} alt="Upload" />
-                  Upload Image
-                </span>
-              </label>
-
-              <button
-                onClick={handleTakePhoto}
-                disabled={isAnyLoading}
-                className="px-4 sm:px-6 py-2 sm:py-3 rounded-xl border border-transparent hover:border-gray-300 hover:bg-white hover:text-black flex gap-2 items-center font-semibold text-sm sm:text-base"
-              >
-                <IoCameraOutline size={20} className="text-xl sm:text-2xl" />
-                <span>Take Photo</span>
-              </button>
+             
 
               <Button
-                className="bg-[#4A61E4] hover:bg-blue-700 py-2 sm:py-3 px-4 sm:px-7 rounded-xl text-white text-sm sm:text-base"
+                className="bg-[#4A61E4] w-full md:w-auto hover:bg-blue-700 py-2 sm:py-3 px-4 sm:px-7 rounded-xl text-white text-sm sm:text-base"
                 onClick={handleSaveData}
                 disabled={isAnyLoading}
               >

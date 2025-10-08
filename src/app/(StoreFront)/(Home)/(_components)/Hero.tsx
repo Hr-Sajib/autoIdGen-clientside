@@ -4,6 +4,7 @@ import Image from "next/image";
 import HeroImage from '@/../public/images/HeroImage.png'
 import TextureForHero from '@/../public/images/TextureForHero.png'
 import HeroButtons from "./HeroButtons";
+import { GiArrowCursor } from "react-icons/gi";
 // import { useRouter } from "next/navigation";
 
 export default function HeroSection() {
@@ -37,6 +38,7 @@ export default function HeroSection() {
         >
           Generate Id card
         </button> */}
+        <p className="mt-2 text-xs flex items-center text-gray-300 justify-center gap-2">Click here to generate your id card <span><GiArrowCursor size={15} /></span> </p>
     
 
 

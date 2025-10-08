@@ -71,6 +71,7 @@ import { RootState } from "@/lib/store";
 export default function Navbar() {
   const pathname = usePathname();
   const isHomeath = pathname === "/";
+  const isStudent = pathname.includes("user");
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
   return (
@@ -103,29 +104,35 @@ export default function Navbar() {
             >
               How It Works
             </Link>
-            <Link href="/verify" className="hover:opacity-80">
+            {!isStudent &&(
+              
+              <Link href="/verify" className="hover:opacity-80">
               Verify ID Card
             </Link>
+            )}
           </div>
 
           {/* Right - Conditional Button */}
-          <div>
+          {isStudent ? (<div></div>): (
+
+            <div>
             {isAuthenticated ? (
               <Link
-                href="/dashboard"
-                className="bg-white text-[#4A61E4] py-4 px-6 rounded-2xl font-medium hover:bg-gray-100 transition"
+              href="/dashboard"
+              className="bg-white text-[#4A61E4] py-4 px-6 rounded-2xl font-medium hover:bg-gray-100 transition"
               >
                 Dashboard
               </Link>
             ) : (
               <Link
-                href="/login"
-                className="bg-white text-[#4A61E4] py-4 px-6 rounded-2xl font-medium hover:bg-gray-100 transition"
+              href="/login"
+              className="bg-white text-[#4A61E4] py-4 px-6 rounded-2xl font-medium hover:bg-gray-100 transition"
               >
                 Log In
               </Link>
             )}
           </div>
+            )}
         </div>
 
         {/* Mobile layout */}

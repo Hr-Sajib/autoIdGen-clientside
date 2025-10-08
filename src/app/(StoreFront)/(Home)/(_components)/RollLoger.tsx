@@ -8,7 +8,7 @@ export default function RoleLogger() {
   const role = useSelector((state: RootState) => state.role.selected);
 
   useEffect(() => {
-    console.log("Selected role:", role);
+    // console.log("Selected role:", role);
   }, [role]);
 
   return null; // you don’t need to render anything

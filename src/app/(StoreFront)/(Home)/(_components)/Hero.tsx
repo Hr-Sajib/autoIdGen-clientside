@@ -4,10 +4,10 @@ import Image from "next/image";
 import HeroImage from '@/../public/images/HeroImage.png'
 import TextureForHero from '@/../public/images/TextureForHero.png'
 import HeroButtons from "./HeroButtons";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 export default function HeroSection() {
-   const router = useRouter();
+  //  const router = useRouter();
   
 
   return (
@@ -29,14 +29,14 @@ export default function HeroSection() {
 
         {/* Buttons */}
 
-        {/* <HeroButtons /> */}
-         <button
+        <HeroButtons />
+         {/* <button
          onClick={ () => router.push("/batch-access")}
           // onClick={() => handleClick("employee")}
           className=" py-4 px-6 font-semibold transition-colors duration-300 ease-in-out border rounded-2xl mt-10 hover:bg-white/50 hover:text-[#4A61E4] cursor-pointer"
         >
           Generate Id card
-        </button>
+        </button> */}
     
 
 

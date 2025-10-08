@@ -183,7 +183,7 @@ export default function SelectCardPage() {
 
       <main className="container mx-auto px-6 py-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-8 text-center">
-          Select Card for <span className="text-blue-600">{projectName}</span>
+          Select Card type for <span className="text-blue-600">{projectName}</span>
         </h1>
 
         <div className="flex flex-col items-center justify-center space-y-6">

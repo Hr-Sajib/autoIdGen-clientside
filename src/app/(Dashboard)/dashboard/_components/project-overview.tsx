@@ -345,12 +345,12 @@ export function ProjectOverview() {
             </div>
             <h3 className="text-base sm:text-lg font-medium text-foreground mb-2">No projects yet</h3>
             <p className="text-sm text-muted-foreground mb-4">Get started by creating your first ID card project</p>
-            <Button className="bg-blue-600 text-white hover:bg-blue-700 text-sm px-3 py-1 sm:px-4 sm:py-2">
+            {/* <Button className="bg-blue-600 text-white hover:bg-blue-700 text-sm px-3 py-1 sm:px-4 sm:py-2">
               <svg className="mr-1 sm:mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
               Create Project
-            </Button>
+            </Button> */}
           </div>
         )}
       </CardContent>

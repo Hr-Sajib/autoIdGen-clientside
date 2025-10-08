@@ -4,7 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {jwtDecode} from "jwt-decode";
 
 // 🔹 localStorage থেকে token get করা
-const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+const token = window && typeof window !== "undefined" ? localStorage.getItem("token") : null;
 // console.log("Initial token from localStorage:", token);
 
 // 🔹 যদি token থাকে, decode করে user বের করা

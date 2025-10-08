@@ -544,7 +544,7 @@ export default function InstituteTemplateSetupPage() {
                   Preview
                 </h2>
                 <div className="flex justify-center mb-4">
-                  <div className="bg-gray-100 p-1 rounded-lg flex">
+                  {/* <div className="bg-gray-100 p-1 rounded-lg flex">
                     <button
                       className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-all ${cardOrientation === "horizontal"
                         ? "bg-white text-gray-900 shadow-sm"
@@ -563,7 +563,7 @@ export default function InstituteTemplateSetupPage() {
                     >
                       Vertical
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 

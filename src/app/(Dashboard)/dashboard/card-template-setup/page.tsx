@@ -756,6 +756,9 @@ export default function InstituteTemplateSetupPage() {
   const [form, setForm] = useState<any>({});
   const [showSignatureModal, setShowSignatureModal] = useState(false);
   const [tempSignatureImage, setTempSignatureImage] = useState<string | null>(null);
+  // New state to track file uploads
+  const [isLogoUploaded, setIsLogoUploaded] = useState(false);
+  const [isSignatureUploaded, setIsSignatureUploaded] = useState(false);
 
   // Determine if it's an employee-like card (not Student)
   const isEmployeeCard = cardType.toLowerCase() !== "student"
@@ -785,6 +788,9 @@ export default function InstituteTemplateSetupPage() {
         whoseSign: parsedData.whoseSign || "",
         cardOrientation: parsedData.cardOrientation || "horizontal",
       });
+      // Set upload states based on saved data
+      setIsLogoUploaded(!!parsedData.logoUrl);
+      setIsSignatureUploaded(!!parsedData.signatureUrl);
     }
   }, [cardType, projectName]);
 
@@ -814,6 +820,10 @@ export default function InstituteTemplateSetupPage() {
         toast.dismiss()
         if (uploadedUrl) {
           setForm({ ...form, [field]: uploadedUrl })
+          // Update upload state for logo
+          if (field === "logoUrl") {
+            setIsLogoUploaded(true);
+          }
           toast.success("Image uploaded successfully!", { duration: 4000 })
         } else {
           toast.error("Failed to upload image", {
@@ -838,6 +848,7 @@ export default function InstituteTemplateSetupPage() {
   const handleSignatureSave = (processedImageUrl: string) => {
     setForm({ ...form, signatureUrl: processedImageUrl });
     setTempSignatureImage(null);
+    setIsSignatureUploaded(true); // Update signature upload state
   };
 
   const requiredFields = [
@@ -887,14 +898,12 @@ export default function InstituteTemplateSetupPage() {
                 {/* Institute Name */}
                 <div className="space-y-2">
                   <Label className="text-sm sm:text-base font-medium text-gray-700">
-                    {/* {isEmployeeCard ? "Company Name" : "Institute Name"} */}
                     Institute Name
                   </Label>
                   <Input
                     name="instituteName"
                     value={form.instituteName}
                     onChange={handleChange}
-                    // placeholder={isEmployeeCard ? "Type Company Name" : "Type Institute Name"}
                     placeholder='Type Institute Name'
                     className="h-12 sm:h-14 bg-gray-50 border-0 rounded-lg text-sm sm:text-base text-gray-900 placeholder:text-gray-500"
                   />
@@ -946,7 +955,9 @@ export default function InstituteTemplateSetupPage() {
                     <label className="cursor-pointer flex-1">
                       <div className="h-12 sm:h-14 bg-gray-50 rounded-lg flex items-center justify-center gap-2 sm:gap-3 hover:bg-gray-100 transition-colors">
                         <LucideUpload size={16} className="text-gray-600" />
-                        <span className="text-sm sm:text-base text-gray-700 font-medium">Institution Logo</span>
+                        <span className="text-sm sm:text-base text-gray-700 font-medium">
+                          {isLogoUploaded ? "Logo Selected" : "Institution Logo"}
+                        </span>
                       </div>
                       <input
                         type="file"
@@ -958,7 +969,9 @@ export default function InstituteTemplateSetupPage() {
                     <label className="cursor-pointer flex-1">
                       <div className="h-12 sm:h-14 bg-gray-50 rounded-lg flex items-center justify-center gap-2 sm:gap-3 hover:bg-gray-100 transition-colors">
                         <Edit3 size={16} className="text-gray-600" />
-                        <span className="text-sm sm:text-base text-gray-700 font-medium">Signature</span>
+                        <span className="text-sm sm:text-base text-gray-700 font-medium">
+                          {isSignatureUploaded ? "Signature Selected" : "Signature"}
+                        </span>
                       </div>
                       <input
                         type="file"
@@ -1010,7 +1023,7 @@ export default function InstituteTemplateSetupPage() {
                         : "text-gray-600 hover:text-gray-900"
                         }`}
                     >
-                      Horizontal
+                      Style 1
                     </button>
                     <button
                       onClick={() => {
@@ -1023,7 +1036,7 @@ export default function InstituteTemplateSetupPage() {
                         : "text-gray-600 hover:text-gray-900"
                         }`}
                     >
-                      Vertical
+                      Style 2
                     </button>
                   </div>
                 </div>

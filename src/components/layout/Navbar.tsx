@@ -3,13 +3,12 @@
 // import { usePathname } from "next/navigation";
 // import { BiIdCard } from "react-icons/bi";
 
-
 // export default function Navbar() {
 //   const pathname = usePathname();
 //   const isHomeath= pathname === "/"
 //   return (
 //     <nav className="bg-[#4A61E4] text-white">
-//       <div className="max-w-7xl mx-auto 
+//       <div className="max-w-7xl mx-auto
 //      md:pt-6 pb-4 px-2">
 //         {/* Desktop layout */}
 //         <div className="hidden md:flex justify-between items-center h-16">
@@ -59,8 +58,6 @@
 //   );
 // }
 
-
-
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -104,35 +101,35 @@ export default function Navbar() {
             >
               How It Works
             </Link>
-            {!isStudent &&(
-              
+            {!isStudent && (
               <Link href="/verify" className="hover:opacity-80">
-              Verify ID Card
-            </Link>
+                Verify ID Card
+              </Link>
             )}
           </div>
 
           {/* Right - Conditional Button */}
-          {isStudent ? (<div></div>): (
-
+          {isStudent ? (
+            <div></div>
+          ) : (
             <div>
-            {isAuthenticated ? (
-              <Link
-              href="/dashboard"
-              className="bg-white text-[#4A61E4] py-4 px-6 rounded-2xl font-medium hover:bg-gray-100 transition"
-              >
-                Dashboard
-              </Link>
-            ) : (
-              <Link
-              href="/login"
-              className="bg-white text-[#4A61E4] py-4 px-6 rounded-2xl font-medium hover:bg-gray-100 transition"
-              >
-                Log In
-              </Link>
-            )}
-          </div>
-            )}
+              {isAuthenticated ? (
+                <Link
+                  href="/dashboard"
+                  className="bg-white text-[#4A61E4] py-4 px-6 rounded-2xl font-medium hover:bg-gray-100 transition"
+                >
+                  Dashboard
+                </Link>
+              ) : (
+                <Link
+                  href="/login"
+                  className="bg-white text-[#4A61E4] py-4 px-6 rounded-2xl font-medium hover:bg-gray-100 transition"
+                >
+                  Log In
+                </Link>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Mobile layout */}
@@ -151,9 +148,11 @@ export default function Navbar() {
             >
               How It Works
             </Link>
-            <Link href="/verify" className="hover:opacity-80">
-              Verify ID Card
-            </Link>
+            {!isStudent && (
+              <Link href="/verify" className="hover:opacity-80">
+                Verify ID Card
+              </Link>
+            )}
           </div>
 
           {/* Bottom - Logo + Conditional Button */}
@@ -167,21 +166,26 @@ export default function Navbar() {
               </span>
               <span className="text-[20px]">AutoIDGen</span>
             </Link>
-
-            {isAuthenticated ? (
-              <Link
-                href="/dashboard"
-                className="bg-white text-blue-600 px-4 py-1 rounded-lg font-medium hover:bg-gray-100 transition"
-              >
-                Dashboard
-              </Link>
+            {isStudent ? (
+              <div></div>
             ) : (
-              <Link
-                href="/login"
-                className="bg-white text-blue-600 px-4 py-1 rounded-lg font-medium hover:bg-gray-100 transition"
-              >
-                Log In
-              </Link>
+              <div>
+                {isAuthenticated ? (
+                  <Link
+                    href="/dashboard"
+                    className="bg-white text-blue-600 px-4 py-1 rounded-lg font-medium hover:bg-gray-100 transition"
+                  >
+                    Dashboard
+                  </Link>
+                ) : (
+                  <Link
+                    href="/login"
+                    className="bg-white text-blue-600 px-4 py-1 rounded-lg font-medium hover:bg-gray-100 transition"
+                  >
+                    Log In
+                  </Link>
+                )}
+              </div>
             )}
           </div>
         </div>

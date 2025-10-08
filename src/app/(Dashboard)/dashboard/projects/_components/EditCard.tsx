@@ -369,9 +369,9 @@ export function EditCard({
   const handleTakePhoto = async () => {
     try {
       console.log("📷 Requesting webcam...")
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' } 
-      })
+     const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: { ideal: 'environment' } } 
+      });
       streamRef.current = stream
       setShowWebcam(true)
       

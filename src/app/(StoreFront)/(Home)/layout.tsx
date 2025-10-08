@@ -9,7 +9,11 @@ export default function layout({ children }: { children: ReactNode }) {
                 {/* Navbar */}
                 <Navbar/>
             </header>
-            <main className="flex-1 flex items-center justify-center">{children}</main>
+            <main className="flex-1 flex items-center justify-center">
+                <div className="w-full">
+                    {children}
+                    </div>
+                    </main>
                 {/* Footer */}
                 <AutoIDGenFooter/>
             

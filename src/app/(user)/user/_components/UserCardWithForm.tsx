@@ -221,14 +221,13 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({ finalImageUrl, st
   return (
     <div className="min-h-screen p-2">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <div className="text-6xl mb-4">🎉</div>
-          <h1 className="text-2xl font-bold text-green-600 mb-2">ID Card Generated Successfully!</h1>
-          <p className="text-gray-600 text-xs lg:text-base">Your ID card has been created and is ready for download.</p>
+        <div className="text-center mb-2 md:mb-0">
+          <h1 className="text-md font-bold text-green-600 mb-2 md:mb-0">🎉 ID Card Generated Successfully!</h1>
+          
         </div>
 
-        <div className="bg-white rounded-lg p-2 md:p-8 text-center">
-          <h3 className="text-xl font-semibold mb-6 text-gray-800">Final Generated ID Card</h3>
+        <div className="bg-white rounded-lg p-2 md:p-8 md:pt-4 text-center">
+          {/* <h3 className="text-xl font-semibold mb-6 text-gray-800">Final Generated ID Card</h3> */}
 
           <div className="mb-6">
             <Image

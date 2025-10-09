@@ -9,7 +9,7 @@ const Page = () => {
     return (
         <div>
             {/* Back icon header */}
-            <div className='flex justify-start py-4 px-6 text-[#4A61E4]'>
+            <div className='flex justify-center py-4 px-6 text-[#4A61E4]'>
                 <button
                     onClick={() => router.back()}
                     className="flex items-center space-x-2 text-lg font-bold focus:outline-none"

@@ -106,7 +106,7 @@ const AccessForm: React.FC = () => {
   };
 
   return (
-    <div className=" bg-white flex items-center justify-center p-4">
+    <div className=" bg-white h-screen mx-auto flex items-center justify-center p-4">
       <div className="w-full md:max-w-xl flex flex-col bg-white md:rounded-3xl md:shadow-lg sm:p-8 md:py-20">
         {/* ✅ Logo Header */}
         <div className="flex justify-center mb-8">

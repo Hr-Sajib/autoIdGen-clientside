@@ -1004,8 +1004,8 @@ const handleTakePhoto = async () => {
   return (
     <div className="bg-background">
       <div className={`container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 ${isAnyLoading ? 'blur-sm pointer-events-none' : ''}`}>
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-0">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-1">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-0 sm:mb-0">
             {projectData.cardType === "Student" ? "Student" : "Employee"} Information
           </h1>
         </div>
@@ -1103,6 +1103,7 @@ const handleTakePhoto = async () => {
                 );
               })}
             </div>
+            <h1 className="text-xs sm:text-sm text-center font-semibold text-gray-500 mt-2 sm:mt-8">Please ensure all information is correct before submiting</h1>
 
             <div className="flex flex-col sm:flex-row flex-wrap items-center gap-3 sm:gap-4 mt-6 sm:mt-8">
              

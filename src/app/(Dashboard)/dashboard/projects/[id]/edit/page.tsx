@@ -293,7 +293,7 @@ export default function ViewDetailsPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="relative w-full sm:w-64">
             <Input
-              placeholder="Search by Roll, Name..."
+              placeholder="Search by ID serial, Name..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-10 bg-gray-100 text-sm sm:text-base"
@@ -305,7 +305,9 @@ export default function ViewDetailsPage() {
             variant="outline"
             className="w-full sm:w-auto bg-white hover:bg-gray-100 hover:text-gray-800 text-sm sm:text-base px-3 sm:px-4 py-1 sm:py-2"
           >
-            Export All
+            {/* Export All */}
+
+            Bulk Export
           </Button>
         </div>
 

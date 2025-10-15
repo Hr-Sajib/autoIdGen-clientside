@@ -1474,17 +1474,7 @@ export default function InstituteTemplateSetupPage() {
                   />
                 </div>
 
-                {/* ID Card Type */}
-                <div className="space-y-2">
-                  <Label className="text-sm sm:text-base font-medium text-gray-700">ID Card Type</Label>
-                  <Input
-                    name="idCardType"
-                    value={form.idCardType}
-                    onChange={handleChange}
-                    placeholder="Type ID Card Type (e.g., Student, Employee, Staff)"
-                    className="h-12 sm:h-14 bg-gray-50 border-0 rounded-lg text-sm sm:text-base text-gray-900 placeholder:text-gray-500"
-                  />
-                </div>
+               
 
                 {/* Address */}
                 <div className="space-y-2">
@@ -1494,6 +1484,17 @@ export default function InstituteTemplateSetupPage() {
                     value={form.address}
                     onChange={handleChange}
                     placeholder="Type Address"
+                    className="h-12 sm:h-14 bg-gray-50 border-0 rounded-lg text-sm sm:text-base text-gray-900 placeholder:text-gray-500"
+                  />
+                </div>
+                 {/* ID Card Type */}
+                <div className="space-y-2">
+                  <Label className="text-sm sm:text-base font-medium text-gray-700">ID Card Type</Label>
+                  <Input
+                    name="idCardType"
+                    value={form.idCardType}
+                    onChange={handleChange}
+                    placeholder="Type ID Card Type (e.g., Student, Employee, Staff)"
                     className="h-12 sm:h-14 bg-gray-50 border-0 rounded-lg text-sm sm:text-base text-gray-900 placeholder:text-gray-500"
                   />
                 </div>

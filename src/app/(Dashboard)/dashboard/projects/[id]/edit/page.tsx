@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { LucideEdit, Trash2, Loader2, LucideDownload, Search } from "lucide-react"
+import { LucideEdit, Trash2, Loader2, LucideDownload, Search, User } from "lucide-react"
 import { DashboardHeader } from "../../../_components/dashboard-header"
 import { EditCard } from "../../_components/EditCard"
 import { useGetSpecificProjectQuery, useUpdateProjectMutation } from "@/lib/feature/Project/projectApi"
@@ -16,6 +16,8 @@ import Image from "next/image"
 import { downloadBulkExport } from "@/utils/bulkExport"
 import Loading from "@/app/loading"
 import ExportLoading from "../../../_components/ExportLoading"
+import Link from "next/link"
+import UserQRCode from "@/components/layout/UserQRCode"
 
 export default function ViewDetailsPage() {
   const [loading, setLoading] = useState(false);
@@ -73,6 +75,9 @@ export default function ViewDetailsPage() {
         additionalfieldValues: [] as Card["additionalfieldValues"],
       }
     })
+
+
+    console.log("second mile=========", project);
 
     cardData?.data?.forEach((card: Card) => {
       const index = card.serialOrRollNumber - 1
@@ -265,6 +270,14 @@ export default function ViewDetailsPage() {
                   </p>
                   <p className="text-xs sm:text-sm text-gray-500">Address: {project.address}</p>
                 </div>
+              </div>
+              <div>
+                {/* <Link href={`/user?batchCode=${project.batchId}`} className="flex items-center gap-2 text-indigo-600 hover:text-indigo-800">
+                  <User className="w-4 h-4" /> View Users
+                </Link> */}
+                 <Link href={`/user?batchCode=${project?.batchId}`} className="flex flex-col items-center gap-2 text-indigo-600 hover:text-indigo-800">
+                <UserQRCode batchId={project.batchId || ""} />
+              </Link>
               </div>
               {project.institutionSignUrl?.signUrl && (
                 <div className="text-center">

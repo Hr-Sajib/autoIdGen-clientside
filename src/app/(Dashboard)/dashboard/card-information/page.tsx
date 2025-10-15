@@ -16,6 +16,8 @@ import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { parse } from "path";
+import UserQRCode from "@/components/layout/UserQRCode";
+import Link from "next/link";
 
 export default function InstituteTemplateSetupPage() {
   const router = useRouter();
@@ -598,6 +600,9 @@ export default function InstituteTemplateSetupPage() {
               <p className="text-lg font-semibold text-blue-600">
                 Batch Code: <span className="text-foreground">{successModal.batchId}</span>
               </p>
+              <Link href={`/user?batchCode=${successModal.batchId}`} className="flex flex-col items-center gap-2 text-indigo-600 hover:text-indigo-800">
+                <UserQRCode batchId={successModal.batchId || ""} />
+              </Link>
             </div>
             <DialogFooter className="flex justify-center gap-4">
               <Button

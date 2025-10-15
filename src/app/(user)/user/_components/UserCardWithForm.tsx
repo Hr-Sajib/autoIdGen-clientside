@@ -17,7 +17,7 @@ import Link from "next/link";
 import ErrorImage from "@/../public/images/error_id_card.png";
 import Loading from "@/app/loading";
 import { AiOutlineExclamationCircle } from 'react-icons/ai';
-import { IoCameraOutline } from "react-icons/io5";
+import { IoCameraOutline, IoDocument } from "react-icons/io5";
 import { BiIdCard } from "react-icons/bi";
 
 // ===========================
@@ -194,9 +194,11 @@ interface IDCardSuccessPageProps {
   finalImageUrl: string;
   studentName: string;
   onBackToForm: () => void;
+  idNumber: string | null;
+  batchCode?: string | null;
 }
 
-const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({ finalImageUrl, studentName, onBackToForm }) => {
+const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({ finalImageUrl, idNumber, studentName, onBackToForm, batchCode }) => {
   const [isDownloading, setIsDownloading] = useState(false);
 
   // Helper function to download image
@@ -217,6 +219,32 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({ finalImageUrl, st
       setIsDownloading(false);
     }
   };
+
+   const handleGetReceipt = async (idNumber: string) => {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.autoidgen.com/api/v1/';
+    // const batchCode = "6185"; // If this is dynamic, pass it as a parameter
+    const response = await fetch(`${baseUrl}project/receipt/${batchCode}/${idNumber}`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch receipt: ${response.statusText}`);
+    }
+
+    // Get the PDF blob
+    const blob = await response.blob();
+
+    // Create a URL for the blob
+    const blobUrl = URL.createObjectURL(blob);
+
+    // Open in a new tab
+    window.open(blobUrl, '_blank');
+  } catch (error) {
+    console.error('Error fetching receipt PDF:', error);
+  }
+};
+
 
   return (
     <div className="min-h-screen p-2">
@@ -256,6 +284,14 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({ finalImageUrl, st
             >
               🔍 View Full Size
             </Button>
+            <Button
+  onClick={() => handleGetReceipt(idNumber as string)}
+  className="bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-semibold py-2 px-4 shadow transition duration-300"
+>
+  <IoDocument className="inline-block mr-2 text-lg" />
+  Download Receipt
+</Button>
+
           </div>
 
           {/* <div className="border-t pt-6"> */}
@@ -288,7 +324,7 @@ const UserCardWithForm: React.FC = () => {
   const [isLoadingExistingCard, setIsLoadingExistingCard] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [idNumber, setIdNumber] = useState<string | null>(null);
   // Loading states for different operations
   const [isCropping, setIsCropping] = useState(false);
   const [isProcessingBackground, setIsProcessingBackground] = useState(false);
@@ -324,17 +360,23 @@ const UserCardWithForm: React.FC = () => {
   const streamRef = useRef<MediaStream | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  console.log("Role:", role);
-  console.log("Batch Code:", batchCode);
-  console.log("Roll Serial:", rollSerial);
+  // console.log(idNumber);
+
+  // console.log("Role:", role);
+  // console.log("Batch Code:", batchCode);
+  // console.log("Roll Serial:", rollSerial);
 
   // ===========================
   // SCROLL LOCK EFFECT
   // ===========================
   useEffect(() => {
-    const shouldLockScroll = isSaving || showCropper || showWebcam || 
-                           isCropping || isProcessingBackground || isUploadingImage || showSuccessPage;
+    // const shouldLockScroll = isSaving || showCropper || showWebcam || 
+    //                        isCropping || isProcessingBackground || isUploadingImage || showSuccessPage;
     
+
+    const shouldLockScroll = isSaving || showCropper || showWebcam || 
+                       isCropping || isProcessingBackground || isUploadingImage;
+
     if (shouldLockScroll) {
       // Lock scroll
       document.body.style.overflow = 'hidden';
@@ -694,6 +736,120 @@ const handleTakePhoto = async () => {
     streamRef.current = null;
   };
 
+  // const handleSaveData = async () => {
+  //   setIsSaving(true);
+  //   setSaveSuccess(false);
+  //   setFinalImageUrl(null);
+
+  //   // Build field values array with correct setBy logic
+  //   const additionalFieldValues = projectData?.additionalFields?.map(fieldObj => {
+  //     // Check if this field has existing data
+  //     const existingField = existingCardData?.additionalfieldValues?.find(
+  //       existing => existing.fieldName === fieldObj.fieldName
+  //     );
+
+  //     // Determine value and setBy
+  //     let fieldValue: string;
+  //     let setBy: "owner" | "user";
+
+  //     if (existingField && existingField.setBy === "owner") {
+  //       // Keep existing owner value
+  //       fieldValue = existingField.fieldValue;
+  //       setBy = "owner";
+  //     } else if (fieldObj.defaultValue) {
+  //       // Use project default value
+  //       fieldValue = fieldObj.defaultValue;
+  //       setBy = "owner";
+  //     } else {
+  //       // Use user input value
+  //       fieldValue = values[fieldObj.fieldName] || "";
+  //       setBy = "user";
+  //     }
+
+  //     return {
+  //       fieldName: fieldObj.fieldName,
+  //       fieldValue: fieldValue,
+  //       setBy: setBy
+  //     };
+  //   }) || [];
+
+  //   const responseData = {
+  //     batchId: parseInt(projectData?.batchId.toString() || "0"),
+  //     serialOrRollNumber: parseInt(rollSerial || "0"),
+  //     name: studentName,
+  //     personalPhotoUrl: profileUrl,
+  //     additionalfieldValues: additionalFieldValues
+  //   };
+
+  //   console.log("🔄 Generating ID card:", responseData);
+
+  //   // If existing card found, show update message
+  //   if (existingCardData) {
+  //     console.log("🔄 Updating existing card:", existingCardData._id);
+  //   }
+
+  //   try {
+  //     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}project/getMyId`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(responseData)
+  //     });
+
+  //     // console.log("response from geting my id =========>", response);
+
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+
+  //     // Check response content type
+  //     const contentType = response.headers.get('content-type');
+
+  //     if (contentType && contentType.includes('image')) {
+  //       // Direct image response
+  //       const imageBlob = await response.blob();
+  //       const imageUrl = URL.createObjectURL(imageBlob);
+  //       setFinalImageUrl(imageUrl);
+  //       console.log('✅ Generated image URL from blob');
+  //     } else {
+  //       // JSON response
+  //       const result = await response.json();
+  //       console.log('📄 Save data response:', result);
+
+  //       // Check for different possible image URL fields
+  //       if (result.imageUrl) {
+  //         setFinalImageUrl(result.imageUrl);
+  //       } else if (result.cardImageUrl) {
+  //         setFinalImageUrl(result.cardImageUrl);
+  //       } else if (result.finalImageUrl) {
+  //         setFinalImageUrl(result.finalImageUrl);
+  //       } else if (result.data && result.data.imageUrl) {
+  //         setFinalImageUrl(result.data.imageUrl);
+  //       } else if (result.imageData) {
+  //         // Base64 image data
+  //         const imageDataUrl = `data:image/png;base64,${result.imageData}`;
+  //         setFinalImageUrl(imageDataUrl);
+  //       }
+  //     }
+
+  //     setSaveSuccess(true);
+  //     // Show success page after successful generation
+  //     setTimeout(() => {
+  //       setShowSuccessPage(true);
+  //       console.log(existingCardData ? '🎉 Card updated successfully' : '🎉 New card created successfully');
+  //     }, 1000); // Small delay to show success message
+
+  //   } catch (error: unknown) {
+  //     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+  //     console.error(`❌ Failed to save data: ${errorMessage}`);
+  //     alert(`Failed to save data. Error: ${errorMessage}`);
+  //   } finally {
+  //     setIsSaving(false);
+  //   }
+  // };
+
+
   const handleSaveData = async () => {
     setIsSaving(true);
     setSaveSuccess(false);
@@ -754,6 +910,23 @@ const handleTakePhoto = async () => {
         },
         body: JSON.stringify(responseData)
       });
+console.log("====================================================");
+      // Log all available headers for debugging
+      console.log("📋 All Response Headers:");
+      response.headers.forEach((value, key) => {
+        console.log(`  ${key}: ${value}`);
+      });
+
+      // Get the card-number from response headers
+      const cardNumber = response.headers.get('Card-Number');
+      console.log("🎫 Card Number:", cardNumber);
+      setIdNumber(cardNumber);
+
+      if (!cardNumber) {
+        console.warn("⚠️ card-number header not found. The server may need to add 'Access-Control-Expose-Headers: card-number' to expose this header.");
+      }
+
+      console.log("response from geting my id =========>", response);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -849,8 +1022,11 @@ const handleTakePhoto = async () => {
     return (
       <IDCardSuccessPage
         finalImageUrl={finalImageUrl}
+        idNumber={idNumber}
         studentName={studentName}
         onBackToForm={handleBackToForm}
+        batchCode={batchCode}
+        
       />
     );
   }
@@ -1006,7 +1182,7 @@ const handleTakePhoto = async () => {
       <div className={`container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 ${isAnyLoading ? 'blur-sm pointer-events-none' : ''}`}>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-1">
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-0 sm:mb-0">
-            {projectData.cardType === "Student" ? "Student" : "Employee"} Information
+           {projectData.cardType === "Student" ? "Student" : (projectData.cardType || "User")} Information
           </h1>
         </div>
 

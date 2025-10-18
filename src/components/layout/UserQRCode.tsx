@@ -8,7 +8,7 @@ type Props = {
 };
 
 const UserQRCode: React.FC<Props> = ({ batchId }) => {
-  const qrUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/user?batchCode=${batchId}`;
+  const qrUrl = `${process.env.NEXT_PUBLIC_BASE_URL || "https://autoidgen.com"}/user?batchCode=${batchId}`;
     console.log(qrUrl);
   return (
     <div className="flex w-auto flex-col items-center gap-2">

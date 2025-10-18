@@ -12,7 +12,7 @@ const TemplateSelection: React.FC = () => {
   //   const portraitCard = "/api/placeholder/320/200";
 
   return (
-    <div className="py-16">
+    <div className="pb-16">
       <div className="">
         {/* Section Header */}
         <div className="text-center pt-16 pb-10 relative">

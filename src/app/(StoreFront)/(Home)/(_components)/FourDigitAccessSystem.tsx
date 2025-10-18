@@ -15,9 +15,9 @@ const FourDigitAccessSystem: React.FC = () => {
         </p>
         
         {/* Batch Code Section */}
-    <div className="mb-10 px-4 sm:px-8 md:px-16 lg:px-20 py-6 sm:py-8 md:py-10 rounded-xl 
-shadow-[0_8px_25px_-5px_rgba(79,70,229,0.08)] 
-hover:shadow-[0_8px_25px_-5px_rgba(79,70,229,0.18)] 
+    <div className="md:mb-10 px-4 sm:px-8 md:px-16 lg:px-20 py-6 sm:py-8 md:py-10 rounded-xl 
+md:shadow-[0_8px_25px_-5px_rgba(79,70,229,0.08)] 
+md:hover:shadow-[0_8px_25px_-5px_rgba(79,70,229,0.18)] 
  inline-block w-full max-w-3xl mx-auto">
   <div className="text-[clamp(9px,1.5vw,18px)] text-gray-800 font-medium mb-8 sm:mb-12">
     Your Unique Batch code

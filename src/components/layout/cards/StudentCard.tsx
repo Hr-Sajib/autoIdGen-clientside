@@ -156,7 +156,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
           <div className="absolute bottom-[55px] right-[20px] text-center">
             <Image
               src={signatureUrl}
-              alt="Principal Signature"
+              alt="-"
               width={75}
               height={45}
               className="object-contain"

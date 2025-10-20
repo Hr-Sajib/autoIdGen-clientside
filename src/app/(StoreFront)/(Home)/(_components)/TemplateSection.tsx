@@ -20,7 +20,7 @@ const TemplateSelection: React.FC = () => {
             Select Your Template
           </h2>
           <p className="text-[clamp(16px,2.5vw,18px)] text-gray-500">
-            Choose A Proffessional Template To Get Started
+            Choose A Professional Template To Get Started
           </p>
           <div className="absolute bottom-0 left-0 w-full h-2 shadow-lg"></div>
         </div>

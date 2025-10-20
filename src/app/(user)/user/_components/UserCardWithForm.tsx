@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
@@ -10,20 +8,25 @@ import VerticalCardForUser from "./VerticalCardForUser";
 import Image from "next/image";
 import Cropper from "react-easy-crop";
 import { useSearchParams } from "next/navigation";
-import DownloadImage from '@/../public/images/download_icon.svg';
-import UploadImage from '@/../public/images/upload_icon.svg';
-import TripodImage from '@/../public/images/camera-tripod.svg';
+import DownloadImage from "@/../public/images/download_icon.svg";
+import UploadImage from "@/../public/images/upload_icon.svg";
+import TripodImage from "@/../public/images/camera-tripod.svg";
 import Link from "next/link";
 import ErrorImage from "@/../public/images/error_id_card.png";
 import Loading from "@/app/loading";
-import { AiOutlineExclamationCircle } from 'react-icons/ai';
+import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { IoCameraOutline, IoDocument } from "react-icons/io5";
 import { BiIdCard } from "react-icons/bi";
 
 // ===========================
 // Type Definitions
 // ===========================
-type CroppedAreaPixels = { x: number; y: number; width: number; height: number };
+type CroppedAreaPixels = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
 
 interface AdditionalFieldValue {
   fieldName: string;
@@ -133,7 +136,8 @@ const createImage = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
     const img = document.createElement("img");
     img.onload = () => resolve(img);
-    img.onerror = (error) => reject(new Error("Failed to load image: " + error));
+    img.onerror = (error) =>
+      reject(new Error("Failed to load image: " + error));
     if (!url.startsWith("blob:")) img.crossOrigin = "anonymous";
     img.src = url;
   });
@@ -141,7 +145,10 @@ const createImage = (url: string): Promise<HTMLImageElement> =>
 /**
  * Crops image based on specified pixel coordinates
  */
-const getCroppedImg = async (imageSrc: string, pixelCrop: CroppedAreaPixels): Promise<string> => {
+const getCroppedImg = async (
+  imageSrc: string,
+  pixelCrop: CroppedAreaPixels
+): Promise<string> => {
   const image = await createImage(imageSrc);
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
@@ -176,7 +183,7 @@ const getCroppedImg = async (imageSrc: string, pixelCrop: CroppedAreaPixels): Pr
  * Converts base64 data URL to Blob object
  */
 const dataURLtoBlob = (dataURL: string): Blob => {
-  const arr = dataURL.split(',');
+  const arr = dataURL.split(",");
   const mime = arr[0].match(/:(.*?);/)![1];
   const bstr = atob(arr[1]);
   let n = bstr.length;
@@ -198,7 +205,13 @@ interface IDCardSuccessPageProps {
   batchCode?: string | null;
 }
 
-const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({ finalImageUrl, idNumber, studentName, onBackToForm, batchCode }) => {
+const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({
+  finalImageUrl,
+  idNumber,
+  studentName,
+  onBackToForm,
+  batchCode,
+}) => {
   const [isDownloading, setIsDownloading] = useState(false);
 
   // Helper function to download image
@@ -220,38 +233,42 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({ finalImageUrl, id
     }
   };
 
-   const handleGetReceipt = async (idNumber: string) => {
-  try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.autoidgen.com/api/v1/';
-    // const batchCode = "6185"; // If this is dynamic, pass it as a parameter
-    const response = await fetch(`${baseUrl}project/receipt/${batchCode}/${idNumber}`, {
-      method: 'GET',
-    });
+  const handleGetReceipt = async (idNumber: string) => {
+    try {
+      const baseUrl =
+        process.env.NEXT_PUBLIC_API_URL || "https://api.autoidgen.com/api/v1/";
+      // const batchCode = "6185"; // If this is dynamic, pass it as a parameter
+      const response = await fetch(
+        `${baseUrl}project/receipt/${batchCode}/${idNumber}`,
+        {
+          method: "GET",
+        }
+      );
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch receipt: ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch receipt: ${response.statusText}`);
+      }
+
+      // Get the PDF blob
+      const blob = await response.blob();
+
+      // Create a URL for the blob
+      const blobUrl = URL.createObjectURL(blob);
+
+      // Open in a new tab
+      window.open(blobUrl, "_blank");
+    } catch (error) {
+      console.error("Error fetching receipt PDF:", error);
     }
-
-    // Get the PDF blob
-    const blob = await response.blob();
-
-    // Create a URL for the blob
-    const blobUrl = URL.createObjectURL(blob);
-
-    // Open in a new tab
-    window.open(blobUrl, '_blank');
-  } catch (error) {
-    console.error('Error fetching receipt PDF:', error);
-  }
-};
-
+  };
 
   return (
     <div className="min-h-screen p-2">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-2 md:mb-0">
-          <h1 className="text-md font-bold text-green-600 mb-2 md:mb-0">🎉 ID Card Generated Successfully!</h1>
-          
+          <h1 className="text-md font-bold text-green-600 mb-2 md:mb-0">
+            🎉 ID Card Generated Successfully!
+          </h1>
         </div>
 
         <div className="bg-white rounded-lg p-2 md:p-8 md:pt-4 text-center">
@@ -270,7 +287,12 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({ finalImageUrl, id
 
           <div className="flex justify-center gap-4 flex-wrap mb-8">
             <Button
-              onClick={() => downloadImage(finalImageUrl, `${studentName || 'Student'}_ID_Card.png`)}
+              onClick={() =>
+                downloadImage(
+                  finalImageUrl,
+                  `${studentName || "Student"}_ID_Card.png`
+                )
+              }
               className="bg-[#4A61E4] hover:bg-blue-700 text-white"
               disabled={isDownloading}
             >
@@ -278,24 +300,23 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({ finalImageUrl, id
               {isDownloading ? "Downloading..." : "Download"}
             </Button>
             <Button
-              onClick={() => window.open(finalImageUrl, '_blank')}
+              onClick={() => window.open(finalImageUrl, "_blank")}
               variant="outline"
               className="px-6 py-3"
             >
               🔍 View Full Size
             </Button>
             <Button
-  onClick={() => handleGetReceipt(idNumber as string)}
-  className="bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-semibold py-2 px-4 shadow transition duration-300"
->
-  <IoDocument className="inline-block mr-2 text-lg" />
-  Download Receipt
-</Button>
-
+              onClick={() => handleGetReceipt(idNumber as string)}
+              className="bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-semibold py-2 px-4 shadow transition duration-300"
+            >
+              <IoDocument className="inline-block mr-2 text-lg" />
+              Download Receipt
+            </Button>
           </div>
 
           {/* <div className="border-t pt-6"> */}
-            {/* <Button
+          {/* <Button
               onClick={onBackToForm}
               variant="outline"
               className="md:px-8 md:py-2 text-xs md:text-base"
@@ -320,7 +341,8 @@ const UserCardWithForm: React.FC = () => {
   const rollSerial = searchParams.get("rollSerial");
 
   const [projectData, setProjectData] = useState<ProjectData | null>(null);
-  const [existingCardData, setExistingCardData] = useState<ExistingCardData | null>(null);
+  const [existingCardData, setExistingCardData] =
+    useState<ExistingCardData | null>(null);
   const [isLoadingExistingCard, setIsLoadingExistingCard] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -337,10 +359,14 @@ const UserCardWithForm: React.FC = () => {
   const [showSuccessPage, setShowSuccessPage] = useState(false);
 
   // Get dynamic fields from project data or use fallback
-  const fields = projectData?.additionalFields?.map(field => field.fieldName) || [];
+  const fields =
+    projectData?.additionalFields?.map((field) => field.fieldName) || [];
 
   // Determine card orientation based on templateId
-  const cardOrientation = projectData?.templateId === "68b7582aaa0bc46f0acfb675" ? "horizontal" : "vertical";
+  const cardOrientation =
+    projectData?.templateId === "68b7582aaa0bc46f0acfb675"
+      ? "horizontal"
+      : "vertical";
 
   const [values, setValues] = useState<{ [key: string]: string }>({});
   const [studentName, setStudentName] = useState<string>("");
@@ -350,7 +376,8 @@ const UserCardWithForm: React.FC = () => {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<CroppedAreaPixels | null>(null);
+  const [croppedAreaPixels, setCroppedAreaPixels] =
+    useState<CroppedAreaPixels | null>(null);
   const [showCropper, setShowCropper] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
@@ -370,29 +397,41 @@ const UserCardWithForm: React.FC = () => {
   // SCROLL LOCK EFFECT
   // ===========================
   useEffect(() => {
-    // const shouldLockScroll = isSaving || showCropper || showWebcam || 
+    // const shouldLockScroll = isSaving || showCropper || showWebcam ||
     //                        isCropping || isProcessingBackground || isUploadingImage || showSuccessPage;
-    
 
-    const shouldLockScroll = isSaving || showCropper || showWebcam || 
-                       isCropping || isProcessingBackground || isUploadingImage;
+    const shouldLockScroll =
+      isSaving ||
+      showCropper ||
+      showWebcam ||
+      isCropping ||
+      isProcessingBackground ||
+      isUploadingImage;
 
     if (shouldLockScroll) {
       // Lock scroll
-      document.body.style.overflow = 'hidden';
-      document.body.style.paddingRight = '0px'; // Prevent layout shift
+      document.body.style.overflow = "hidden";
+      document.body.style.paddingRight = "0px"; // Prevent layout shift
     } else {
       // Unlock scroll
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
     }
 
     // Cleanup on unmount
     return () => {
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
     };
-  }, [isSaving, showCropper, showWebcam, isCropping, isProcessingBackground, isUploadingImage, showSuccessPage]);
+  }, [
+    isSaving,
+    showCropper,
+    showWebcam,
+    isCropping,
+    isProcessingBackground,
+    isUploadingImage,
+    showSuccessPage,
+  ]);
 
   useEffect(() => {
     const fetchBatchData = async () => {
@@ -407,7 +446,9 @@ const UserCardWithForm: React.FC = () => {
         setError(null);
         console.log("🔄 Fetching project data for batch:", batchCode);
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}project/batch/${batchCode}`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}project/batch/${batchCode}`
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -424,28 +465,44 @@ const UserCardWithForm: React.FC = () => {
             await fetchExistingCardData(batchCode, rollSerial);
           }
         } else {
-          throw new Error(apiResponse.message || "Failed to fetch project data");
+          throw new Error(
+            apiResponse.message || "Failed to fetch project data"
+          );
         }
       } catch (error) {
         console.error("❌ Failed to fetch batch data:", error);
-        setError(error instanceof Error ? error.message : "Failed to fetch batch data");
+        setError(
+          error instanceof Error ? error.message : "Failed to fetch batch data"
+        );
       } finally {
         setIsLoading(false);
       }
     };
 
-    const fetchExistingCardData = async (batchCode: string, rollSerial: string) => {
+    const fetchExistingCardData = async (
+      batchCode: string,
+      rollSerial: string
+    ) => {
       try {
         setIsLoadingExistingCard(true);
         console.log("🔍 Checking for existing card data...");
 
-        const existingCardResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}card/getSpecificCard/${batchCode}/${rollSerial}`);
+        const existingCardResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}card/getSpecificCard/${batchCode}/${rollSerial}`
+        );
 
         if (existingCardResponse.ok) {
-          const existingCardResult: ExistingCardResponse = await existingCardResponse.json();
+          const existingCardResult: ExistingCardResponse =
+            await existingCardResponse.json();
 
-          if (existingCardResult.status === "success" && existingCardResult.data) {
-            console.log("✅ Existing card data found:", existingCardResult.data);
+          if (
+            existingCardResult.status === "success" &&
+            existingCardResult.data
+          ) {
+            console.log(
+              "✅ Existing card data found:",
+              existingCardResult.data
+            );
             setExistingCardData(existingCardResult.data);
 
             // Populate form with existing data
@@ -454,7 +511,7 @@ const UserCardWithForm: React.FC = () => {
 
             // Set user-entered field values only
             const userValues: { [key: string]: string } = {};
-            existingCardResult.data.additionalfieldValues.forEach(field => {
+            existingCardResult.data.additionalfieldValues.forEach((field) => {
               if (field.setBy === "user") {
                 userValues[field.fieldName] = field.fieldValue;
               }
@@ -481,7 +538,7 @@ const UserCardWithForm: React.FC = () => {
   useEffect(() => {
     if (projectData?.additionalFields) {
       const initialValues: { [key: string]: string } = {};
-      projectData.additionalFields.forEach(field => {
+      projectData.additionalFields.forEach((field) => {
         // Only initialize empty values for fields without defaults
         if (!field.defaultValue) {
           initialValues[field.fieldName] = "";
@@ -500,7 +557,11 @@ const UserCardWithForm: React.FC = () => {
     if (!file.type.startsWith("image/")) return alert("Select a valid image");
     if (file.size > MAX_FILE_SIZE) return alert("Image < 10MB");
 
-    console.log("📁 File selected:", file.name, `${(file.size / 1024 / 1024).toFixed(2)}MB`);
+    console.log(
+      "📁 File selected:",
+      file.name,
+      `${(file.size / 1024 / 1024).toFixed(2)}MB`
+    );
     const imgUrl = URL.createObjectURL(file);
     setImageSrc(imgUrl);
     setShowCropper(true);
@@ -509,9 +570,12 @@ const UserCardWithForm: React.FC = () => {
     setCroppedAreaPixels(null);
   };
 
-  const onCropComplete = useCallback((_: unknown, croppedAreaPixels: CroppedAreaPixels) => {
-    setCroppedAreaPixels(croppedAreaPixels);
-  }, []);
+  const onCropComplete = useCallback(
+    (_: unknown, croppedAreaPixels: CroppedAreaPixels) => {
+      setCroppedAreaPixels(croppedAreaPixels);
+    },
+    []
+  );
 
   const handleCropSave = async () => {
     if (!imageSrc || !croppedAreaPixels) return alert("Select area to crop");
@@ -534,54 +598,70 @@ const UserCardWithForm: React.FC = () => {
 
       // Clean up blob URLs after setting preview
       if (imageSrc.startsWith("blob:")) URL.revokeObjectURL(imageSrc);
-      if (photoPreview && photoPreview.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
+      if (photoPreview && photoPreview.startsWith("blob:"))
+        URL.revokeObjectURL(photoPreview);
 
       const blob = dataURLtoBlob(croppedImage);
       console.log("📦 Created blob:", `${(blob.size / 1024).toFixed(2)}KB`);
 
       // Prepare FormData for API request
       const formData = new FormData();
-      formData.append('file', blob, 'profile-image.jpg');
-      formData.append('background_color', projectData?.personPhotoBGColorCode || "#ffffff");
-      formData.append('width', "200");
-      formData.append('height', "200");
-      formData.append('enhance_quality', "true");
-      formData.append('center_face', "false");
+      formData.append("file", blob, "profile-image.jpg");
+      formData.append(
+        "background_color",
+        projectData?.personPhotoBGColorCode || "#ffffff"
+      );
+      formData.append("width", "200");
+      formData.append("height", "200");
+      formData.append("enhance_quality", "true");
+      formData.append("center_face", "false");
 
       console.log("🔄 Background removal request:", {
         backgroundColor: projectData?.personPhotoBGColorCode || "#ffffff",
-        dimensions: "200x200"
+        dimensions: "200x200",
       });
 
       // Make API request to remove background using proxy
-      const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_AI_SERVER_URL}/process-id-photo`, {
-        method: 'POST',
-        body: formData,
-      });
+      const apiResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_AI_SERVER_URL}/process-id-photo`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       console.log("📡 API Response:", apiResponse.status);
 
       if (!apiResponse.ok) {
         const errorText = await apiResponse.text();
         console.log("❌ API Error:", errorText);
-        throw new Error(`API Error! status: ${apiResponse.status}, message: ${errorText}`);
+        throw new Error(
+          `API Error! status: ${apiResponse.status}, message: ${errorText}`
+        );
       }
 
       // Process response
       let processedImageBlob: Blob | null = null;
-      const contentType = apiResponse.headers.get('content-type');
+      const contentType = apiResponse.headers.get("content-type");
       console.log("Response Content-Type:", contentType);
 
-      if (contentType && contentType.includes('application/json')) {
+      if (contentType && contentType.includes("application/json")) {
         const apiResult = await apiResponse.json();
         console.log("📄 JSON Response:", apiResult);
 
-        if (apiResult.imageUrl || apiResult.processedImageUrl || apiResult.image_url) {
-          const processedImageUrl = apiResult.imageUrl || apiResult.processedImageUrl || apiResult.image_url;
+        if (
+          apiResult.imageUrl ||
+          apiResult.processedImageUrl ||
+          apiResult.image_url
+        ) {
+          const processedImageUrl =
+            apiResult.imageUrl ||
+            apiResult.processedImageUrl ||
+            apiResult.image_url;
           const imageResponse = await fetch(processedImageUrl);
           processedImageBlob = await imageResponse.blob();
         }
-      } else if (contentType && contentType.includes('image')) {
+      } else if (contentType && contentType.includes("image")) {
         processedImageBlob = await apiResponse.blob();
         const processedImageUrl = URL.createObjectURL(processedImageBlob);
         console.log("🖼️ Direct image response");
@@ -595,9 +675,13 @@ const UserCardWithForm: React.FC = () => {
         setIsUploadingImage(true);
         console.log("☁️ Uploading to ImgBB...");
 
-        const processedFile = new File([processedImageBlob], 'processed-image.png', {
-          type: processedImageBlob.type || 'image/png'
-        });
+        const processedFile = new File(
+          [processedImageBlob],
+          "processed-image.png",
+          {
+            type: processedImageBlob.type || "image/png",
+          }
+        );
 
         const hostedUrl = await imageUpload(processedFile);
 
@@ -616,7 +700,9 @@ const UserCardWithForm: React.FC = () => {
         try {
           setIsUploadingImage(true);
           const croppedBlob = dataURLtoBlob(croppedImage);
-          const croppedFile = new File([croppedBlob], 'cropped-image.jpg', { type: 'image/jpeg' });
+          const croppedFile = new File([croppedBlob], "cropped-image.jpg", {
+            type: "image/jpeg",
+          });
           const hostedUrl = await imageUpload(croppedFile);
 
           if (hostedUrl) {
@@ -635,7 +721,6 @@ const UserCardWithForm: React.FC = () => {
       setShowCropper(false);
       setImageSrc(null);
       console.log("✅ Process completed successfully");
-
     } catch (error) {
       console.error("❌ Error in crop save:", error);
 
@@ -653,7 +738,9 @@ const UserCardWithForm: React.FC = () => {
         try {
           setIsUploadingImage(true);
           const croppedBlob = dataURLtoBlob(croppedImage);
-          const croppedFile = new File([croppedBlob], 'cropped-image.jpg', { type: 'image/jpeg' });
+          const croppedFile = new File([croppedBlob], "cropped-image.jpg", {
+            type: "image/jpeg",
+          });
           const hostedUrl = await imageUpload(croppedFile);
 
           if (hostedUrl) {
@@ -680,23 +767,23 @@ const UserCardWithForm: React.FC = () => {
     setProfileUrl(PLACEHOLDER_IMAGE);
   };
 
-const handleTakePhoto = async () => {
+  const handleTakePhoto = async () => {
     try {
       console.log("📷 Requesting webcam...");
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: { ideal: 'environment' } } 
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: "environment" } },
       });
       streamRef.current = stream;
       setShowWebcam(true);
-  // const handleTakePhoto = async () => {
-  //   try {
-  //     console.log("📷 Requesting webcam...");
-  //     const stream = await navigator.mediaDevices.getUserMedia({ 
-  //       video: { facingMode: 'user' } 
-  //     });
-  //     streamRef.current = stream;
-  //     setShowWebcam(true);
-      
+      // const handleTakePhoto = async () => {
+      //   try {
+      //     console.log("📷 Requesting webcam...");
+      //     const stream = await navigator.mediaDevices.getUserMedia({
+      //       video: { facingMode: 'user' }
+      //     });
+      //     streamRef.current = stream;
+      //     setShowWebcam(true);
+
       // Wait for next tick to ensure video element is rendered
       setTimeout(() => {
         if (videoRef.current) {
@@ -849,50 +936,50 @@ const handleTakePhoto = async () => {
   //   }
   // };
 
-
   const handleSaveData = async () => {
     setIsSaving(true);
     setSaveSuccess(false);
     setFinalImageUrl(null);
 
     // Build field values array with correct setBy logic
-    const additionalFieldValues = projectData?.additionalFields?.map(fieldObj => {
-      // Check if this field has existing data
-      const existingField = existingCardData?.additionalfieldValues?.find(
-        existing => existing.fieldName === fieldObj.fieldName
-      );
+    const additionalFieldValues =
+      projectData?.additionalFields?.map((fieldObj) => {
+        // Check if this field has existing data
+        const existingField = existingCardData?.additionalfieldValues?.find(
+          (existing) => existing.fieldName === fieldObj.fieldName
+        );
 
-      // Determine value and setBy
-      let fieldValue: string;
-      let setBy: "owner" | "user";
+        // Determine value and setBy
+        let fieldValue: string;
+        let setBy: "owner" | "user";
 
-      if (existingField && existingField.setBy === "owner") {
-        // Keep existing owner value
-        fieldValue = existingField.fieldValue;
-        setBy = "owner";
-      } else if (fieldObj.defaultValue) {
-        // Use project default value
-        fieldValue = fieldObj.defaultValue;
-        setBy = "owner";
-      } else {
-        // Use user input value
-        fieldValue = values[fieldObj.fieldName] || "";
-        setBy = "user";
-      }
+        if (existingField && existingField.setBy === "owner") {
+          // Keep existing owner value
+          fieldValue = existingField.fieldValue;
+          setBy = "owner";
+        } else if (fieldObj.defaultValue) {
+          // Use project default value
+          fieldValue = fieldObj.defaultValue;
+          setBy = "owner";
+        } else {
+          // Use user input value
+          fieldValue = values[fieldObj.fieldName] || "";
+          setBy = "user";
+        }
 
-      return {
-        fieldName: fieldObj.fieldName,
-        fieldValue: fieldValue,
-        setBy: setBy
-      };
-    }) || [];
+        return {
+          fieldName: fieldObj.fieldName,
+          fieldValue: fieldValue,
+          setBy: setBy,
+        };
+      }) || [];
 
     const responseData = {
       batchId: parseInt(projectData?.batchId.toString() || "0"),
       serialOrRollNumber: parseInt(rollSerial || "0"),
       name: studentName,
       personalPhotoUrl: profileUrl,
-      additionalfieldValues: additionalFieldValues
+      additionalfieldValues: additionalFieldValues,
     };
 
     console.log("🔄 Generating ID card:", responseData);
@@ -903,14 +990,17 @@ const handleTakePhoto = async () => {
     }
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}project/getMyId`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(responseData)
-      });
-console.log("====================================================");
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}project/getMyId`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(responseData),
+        }
+      );
+      console.log("====================================================");
       // Log all available headers for debugging
       console.log("📋 All Response Headers:");
       response.headers.forEach((value, key) => {
@@ -918,12 +1008,14 @@ console.log("====================================================");
       });
 
       // Get the card-number from response headers
-      const cardNumber = response.headers.get('Card-Number');
+      const cardNumber = response.headers.get("Card-Number");
       console.log("🎫 Card Number:", cardNumber);
       setIdNumber(cardNumber);
 
       if (!cardNumber) {
-        console.warn("⚠️ card-number header not found. The server may need to add 'Access-Control-Expose-Headers: card-number' to expose this header.");
+        console.warn(
+          "⚠️ card-number header not found. The server may need to add 'Access-Control-Expose-Headers: card-number' to expose this header."
+        );
       }
 
       console.log("response from geting my id =========>", response);
@@ -933,18 +1025,18 @@ console.log("====================================================");
       }
 
       // Check response content type
-      const contentType = response.headers.get('content-type');
+      const contentType = response.headers.get("content-type");
 
-      if (contentType && contentType.includes('image')) {
+      if (contentType && contentType.includes("image")) {
         // Direct image response
         const imageBlob = await response.blob();
         const imageUrl = URL.createObjectURL(imageBlob);
         setFinalImageUrl(imageUrl);
-        console.log('✅ Generated image URL from blob');
+        console.log("✅ Generated image URL from blob");
       } else {
         // JSON response
         const result = await response.json();
-        console.log('📄 Save data response:', result);
+        console.log("📄 Save data response:", result);
 
         // Check for different possible image URL fields
         if (result.imageUrl) {
@@ -966,11 +1058,15 @@ console.log("====================================================");
       // Show success page after successful generation
       setTimeout(() => {
         setShowSuccessPage(true);
-        console.log(existingCardData ? '🎉 Card updated successfully' : '🎉 New card created successfully');
+        console.log(
+          existingCardData
+            ? "🎉 Card updated successfully"
+            : "🎉 New card created successfully"
+        );
       }, 1000); // Small delay to show success message
-
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error occurred";
       console.error(`❌ Failed to save data: ${errorMessage}`);
       alert(`Failed to save data. Error: ${errorMessage}`);
     } finally {
@@ -988,7 +1084,7 @@ console.log("====================================================");
     // Reset only fields without default values
     const resetValues: { [key: string]: string } = {};
     if (projectData?.additionalFields) {
-      projectData.additionalFields.forEach(field => {
+      projectData.additionalFields.forEach((field) => {
         if (!field.defaultValue) {
           resetValues[field.fieldName] = "";
         }
@@ -1002,9 +1098,12 @@ console.log("====================================================");
   useEffect(() => {
     return () => {
       console.log("🧹 Cleanup");
-      if (imageSrc && imageSrc.startsWith("blob:")) URL.revokeObjectURL(imageSrc);
-      if (photoPreview && photoPreview.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
-      if (finalImageUrl && finalImageUrl.startsWith("blob:")) URL.revokeObjectURL(finalImageUrl);
+      if (imageSrc && imageSrc.startsWith("blob:"))
+        URL.revokeObjectURL(imageSrc);
+      if (photoPreview && photoPreview.startsWith("blob:"))
+        URL.revokeObjectURL(photoPreview);
+      if (finalImageUrl && finalImageUrl.startsWith("blob:"))
+        URL.revokeObjectURL(finalImageUrl);
       streamRef.current?.getTracks().forEach((track) => track.stop());
     };
   }, [imageSrc, photoPreview, finalImageUrl]);
@@ -1014,7 +1113,7 @@ console.log("====================================================");
     if (!fieldName) return "";
     return fieldName
       .replace(/([A-Z])/g, " $1")
-      .replace(/^./, str => str.toUpperCase());
+      .replace(/^./, (str) => str.toUpperCase());
   };
 
   // Show success page when image is ready
@@ -1026,7 +1125,6 @@ console.log("====================================================");
         studentName={studentName}
         onBackToForm={handleBackToForm}
         batchCode={batchCode}
-        
       />
     );
   }
@@ -1038,7 +1136,7 @@ console.log("====================================================");
 
   // Error state
   if (error) {
-    console.error('❌ Error: from UserCardWithForm error state', error);
+    console.error("❌ Error: from UserCardWithForm error state", error);
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-6">
         <div className="text-center">
@@ -1056,9 +1154,7 @@ console.log("====================================================");
             {error}
           </p>
           <Link href="/">
-            <Button
-              className="px-6 py-2 bg-blue-600/60 text-white font-medium rounded-lg hover:bg-blue-700/80 focus:ring-2 focus:ring-red-400 focus:outline-none transition-colors duration-200"
-            >
+            <Button className="px-6 py-2 bg-blue-600/60 text-white font-medium rounded-lg hover:bg-blue-700/80 focus:ring-2 focus:ring-red-400 focus:outline-none transition-colors duration-200">
               Try Again
             </Button>
           </Link>
@@ -1086,9 +1182,7 @@ console.log("====================================================");
             No project data found for this batch code.
           </p>
           <Link href="/">
-            <Button
-              className="px-6 py-2 bg-blue-600/60 text-white font-medium rounded-lg hover:bg-blue-700/80 focus:ring-2 focus:ring-red-400 focus:outline-none transition-colors duration-200"
-            >
+            <Button className="px-6 py-2 bg-blue-600/60 text-white font-medium rounded-lg hover:bg-blue-700/80 focus:ring-2 focus:ring-red-400 focus:outline-none transition-colors duration-200">
               Try Again
             </Button>
           </Link>
@@ -1098,7 +1192,8 @@ console.log("====================================================");
   }
 
   // Check if any loading operation is in progress
-  const isAnyLoading = isCropping || isProcessingBackground || isUploadingImage || isSaving;
+  const isAnyLoading =
+    isCropping || isProcessingBackground || isUploadingImage || isSaving;
 
   if (existingCardData) {
     return (
@@ -1121,18 +1216,24 @@ console.log("====================================================");
                     fields={fields}
                     values={{
                       ...values,
-                      ...projectData.additionalFields.reduce((acc: any, field: any) => {
-                        if (field.defaultValue) {
-                          acc[field.fieldName] = field.defaultValue;
-                        }
-                        return acc;
-                      }, {} as { [key: string]: string }),
-                      ...(existingCardData?.additionalfieldValues || []).reduce((acc: any, field: any) => {
-                        if (field.setBy === "owner") {
-                          acc[field.fieldName] = field.fieldValue;
-                        }
-                        return acc;
-                      }, {} as { [key: string]: string })
+                      ...projectData.additionalFields.reduce(
+                        (acc: any, field: any) => {
+                          if (field.defaultValue) {
+                            acc[field.fieldName] = field.defaultValue;
+                          }
+                          return acc;
+                        },
+                        {} as { [key: string]: string }
+                      ),
+                      ...(existingCardData?.additionalfieldValues || []).reduce(
+                        (acc: any, field: any) => {
+                          if (field.setBy === "owner") {
+                            acc[field.fieldName] = field.fieldValue;
+                          }
+                          return acc;
+                        },
+                        {} as { [key: string]: string }
+                      ),
                     }}
                   />
                 ) : (
@@ -1149,18 +1250,24 @@ console.log("====================================================");
                     fields={fields}
                     values={{
                       ...values,
-                      ...projectData.additionalFields.reduce((acc: any, field: any) => {
-                        if (field.defaultValue) {
-                          acc[field.fieldName] = field.defaultValue;
-                        }
-                        return acc;
-                      }, {} as { [key: string]: string }),
-                      ...(existingCardData?.additionalfieldValues || []).reduce((acc: any, field: any) => {
-                        if (field.setBy === "owner") {
-                          acc[field.fieldName] = field.fieldValue;
-                        }
-                        return acc;
-                      }, {} as { [key: string]: string })
+                      ...projectData.additionalFields.reduce(
+                        (acc: any, field: any) => {
+                          if (field.defaultValue) {
+                            acc[field.fieldName] = field.defaultValue;
+                          }
+                          return acc;
+                        },
+                        {} as { [key: string]: string }
+                      ),
+                      ...(existingCardData?.additionalfieldValues || []).reduce(
+                        (acc: any, field: any) => {
+                          if (field.setBy === "owner") {
+                            acc[field.fieldName] = field.fieldValue;
+                          }
+                          return acc;
+                        },
+                        {} as { [key: string]: string }
+                      ),
                     }}
                   />
                 )}
@@ -1179,10 +1286,17 @@ console.log("====================================================");
 
   return (
     <div className="bg-background">
-      <div className={`container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 ${isAnyLoading ? 'blur-sm pointer-events-none' : ''}`}>
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-1">
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-0 sm:mb-0">
-           {projectData.cardType === "Student" ? "Student" : (projectData.cardType || "User")} Information
+      <div
+        className={`container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 ${
+          isAnyLoading ? "blur-sm pointer-events-none" : ""
+        }`}
+      >
+        <div className="flex flex-col sm:flex-row sm:items-center md:justify-between mb-1">
+          <h1 className="text-xl sm:text-2xl text-center font-bold p-4 rounded-lg bg-blue-500 md:bg-white text-white md:text-black mb-0 sm:mb-0">
+            {projectData.cardType === "Student"
+              ? "Student"
+              : projectData.cardType || "User"}{" "}
+            Information
           </h1>
         </div>
 
@@ -1197,20 +1311,29 @@ console.log("====================================================");
 
         <div className="flex flex-col-reverse gap-10 lg:flex-row lg:gap-8">
           <div className="w-full lg:w-1/2 space-y-6">
-          <div className="flex flex-col sm:flex-row flex-wrap items-center gap-3 sm:gap-4 mt-6 sm:mt-8">
-
- <label
-                className={`flex items-center justify-center border border-transparent hover:border-gray-300 rounded-xl px-4 sm:px-6 py-2 sm:py-3 cursor-pointer hover:bg-gray-50 transition ${isAnyLoading ? 'opacity-50 pointer-events-none' : ''}`}
+            <div className="flex flex-col sm:flex-row flex-wrap items-center gap-3 sm:gap-4 mt-6 sm:mt-8">
+              <label
+                className={`flex items-center justify-center border border-transparent hover:border-gray-300 rounded-xl px-4 sm:px-6 py-2 sm:py-3 cursor-pointer hover:bg-gray-50 transition ${
+                  isAnyLoading ? "opacity-50 pointer-events-none" : ""
+                }`}
               >
                 <input
                   type="file"
                   accept="image/*"
                   className="hidden"
-                  onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+                  onChange={(e) =>
+                    handleFileChange(e.target.files?.[0] || null)
+                  }
                   disabled={isAnyLoading}
                 />
                 <span className="flex items-center gap-2 font-semibold text-sm sm:text-base">
-                  <Image className="" src={UploadImage} width={20} height={20} alt="Upload" />
+                  <Image
+                    className=""
+                    src={UploadImage}
+                    width={20}
+                    height={20}
+                    alt="Upload"
+                  />
                   Upload Image
                 </span>
               </label>
@@ -1223,8 +1346,35 @@ console.log("====================================================");
                 <IoCameraOutline size={20} className="text-xl sm:text-2xl" />
                 <span>Take Photo</span>
               </button>
-
-          </div>
+            </div>
+            <div>
+              {photoPreview && (
+                <div className="mt-4">
+                  <p className="text-sm text-gray-600 mb-2">
+                    📸 Current Photo:
+                  </p>
+                  <div className="relative w-fit">
+                    <Image
+                      src={photoPreview}
+                      alt="Profile Preview"
+                      width={96}
+                      height={96}
+                      className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg border shadow"
+                      unoptimized
+                    />
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      className="absolute -top-2 -right-2 rounded-full h-6 w-6 sm:h-8 sm:w-8"
+                      onClick={handleRemovePhoto}
+                      disabled={isAnyLoading}
+                    >
+                      ✕
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col space-y-2">
                 <label className="text-sm font-medium text-gray-700">
@@ -1239,59 +1389,77 @@ console.log("====================================================");
                 />
               </div>
 
-              {projectData.additionalFields.length > 0 && projectData.additionalFields.map((fieldObj: any) => {
-                const existingOwnerField = existingCardData?.additionalfieldValues?.find(
-                  (existing: any) => existing.fieldName === fieldObj.fieldName && existing.setBy === "owner"
-                );
-                const nonEditableValue = existingOwnerField?.fieldValue || fieldObj.defaultValue;
-                const isNonEditable = !!nonEditableValue;
+              {projectData.additionalFields.length > 0 &&
+                projectData.additionalFields.map((fieldObj: any) => {
+                  const existingOwnerField =
+                    existingCardData?.additionalfieldValues?.find(
+                      (existing: any) =>
+                        existing.fieldName === fieldObj.fieldName &&
+                        existing.setBy === "owner"
+                    );
+                  const nonEditableValue =
+                    existingOwnerField?.fieldValue || fieldObj.defaultValue;
+                  const isNonEditable = !!nonEditableValue;
 
-                return (
-                  <div key={fieldObj._id} className="flex flex-col space-y-2">
-                    <label className="text-sm font-medium text-gray-700">
-                      {formatFieldName(fieldObj?.fieldName) || "Loading..."} *
-                    </label>
-                    {isNonEditable ? (
-                      <div className="relative group">
-                        <Input
-                          value={nonEditableValue}
-                          disabled={true}
-                          className="h-10 sm:h-12 bg-gray-200 text-black text-sm sm:text-base cursor-not-allowed"
-                        />
-                        <span className="absolute inset-y-0 right-0 flex items-center pr-3">
-                          <AiOutlineExclamationCircle className="h-4 w-4 sm:h-5 sm:w-5 text-red-500 cursor-help" />
-                        </span>
-                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 sm:px-3 py-1 sm:py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
-                          This field is not editable
-                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                  return (
+                    <div key={fieldObj._id} className="flex flex-col space-y-2">
+                      <label className="text-sm font-medium text-gray-700">
+                        {formatFieldName(fieldObj?.fieldName) || "Loading..."} *
+                      </label>
+                      {isNonEditable ? (
+                        <div className="relative group">
+                          <Input
+                            value={nonEditableValue}
+                            disabled={true}
+                            className="h-10 sm:h-12 bg-gray-200 text-black text-sm sm:text-base cursor-not-allowed"
+                          />
+                          <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+                            <AiOutlineExclamationCircle className="h-4 w-4 sm:h-5 sm:w-5 text-red-500 cursor-help" />
+                          </span>
+                          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 sm:px-3 py-1 sm:py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                            This field is not editable
+                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                          </div>
                         </div>
-                      </div>
-                    ) : (
-                      <Input
-                        value={values[fieldObj.fieldName] || ""}
-                        onChange={(e) => handleChange(fieldObj.fieldName, e.target.value)}
-                        disabled={isAnyLoading}
-                        placeholder={`Enter ${formatFieldName(fieldObj?.fieldName)?.toLowerCase() ?? ""}`}
-                        className="h-10 sm:h-12 bg-gray-100 text-black text-sm sm:text-base"
-                      />
-                    )}
-                  </div>
-                );
-              })}
+                      ) : (
+                        <Input
+                          value={values[fieldObj.fieldName] || ""}
+                          onChange={(e) =>
+                            handleChange(fieldObj.fieldName, e.target.value)
+                          }
+                          disabled={isAnyLoading}
+                          placeholder={`Enter ${
+                            formatFieldName(
+                              fieldObj?.fieldName
+                            )?.toLowerCase() ?? ""
+                          }`}
+                          className="h-10 sm:h-12 bg-gray-100 text-black text-sm sm:text-base"
+                        />
+                      )}
+                    </div>
+                  );
+                })}
             </div>
-            <h1 className="text-xs sm:text-sm text-center font-semibold text-gray-500 mt-2 sm:mt-8">Please ensure all information is correct before submiting</h1>
+            <h1 className="text-xs sm:text-sm text-center font-semibold  text-red-400 mt-2 sm:mt-8">
+              Please ensure all information is correct before submiting
+            </h1>
 
             <div className="flex flex-col sm:flex-row flex-wrap items-center gap-3 sm:gap-4 mt-6 sm:mt-8">
-             
-
               <Button
                 className="bg-[#4A61E4] w-full md:w-auto hover:bg-blue-700 py-2 sm:py-3 px-4 sm:px-7 rounded-xl text-white text-sm sm:text-base"
                 onClick={handleSaveData}
                 disabled={isAnyLoading}
               >
-                {isSaving ? "⏳ Submitting..." : (
+                {isSaving ? (
+                  "⏳ Submitting..."
+                ) : (
                   <>
-                    <Image src={DownloadImage} width={20} height={20} alt="Submit" />
+                    <Image
+                      src={DownloadImage}
+                      width={20}
+                      height={20}
+                      alt="Submit"
+                    />
                     Submit
                   </>
                 )}
@@ -1311,31 +1479,6 @@ console.log("====================================================");
             {saveSuccess && !showSuccessPage && (
               <div className="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded-lg text-sm">
                 ✅ ID Card generated successfully! Redirecting...
-              </div>
-            )}
-
-            {photoPreview && (
-              <div className="mt-4">
-                <p className="text-sm text-gray-600 mb-2">📸 Current Photo:</p>
-                <div className="relative w-fit">
-                  <Image
-                    src={photoPreview}
-                    alt="Profile Preview"
-                    width={96}
-                    height={96}
-                    className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg border shadow"
-                    unoptimized
-                  />
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    className="absolute -top-2 -right-2 rounded-full h-6 w-6 sm:h-8 sm:w-8"
-                    onClick={handleRemovePhoto}
-                    disabled={isAnyLoading}
-                  >
-                    ✕
-                  </Button>
-                </div>
               </div>
             )}
           </div>
@@ -1359,18 +1502,24 @@ console.log("====================================================");
                   fields={fields}
                   values={{
                     ...values,
-                    ...projectData.additionalFields.reduce((acc: any, field: any) => {
-                      if (field.defaultValue) {
-                        acc[field.fieldName] = field.defaultValue;
-                      }
-                      return acc;
-                    }, {} as { [key: string]: string }),
-                    ...(existingCardData?.additionalfieldValues || []).reduce((acc: any, field: any) => {
-                      if (field.setBy === "owner") {
-                        acc[field.fieldName] = field.fieldValue;
-                      }
-                      return acc;
-                    }, {} as { [key: string]: string })
+                    ...projectData.additionalFields.reduce(
+                      (acc: any, field: any) => {
+                        if (field.defaultValue) {
+                          acc[field.fieldName] = field.defaultValue;
+                        }
+                        return acc;
+                      },
+                      {} as { [key: string]: string }
+                    ),
+                    ...(existingCardData?.additionalfieldValues || []).reduce(
+                      (acc: any, field: any) => {
+                        if (field.setBy === "owner") {
+                          acc[field.fieldName] = field.fieldValue;
+                        }
+                        return acc;
+                      },
+                      {} as { [key: string]: string }
+                    ),
                   }}
                 />
               ) : (
@@ -1387,18 +1536,24 @@ console.log("====================================================");
                   fields={fields}
                   values={{
                     ...values,
-                    ...projectData.additionalFields.reduce((acc: any, field: any) => {
-                      if (field.defaultValue) {
-                        acc[field.fieldName] = field.defaultValue;
-                      }
-                      return acc;
-                    }, {} as { [key: string]: string }),
-                    ...(existingCardData?.additionalfieldValues || []).reduce((acc: any, field: any) => {
-                      if (field.setBy === "owner") {
-                        acc[field.fieldName] = field.fieldValue;
-                      }
-                      return acc;
-                    }, {} as { [key: string]: string })
+                    ...projectData.additionalFields.reduce(
+                      (acc: any, field: any) => {
+                        if (field.defaultValue) {
+                          acc[field.fieldName] = field.defaultValue;
+                        }
+                        return acc;
+                      },
+                      {} as { [key: string]: string }
+                    ),
+                    ...(existingCardData?.additionalfieldValues || []).reduce(
+                      (acc: any, field: any) => {
+                        if (field.setBy === "owner") {
+                          acc[field.fieldName] = field.fieldValue;
+                        }
+                        return acc;
+                      },
+                      {} as { [key: string]: string }
+                    ),
                   }}
                 />
               )}
@@ -1411,8 +1566,12 @@ console.log("====================================================");
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-6 text-center w-full max-w-[90%] sm:max-w-sm mx-4">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <h3 className="text-base sm:text-lg font-semibold mb-2">Generating ID Card...</h3>
-            <p className="text-sm text-gray-600">Please wait while we create your ID card</p>
+            <h3 className="text-base sm:text-lg font-semibold mb-2">
+              Generating ID Card...
+            </h3>
+            <p className="text-sm text-gray-600">
+              Please wait while we create your ID card
+            </p>
           </div>
         </div>
       )}
@@ -1422,14 +1581,18 @@ console.log("====================================================");
           <div className="bg-white rounded-lg p-6 text-center w-full max-w-[90%] sm:max-w-sm mx-4">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto mb-4"></div>
             <h3 className="text-base sm:text-lg font-semibold mb-2">
-              {isCropping ? "Cropping Image..." :
-                isProcessingBackground ? "Processing Background..." :
-                  "Uploading Image..."}
+              {isCropping
+                ? "Cropping Image..."
+                : isProcessingBackground
+                ? "Processing Background..."
+                : "Uploading Image..."}
             </h3>
             <p className="text-sm text-gray-600">
-              {isCropping ? "Applying your crop selection" :
-                isProcessingBackground ? "Removing background and enhancing photo" :
-                  "Saving processed image to cloud"}
+              {isCropping
+                ? "Applying your crop selection"
+                : isProcessingBackground
+                ? "Removing background and enhancing photo"
+                : "Saving processed image to cloud"}
             </p>
           </div>
         </div>
@@ -1439,7 +1602,9 @@ console.log("====================================================");
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg w-full max-w-[90%] sm:max-w-2xl max-h-[90vh] overflow-hidden">
             <div className="p-4 border-b">
-              <h3 className="text-base sm:text-lg font-semibold">Crop Your Image</h3>
+              <h3 className="text-base sm:text-lg font-semibold">
+                Crop Your Image
+              </h3>
             </div>
             <div className="relative h-64 sm:h-96 bg-gray-100">
               <Cropper
@@ -1458,22 +1623,26 @@ console.log("====================================================");
                 variant="outline"
                 onClick={() => setShowCropper(false)}
                 className="h-10 sm:h-12 text-sm sm:text-base"
-                disabled={isCropping || isProcessingBackground || isUploadingImage}
+                disabled={
+                  isCropping || isProcessingBackground || isUploadingImage
+                }
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleCropSave}
                 className="bg-blue-600 text-white h-10 sm:h-12 text-sm sm:text-base"
-                disabled={isCropping || isProcessingBackground || isUploadingImage}
+                disabled={
+                  isCropping || isProcessingBackground || isUploadingImage
+                }
               >
                 {isCropping
                   ? "Cropping..."
                   : isProcessingBackground
-                    ? "Processing..."
-                    : isUploadingImage
-                      ? "Uploading..."
-                      : "Apply Crop"}
+                  ? "Processing..."
+                  : isUploadingImage
+                  ? "Uploading..."
+                  : "Apply Crop"}
               </Button>
             </div>
           </div>
@@ -1483,8 +1652,15 @@ console.log("====================================================");
       {showWebcam && !isSaving && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg w-full max-w-[90%] sm:max-w-md p-4 sm:p-6">
-            <h3 className="text-base sm:text-lg font-semibold mb-4">📷 Capture Photo</h3>
-            <video ref={videoRef} autoPlay playsInline className="w-full rounded-lg bg-black" />
+            <h3 className="text-base sm:text-lg font-semibold mb-4">
+              📷 Capture Photo
+            </h3>
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              className="w-full rounded-lg bg-black"
+            />
             <div className="flex flex-col sm:flex-row justify-end gap-3 mt-4">
               <Button
                 variant="outline"

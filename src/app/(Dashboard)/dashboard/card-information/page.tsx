@@ -417,8 +417,8 @@ export default function InstituteTemplateSetupPage() {
 
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="max-w-full mx-auto">
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8">
-            {idCardType === "employee" ? "Employee Information Form" : "Student Information Form"  }
+          <h1 className="text-xl bg-blue-500 p-4 rounded-md text-center lg:text-start text-white sm:text-2xl font-bold lg:bg-white lg:text-gray-900 mb-6 sm:mb-8">
+            User Information Form 
           </h1>
 
           <div className="flex flex-col-reverse gap-10 lg:flex-row lg:gap-8">

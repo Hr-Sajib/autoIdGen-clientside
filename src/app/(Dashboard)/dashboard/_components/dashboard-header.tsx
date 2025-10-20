@@ -43,12 +43,12 @@ export function DashboardHeader() {
           </div>
 
           {/* Mobile: Dashboard navigation buttons */}
-          <div className="md:hidden mt-4 flex gap-2">
+          {/* <div className="md:hidden mt-4 flex gap-2">
             <Button className="bg-blue-600 hover:bg-blue-700 text-white">
               <Home className="mr-2 h-4 w-4" />
               Dashboard
             </Button>
-          </div>
+          </div> */}
         </div>
       </header>
 

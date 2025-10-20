@@ -38,7 +38,7 @@ export default function HeroSection() {
         >
           Generate Id card
         </button> */}
-        <p className="mt-2 text-xs flex items-center text-gray-300 justify-center gap-2">Click here to generate your id card <span><GiArrowCursor size={15} /></span> </p>
+        <p className="mt-2 text-xs flex items-center text-gray-300 justify-center gap-2">Click here to generate your ID card <span><GiArrowCursor size={15} /></span> </p>
     
 
 

@@ -17,6 +17,7 @@ import Loading from "@/app/loading";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { IoCameraOutline, IoDocument } from "react-icons/io5";
 import { BiIdCard } from "react-icons/bi";
+import ReceiptImage from "@/../public/images/placeholder-reciept.jpg";
 
 // ===========================
 // Type Definitions
@@ -197,6 +198,8 @@ const dataURLtoBlob = (dataURL: string): Blob => {
 // ===========================
 // Success Page Component (EXACT ORIGINAL DESIGN)
 // ===========================
+
+
 interface IDCardSuccessPageProps {
   finalImageUrl: string;
   studentName: string;
@@ -213,8 +216,11 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({
   batchCode,
 }) => {
   const [isDownloading, setIsDownloading] = useState(false);
+  const [receipt, setReceipt] = useState<string | null>(null);
+  const [loadingReceipt, setLoadingReceipt] = useState(false);
+  const [receiptError, setReceiptError] = useState<string | null>(null);
+  const [zoom, setZoom] = useState(100);
 
-  // Helper function to download image
   const downloadImage = async (imageUrl: string, filename: string) => {
     try {
       setIsDownloading(true);
@@ -233,11 +239,30 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({
     }
   };
 
+  const downloadPDF = async (pdfUrl: string, filename: string) => {
+    try {
+      setIsDownloading(true);
+      const link = document.createElement("a");
+      link.href = pdfUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("PDF download failed:", error);
+      alert("Failed to download PDF. Please try again.");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   const handleGetReceipt = async (idNumber: string) => {
     try {
+      setLoadingReceipt(true);
+      setReceiptError(null);
       const baseUrl =
         process.env.NEXT_PUBLIC_API_URL || "https://api.autoidgen.com/api/v1/";
-      // const batchCode = "6185"; // If this is dynamic, pass it as a parameter
+
       const response = await fetch(
         `${baseUrl}project/receipt/${batchCode}/${idNumber}`,
         {
@@ -249,81 +274,207 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({
         throw new Error(`Failed to fetch receipt: ${response.statusText}`);
       }
 
-      // Get the PDF blob
       const blob = await response.blob();
-
-      // Create a URL for the blob
       const blobUrl = URL.createObjectURL(blob);
-
-      // Open in a new tab
-      window.open(blobUrl, "_blank");
+      setReceipt(blobUrl);
+      setZoom(100);
     } catch (error) {
       console.error("Error fetching receipt PDF:", error);
+      setReceiptError("Failed to load receipt. Please try again.");
+    } finally {
+      setLoadingReceipt(false);
     }
   };
 
   return (
-    <div className="min-h-screen p-2">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-2 md:mb-0">
-          <h1 className="text-md font-bold text-green-600 mb-2 md:mb-0">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+      <div className="max-w-5xl mx-auto">
+        {/* Success Header */}
+        <div className="text-center mb-8 md:mb-10">
+          <h1 className="text-2xl md:text-3xl font-bold text-green-600 mb-2">
             🎉 ID Card Generated Successfully!
           </h1>
+          <p className="text-gray-600 text-sm md:text-base">
+            Your ID card is ready for download
+          </p>
         </div>
 
-        <div className="bg-white rounded-lg p-2 md:p-8 md:pt-4 text-center">
-          {/* <h3 className="text-xl font-semibold mb-6 text-gray-800">Final Generated ID Card</h3> */}
+        <div className="md:bg-white md:rounded-lg md:shadow-lg p-0 md:p-8">
+          {/* ID Card Section */}
+          <div className="mb-10 pb-10 border-b border-gray-200">
+            <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-6 text-center">
+              Generated ID Card
+            </h2>
+            <div className="flex justify-center mb-8">
+              <Image
+                src={finalImageUrl}
+                alt="Final ID Card"
+                width={500}
+                height={300}
+                className="border-2 border-gray-200 shadow-lg rounded-lg max-w-full h-auto"
+                unoptimized
+              />
+            </div>
 
-          <div className="mb-6">
-            <Image
-              src={finalImageUrl}
-              alt="Final ID Card"
-              width={500}
-              height={300}
-              className="border shadow-xl rounded-lg mx-auto max-w-full h-auto"
-              unoptimized
-            />
+            <div className="flex justify-center gap-3 flex-wrap">
+              <Button
+                onClick={() =>
+                  downloadImage(
+                    finalImageUrl,
+                    `${studentName || "Student"}_ID_Card.png`
+                  )
+                }
+                disabled={isDownloading}
+                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-2.5 px-6 rounded-lg shadow-md transition duration-300"
+              >
+                <Image src={DownloadImage} width={18} height={18} alt="" className="mr-2" />
+                Download Card
+              </Button>
+              <Button
+                onClick={() => window.open(finalImageUrl, "_blank")}
+                variant="outline"
+                className="border-2 border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold py-2.5 px-6 rounded-lg shadow-sm transition duration-300"
+              >
+                View Full Size
+              </Button>
+            </div>
           </div>
 
-          <div className="flex justify-center gap-4 flex-wrap mb-8">
-            <Button
-              onClick={() =>
-                downloadImage(
-                  finalImageUrl,
-                  `${studentName || "Student"}_ID_Card.png`
-                )
-              }
-              className="bg-[#4A61E4] hover:bg-blue-700 text-white"
-              disabled={isDownloading}
-            >
-              <Image src={DownloadImage} width={26} height={14} alt="" />
-              {isDownloading ? "Downloading..." : "Download"}
-            </Button>
-            <Button
-              onClick={() => window.open(finalImageUrl, "_blank")}
-              variant="outline"
-              className="px-6 py-3"
-            >
-              🔍 View Full Size
-            </Button>
-            <Button
-              onClick={() => handleGetReceipt(idNumber as string)}
-              className="bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-semibold py-2 px-4 shadow transition duration-300"
-            >
-              <IoDocument className="inline-block mr-2 text-lg" />
-              Download Receipt
-            </Button>
-          </div>
+          {/* Receipt Section */}
+          <div>
+            <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-6 text-center">
+              Receipt Document
+            </h2>
 
-          {/* <div className="border-t pt-6"> */}
-          {/* <Button
-              onClick={onBackToForm}
-              variant="outline"
-              className="md:px-8 md:py-2 text-xs md:text-base"
-            >
-              ← Create Another Card
-            </Button> */}
-          {/* </div> */}
+            {receipt ? (
+              <div className="mb-8">
+                {/* Custom PDF Viewer */}
+                <div className="bg-gray-300 rounded-lg overflow-hidden shadow-lg">
+                  {/* Zoom Controls */}
+                  <div className="flex items-center justify-between bg-gray-200 px-4 py-3 border-b border-gray-300">
+                    <div className="text-gray-700 text-sm font-medium">
+                      PDF Receipt
+                    </div>
+                    {/* <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setZoom(Math.max(50, zoom - 10))}
+                        className="p-1.5 rounded hover:bg-gray-400 transition text-black text-lg"
+                        title="Zoom Out"
+                      >
+                        −
+                      </button>
+                      <span className="text-black text-sm font-medium w-12 text-center">
+                        {zoom}%
+                      </span>
+                      <button
+                        onClick={() => setZoom(Math.min(200, zoom + 10))}
+                        className="p-1.5 rounded hover:bg-gray-400 transition text-black text-lg"
+                        title="Zoom In"
+                      >
+                        +
+                      </button>
+                      <button
+                        onClick={() => setReceipt(null)}
+                        className="p-1.5 rounded hover:bg-gray-700 transition text-black text-lg ml-2"
+                        title="Close"
+                      >
+                        ✕
+                      </button>
+                    </div> */}
+                  </div>
+
+                  {/* PDF Display */}
+                  <div className=" p-2 flex justify-center overflow-auto" style={{ maxHeight: "700px" }}>
+                    <iframe
+                      src={`${receipt}#toolbar=0&navpanes=0&scrollbar=0`}
+                      title="Receipt PDF"
+                      className="rounded border border-gray-400"
+                      style={{
+                        width: `${zoom}%`,
+                        height: `${zoom * 6 / 10}px`,
+                        minHeight: "600px"
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* PDF Action Buttons */}
+                <div className="flex justify-center gap-3 flex-wrap mt-6">
+                  <Button
+                    onClick={() =>
+                      downloadPDF(
+                        receipt,
+                        `${studentName || "Student"}_Receipt_${idNumber}.pdf`
+                      )
+                    }
+                    disabled={isDownloading}
+                    className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-semibold py-2.5 px-6 rounded-lg shadow-md transition duration-300"
+                  >
+                    <Image src={DownloadImage} width={18} height={18} alt="" className="mr-2" />
+                    Download Receipt
+                  </Button>
+                  <Button
+                    onClick={() => window.open(receipt, "_blank")}
+                    variant="outline"
+                    className="border-2 border-gray-300 hover:bg-gray-500 text-gray-700 font-semibold py-2.5 px-6 rounded-lg shadow-sm transition duration-300"
+                  >
+                    Open Full Size
+                  </Button>
+                </div>
+              </div>
+            ) : receiptError ? (
+              <div className="bg-red-50 border-2 border-red-300 rounded-lg p-4 md:p-6 text-center mb-6">
+                <p className="text-red-700 font-medium text-sm md:text-base">
+                  ⚠️ {receiptError}
+                </p>
+              </div>
+            ) : (
+              <div className="mb-8">
+               {/* Placeholder Reference Image (Small Preview) */}
+<div className="flex flex-col items-center mb-6">
+  <Image
+    src={ReceiptImage}
+    alt="Receipt Placeholder"
+    width={200}
+    height={200}
+    className="rounded-lg border border-gray-300 shadow-sm mb-3 object-contain"
+    unoptimized
+  />
+  <p className="text-gray-500 text-xs text-center mb-2">
+    Reference preview only
+  </p>
+
+  {/* Get Receipt Button */}
+  <Button
+    onClick={() => handleGetReceipt(idNumber as string)}
+    disabled={loadingReceipt}
+    className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-2.5 px-8 rounded-lg shadow-md transition duration-300"
+  >
+    {loadingReceipt ? (
+      <>
+        <span className="inline-block animate-spin mr-2">⏳</span>
+        Loading Receipt...
+      </>
+    ) : (
+      <>Get Receipt</>
+    )}
+  </Button>
+</div>
+
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Footer Actions */}
+        <div className="flex justify-center mt-8">
+          <Button
+            onClick={onBackToForm}
+            variant="outline"
+            className="border-2 border-gray-300 hover:bg-gray-500 text-gray-700 font-semibold py-2.5 px-8 rounded-lg shadow-sm transition duration-300"
+          >
+            Create Another Card
+          </Button>
         </div>
       </div>
     </div>

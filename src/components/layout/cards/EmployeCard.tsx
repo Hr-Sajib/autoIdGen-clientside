@@ -117,7 +117,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
             alt="Employee Photo"
             width={100}
             height={100}
-            className="w-[70px] h-[70px] md:w-[110px] md:h-[110px] lg:w-[160px] lg:h-[160px] xl:w-[190px] xl:h-[190px] rounded-full border-[3px] md:border-[5px] lg:border-[6px] xl:border-[7px] border-white object-cover object-center"
+            className="w-[85px] h-[85px] md:w-[110px] md:h-[110px] lg:w-[160px] lg:h-[160px] xl:w-[190px] xl:h-[190px] rounded-full border-[3px] md:border-[5px] lg:border-[6px] xl:border-[7px] border-white object-cover object-center"
           />
         </div>
 

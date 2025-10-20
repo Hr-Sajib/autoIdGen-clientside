@@ -343,7 +343,7 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({
           {/* Receipt Section */}
           <div>
             <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-6 text-center">
-              Receipt Document
+              Want receipt?
             </h2>
 
             {receipt ? (
@@ -456,7 +456,7 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({
         Loading Receipt...
       </>
     ) : (
-      <>Get Receipt</>
+      <>Get your Receipt</>
     )}
   </Button>
 </div>

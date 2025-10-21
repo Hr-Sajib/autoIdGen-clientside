@@ -187,7 +187,7 @@ import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Image from "next/image"
 import style1 from "@/../public/images/studentCard.png"
-import style2 from "@/../public/images/employeeCard.png"
+import style2 from "@/../public/images/vertical-without-handle.svg"
 import { DashboardHeader } from "../_components/dashboard-header"
 
 // Card styles configuration

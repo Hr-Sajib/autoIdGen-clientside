@@ -1,9 +1,10 @@
 //? working card but change for sajib vai 
 "use client";
 import React from "react";
-import { QRCodeCanvas } from "qrcode.react";
+// import { QRCodeCanvas } from "qrcode.react";
 import background from "@/../public/image/shapes/studentId/potrait_id_card_bg.svg";
 import Image from "next/image";
+import qrCode from "@/../public/images/barcode image.png";
 
 interface EmployeeCardProps {
   name?: string;
@@ -67,7 +68,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
 
   return (
     <div
-      className="calibri relative min-w-[320px]  h-[170px]
+      className="calibri relative min-w-[300px]  h-[170px]
                  sm:min-w-[320px] sm:h-[210px]
                  md:min-w-[370px] md:h-[210px]
                  lg:min-w-[600px] lg:h-[350px]
@@ -117,7 +118,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
             alt="Employee Photo"
             width={100}
             height={100}
-            className="w-[85px] h-[85px] md:w-[110px] md:h-[110px] lg:w-[160px] lg:h-[160px] xl:w-[190px] xl:h-[190px] rounded-full border-[3px] md:border-[5px] lg:border-[6px] xl:border-[7px] border-white object-cover object-center"
+            className="w-[80px] h-[80px] md:w-[110px] md:h-[110px] lg:w-[160px] lg:h-[160px] xl:w-[190px] xl:h-[190px] rounded-full border-[3px] md:border-[5px] lg:border-[6px] xl:border-[7px] border-white object-cover object-center"
           />
         </div>
 
@@ -165,15 +166,25 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
         </div>
 
         {/* QR Code */}
-        <div className="absolute bottom-[5%] md:bottom-[5%] lg:bottom-[7%] left-[90%] lg:left-[91%] -translate-x-1/2">
-          <QRCodeCanvas
+        <div className="absolute bottom-[7%] -right-10 md:-right-10 lg:-right-15 xl:-right-20 md:bottom-[5%] lg:bottom-[7%] left-[90%] lg:left-[91%] -translate-x-1/2 ">
+          {/* <QRCodeCanvas
             value={qrData}
             size={30} // will scale proportionally below
             className="!w-[20px] !h-[20px] md:!w-[35px] p-[1px] md:p-[2px] rounded-[2px] bg-white md:!h-[35px] lg:!w-[60px] lg:!h-[60px] xl:!w-[70px] xl:!h-[70px]"
             bgColor="#ffffff"
             fgColor="#000000"
             level="H"
-          />
+          /> */}
+        <Image
+  src={qrCode}
+  alt="QR Code"
+  width={300}
+  height={50}
+  className="!w-[50px] !h-[20px] md:!w-[60px] md:!h-[30px] lg:!w-[90px] lg:!h-[40px] xl:!w-[110px] xl:!h-[50px] object-fill"
+  style={{ maxWidth: "none" }} // ✅ prevent Next.js intrinsic limit
+/>
+
+
         </div>
       </div>
     </div>

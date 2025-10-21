@@ -235,7 +235,7 @@ export default function VerifyPage() {
           <Card className="bg-white border-gray-200 shadow-lg">
             <CardHeader className="pb-4">
               <CardTitle className="text-gray-900 text-xl sm:text-2xl font-semibold text-center">
-                Enter Verification Details
+                Enter QR/Barcode Details
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">

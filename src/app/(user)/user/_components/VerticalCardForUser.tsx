@@ -3,7 +3,7 @@ import React from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import Image from "next/image";
 import background from "@/../public/image/shapes/studentId/potrait_id_card_bg.svg";
-
+import qrCode from "@/../public/images/barcode image.png";
 interface VerticalCardProps {
   instituteName: string;
   address: string;
@@ -148,12 +148,24 @@ const VerticalCardForUser: React.FC<VerticalCardProps> = ({
         )}
 
         {/* QR Code */}
-        <div className="absolute bottom-[7%] left-[91%] -translate-x-1/2">
-          <QRCodeCanvas
+         {/* QR Code */}
+        <div className="absolute bottom-[7%] -right-10 md:-right-10 lg:-right-15 xl:-right-20 md:bottom-[5%] lg:bottom-[7%] left-[90%] lg:left-[91%] -translate-x-1/2 ">
+          {/* <QRCodeCanvas
             value={qrData}
-            size={40}
-            className="!w-[20px] !h-[20px] md:!w-[35px] md:!h-[35px] lg:!w-[60px] lg:!h-[60px] xl:!w-[70px] xl:!h-[70px] bg-white rounded"
-          />
+            size={30} // will scale proportionally below
+            className="!w-[20px] !h-[20px] md:!w-[35px] p-[1px] md:p-[2px] rounded-[2px] bg-white md:!h-[35px] lg:!w-[60px] lg:!h-[60px] xl:!w-[70px] xl:!h-[70px]"
+            bgColor="#ffffff"
+            fgColor="#000000"
+            level="H"
+          /> */}
+        <Image
+  src={qrCode}
+  alt="QR Code"
+  width={300}
+  height={50}
+  className="!w-[50px] !h-[20px] md:!w-[60px] md:!h-[30px] lg:!w-[90px] lg:!h-[40px] xl:!w-[110px] xl:!h-[50px] object-fill"
+  style={{ maxWidth: "none" }} // ✅ prevent Next.js intrinsic limit
+/>
         </div>
       </div>
     </div>

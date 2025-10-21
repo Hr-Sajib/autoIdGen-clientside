@@ -21,12 +21,15 @@ export default function HeroSection() {
 
         {/* Subtext */}
         <p className="mt-6 text-[clamp(12px,1.5vw,18px)] text-gray-100 max-w-2xl mx-auto">
+          Organisations set up templates and issue a unique Batch or QR Code. Users enter their personal info with the code, and the system instantly generates their ID cards.  
+        </p>
+        {/* <p className="mt-6 text-[clamp(12px,1.5vw,18px)] text-gray-100 max-w-2xl mx-auto">
           Easily generate multiple professional ID cards at once with the automated system.
           Just share your unique 4-digit code to get it done. <br />
           <span className="font-semibold text-shadow-lg">
             “Have a 4-digit code? Fill in your info & get your ID instantly!”
           </span>
-        </p>
+        </p> */}
 
         {/* Buttons */}
 

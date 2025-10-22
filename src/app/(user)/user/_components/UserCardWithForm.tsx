@@ -18,6 +18,7 @@ import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { IoCameraOutline, IoDocument } from "react-icons/io5";
 import { BiIdCard } from "react-icons/bi";
 import ReceiptImage from "@/../public/images/placeholder-reciept.jpg";
+import { RiDownload2Fill, RiDownloadCloud2Fill } from "react-icons/ri";
 
 // ===========================
 // Type Definitions
@@ -342,8 +343,8 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({
 
           {/* Receipt Section */}
           <div>
-            <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-6 text-center">
-              Want receipt?
+            <h2 className="text-lg md:text-xl font-semibold text-white lg:text-black bg-blue-500 lg:bg-white rounded-lg px-4 py-2 mb-6 text-center">
+              PLEASE COLLECT YOUR SLIP
             </h2>
 
             {receipt ? (
@@ -431,7 +432,7 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({
             ) : (
               <div className="mb-8">
                {/* Placeholder Reference Image (Small Preview) */}
-<div className="flex flex-col items-center mb-6">
+<div className="flex flex-col relative items-center mb-6">
   <Image
     src={ReceiptImage}
     alt="Receipt Placeholder"
@@ -440,25 +441,26 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({
     className="rounded-lg border border-gray-300 shadow-sm mb-3 object-contain"
     unoptimized
   />
-  <p className="text-gray-500 text-xs text-center mb-2">
-    Reference preview only
-  </p>
+  <div className="absolute bottom-0">
+
+  <Image src='/pdf-download.png' alt="Receipt Placeholder" width={200} height={100} className="rounded-lg border border-gray-300 bg-white/95 w-50 h-40  shadow-sm mb-3 object-contain" unoptimized />
 
   {/* Get Receipt Button */}
   <Button
     onClick={() => handleGetReceipt(idNumber as string)}
     disabled={loadingReceipt}
-    className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-2.5 px-8 rounded-lg shadow-md transition duration-300"
-  >
+    className="bg-blue-600 absolute bottom-4 left-3 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-2.5 px-8 rounded-lg shadow-md transition duration-300"
+    >
     {loadingReceipt ? (
       <>
         <span className="inline-block animate-spin mr-2">⏳</span>
-        Loading Receipt...
+        Loading ....
       </>
     ) : (
-      <>Get your Receipt</>
+      <span className="flex gap-2"><span><RiDownload2Fill size={20}/> </span> DOWNLOAD</span>
     )}
   </Button>
+    </div>
 </div>
 
               </div>

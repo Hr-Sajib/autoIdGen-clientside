@@ -1,4 +1,6 @@
 
+
+
 // 'use client'
 
 // import { useState, useEffect } from "react"
@@ -58,48 +60,31 @@
 //   useEffect(() => {
 //     if (!project) return
 
-//     const rows = Array.from({ length: project.cardQuantity }, (_, i) => {
-//       const additionalFieldsObj: Record<string, string> = {};
-//       project.additionalFields.forEach((field: any) => {
-//         additionalFieldsObj[field.fieldName] = field.defaultValue;
-//       });
+//     // Direct mapping - শুধুমাত্র API থেকে যা আসে তাই display করো
+//     if (cardData?.data && cardData.data.length > 0) {
+//       const mappedCards = cardData.data.map((card: any) => {
+//         const fields: Record<string, string> = {}
+//         card.additionalfieldValues?.forEach((f: any) => {
+//           fields[f.fieldName] = f.fieldValue
+//         })
 
-//       return {
-//         serialOrRollNumber: i + 1,
-//         serialStr: (i + 1).toString().padStart(2, "0"),
-//         batchId: project.batchId,
-//         name: "",
-//         status: "",
-//         additionalFields: additionalFieldsObj,
-//         _id: "",
-//         setBy: "",
-//         personalPhotoUrl: "",
-//         additionalfieldValues: [] as Card["additionalfieldValues"],
-//       }
-//     })
-
-
-//     // console.log("second mile=========", project);
-
-//     cardData?.data?.forEach((card: Card) => {
-//       const index = card.serialOrRollNumber - 1
-//       if (!rows[index]) return
-
-//       const fields: Record<string, string> = {}
-//       card.additionalfieldValues?.forEach((f) => {
-//         fields[f.fieldName] = f.fieldValue
+//         return {
+//           ...card,
+//           serialOrRollNumber: card.uniqueNumber,
+//           serialStr: card.uniqueNumber.toString().padStart(2, "0"),
+//           name: card.name,
+//           status: card.status,
+//           additionalFields: fields,
+//           batchId: card.batchId,
+//         }
 //       })
 
-//       rows[index] = {
-//         ...card,
-//         serialStr: card.serialOrRollNumber.toString().padStart(2, "0"),
-//         name: card.name,
-//         status: card.status,
-//         additionalFields: fields,
-//       }
-//     })
-
-//     setCards(rows)
+//       console.log("Mapped cards:", mappedCards);
+//       setCards(mappedCards)
+//     } else {
+//       // যদি কোনো card না থাকে, তাহলে empty array set করো
+//       setCards([])
+//     }
 //   }, [cardData, project])
 
 //   const filteredCards = cards.filter((card) => {
@@ -191,13 +176,6 @@
 //         {/* Project Info Card */}
 //         {project && (
 //           <div>
-
-
-// {/* {
-//   JSON.stringify(cardData, null, 2)
-// } */}
-
-
 //             {/* Card Statistics */}
 //             <div className="mb-5 grid grid-cols-2 md:grid-cols-4 gap-4">
 //               {/* Total Cards */}
@@ -281,12 +259,9 @@
 //                 </div>
 //               </div>
 //               <div>
-//                 {/* <Link href={`/user?batchCode=${project.batchId}`} className="flex items-center gap-2 text-indigo-600 hover:text-indigo-800">
-//                   <User className="w-4 h-4" /> View Users
-//                 </Link> */}
-//                  <Link href={`/user?batchCode=${project?.batchId}`} className="flex flex-col items-center gap-2 text-indigo-600 hover:text-indigo-800">
-//                 <UserQRCode batchId={project.batchId || ""} />
-//               </Link>
+//                 <Link href={`/user?batchCode=${project?.batchId}`} className="flex flex-col items-center gap-2 text-indigo-600 hover:text-indigo-800">
+//                   <UserQRCode batchId={project.batchId || ""} />
+//                 </Link>
 //               </div>
 //               {project.institutionSignUrl?.signUrl && (
 //                 <div className="text-center">
@@ -327,8 +302,6 @@
 //             variant="outline"
 //             className="w-full sm:w-auto bg-white hover:bg-gray-100 hover:text-gray-800 text-sm sm:text-base px-3 sm:px-4 py-1 sm:py-2"
 //           >
-//             {/* Export All */}
-
 //             Bulk Export
 //           </Button>
 //         </div>
@@ -338,7 +311,7 @@
 //           <table className="min-w-full text-left text-gray-700">
 //             <thead className="bg-gray-100 sticky top-0 z-10">
 //               <tr>
-//                 <th className="px-4 py-3 border-b text-sm font-semibold text-muted-foreground whitespace-nowrap">Sr.</th>
+//                 <th className="px-4 py-3 border-b text-sm font-semibold text-muted-foreground whitespace-nowrap">Unique ID</th>
 //                 <th className="px-4 py-3 border-b text-sm font-semibold text-muted-foreground whitespace-nowrap">Batch</th>
 //                 <th className="px-4 py-3 border-b text-sm font-semibold text-muted-foreground whitespace-nowrap">Name</th>
 //                 {project?.additionalFields?.map((field: any, idx: number) => (
@@ -573,12 +546,20 @@
 
 
 
+
+
+
+
+// ==========================================
+// ViewDetailsPage - Full Fixed Version
+// ==========================================
+
 'use client'
 
 import { useState, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { LucideEdit, Trash2, Loader2, LucideDownload, Search, User } from "lucide-react"
+import { LucideEdit, Trash2, Loader2, LucideDownload, Search, RefreshCw } from "lucide-react"
 import { DashboardHeader } from "../../../_components/dashboard-header"
 import { EditCard } from "../../_components/EditCard"
 import { useGetSpecificProjectQuery, useUpdateProjectMutation } from "@/lib/feature/Project/projectApi"
@@ -592,6 +573,7 @@ import Loading from "@/app/loading"
 import ExportLoading from "../../../_components/ExportLoading"
 import Link from "next/link"
 import UserQRCode from "@/components/layout/UserQRCode"
+import { toast } from "sonner"
 
 export default function ViewDetailsPage() {
   const [loading, setLoading] = useState(false);
@@ -600,6 +582,7 @@ export default function ViewDetailsPage() {
   const [editCardModalOpen, setEditCardModalOpen] = useState(false)
   const [editProjectModalOpen, setEditProjectModalOpen] = useState(false)
   const [selectedCard, setSelectedCard] = useState<Card | null>(null)
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
   const params = useParams()
   const id = params?.id as string
@@ -609,8 +592,16 @@ export default function ViewDetailsPage() {
   const project = projectData?.data
 
   const batchId = project?.batchId ?? "";
-  const { data: cardData, isLoading: cardLoading } = useGetCardByBatchIdQuery(batchId, {
+  
+  // ✅ Check if any card is processing
+  const hasProcessingCards = cards.some(card => card.status === "processing")
+  
+  // ✅ Conditional polling: শুধু processing cards থাকলে poll করো
+  const { data: cardData, isLoading: cardLoading, refetch: refetchCards } = useGetCardByBatchIdQuery(batchId, {
     skip: !project?.batchId,
+    // Processing cards থাকলে 3 second interval এ check করো
+    pollingInterval: hasProcessingCards ? 3000 : 0,
+    refetchOnMountOrArgChange: true,
   });
 
   console.log("debugging ========================", cardData);
@@ -626,13 +617,11 @@ export default function ViewDetailsPage() {
     processing: cards.filter(card => card.status === "processing").length,
     unfilled: 0
   }
-  // Unfilled = Total - (Generated + Processing)
   cardStats.unfilled = cardStats.total - (cardStats.generated + cardStats.processing)
 
   useEffect(() => {
     if (!project) return
 
-    // Direct mapping - শুধুমাত্র API থেকে যা আসে তাই display করো
     if (cardData?.data && cardData.data.length > 0) {
       const mappedCards = cardData.data.map((card: any) => {
         const fields: Record<string, string> = {}
@@ -654,7 +643,6 @@ export default function ViewDetailsPage() {
       console.log("Mapped cards:", mappedCards);
       setCards(mappedCards)
     } else {
-      // যদি কোনো card না থাকে, তাহলে empty array set করো
       setCards([])
     }
   }, [cardData, project])
@@ -673,13 +661,16 @@ export default function ViewDetailsPage() {
   })
 
   const handleEditProject = () => setEditProjectModalOpen(true)
+  
   const handleProjectUpdate = async (formData: Project) => {
     if (!project?._id) return
     try {
       await updateProject({ id: project._id, data: formData }).unwrap()
       setEditProjectModalOpen(false)
+      toast.success("Project updated successfully!")
     } catch (err) {
       console.error("Failed to update project", err)
+      toast.error("Failed to update project")
     }
   }
 
@@ -688,6 +679,7 @@ export default function ViewDetailsPage() {
     setEditCardModalOpen(true)
   }
 
+  // ✅ Update করার পর immediately refetch করো
   const handleUpdate = async (formData: Partial<Card>) => {
     try {
       if (selectedCard?._id) {
@@ -695,9 +687,15 @@ export default function ViewDetailsPage() {
       } else {
         await createCard({ ...formData, batchId: project?.batchId }).unwrap()
       }
+      
+      // ✅ Immediately refetch to get latest data
+      await refetchCards()
+      
       setEditCardModalOpen(false)
+      toast.success(selectedCard?._id ? "Card updated successfully!" : "Card created successfully!")
     } catch (error) {
       console.error("Failed to save card", error)
+      toast.error("Failed to save card")
     }
   }
 
@@ -706,8 +704,10 @@ export default function ViewDetailsPage() {
     try {
       await deleteCard(card._id).unwrap();
       setCards((prev) => prev.filter((c) => c._id !== card._id));
+      toast.success("Card deleted successfully!")
     } catch (error) {
       console.error("Failed to delete card", error);
+      toast.error("Failed to delete card")
     }
   };
 
@@ -725,10 +725,25 @@ export default function ViewDetailsPage() {
       link.click();
       link.remove();
       URL.revokeObjectURL(url);
+      toast.success("Card downloaded!")
     } catch (err) {
       console.error("Failed to download card", err);
+      toast.error("Failed to download card")
     }
   };
+
+  // ✅ Manual refresh button handler
+  const handleRefresh = async () => {
+    setIsRefreshing(true)
+    try {
+      await refetchCards()
+      toast.success("Data refreshed!")
+    } catch (error) {
+      toast.error("Failed to refresh data")
+    } finally {
+      setIsRefreshing(false)
+    }
+  }
 
   if (projectLoading) return <Loading />
   if (projectError) return <div className="p-4 sm:p-6 text-red-500 text-center text-sm sm:text-base">Failed to load project</div>
@@ -858,7 +873,7 @@ export default function ViewDetailsPage() {
           </div>
         )}
 
-        {/* Search + Export */}
+        {/* ✅ Search + Refresh + Export */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="relative w-full sm:w-64">
             <Input
@@ -869,21 +884,44 @@ export default function ViewDetailsPage() {
             />
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
           </div>
-          <Button
-            onClick={handleExport}
-            variant="outline"
-            className="w-full sm:w-auto bg-white hover:bg-gray-100 hover:text-gray-800 text-sm sm:text-base px-3 sm:px-4 py-1 sm:py-2"
-          >
-            Bulk Export
-          </Button>
+          
+          <div className="flex justify-between md:justify-start gap-2">
+            {/* ✅ Refresh Button - Manual refresh option */}
+            <Button
+              onClick={handleRefresh}
+              variant="outline"
+              disabled={isRefreshing}
+              className="w-auto bg-white hover:bg-gray-100 hover:text-gray-800 text-sm sm:text-base px-3 sm:px-4 py-1 sm:py-2"
+            >
+              <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+              {isRefreshing ? 'Refreshing...' : 'Refresh'}
+            </Button>
+            
+            <Button
+              onClick={handleExport}
+              variant="outline"
+              className="w-auto bg-white hover:bg-gray-100 hover:text-gray-800 text-sm sm:text-base px-3 sm:px-4 py-1 sm:py-2"
+            >
+              Bulk Export
+            </Button>
+          </div>
         </div>
 
-        {/* Desktop: Table Layout with Horizontal Scroll */}
+        {/* ✅ Auto-refresh notification for processing cards */}
+        {hasProcessingCards && 
+          console.log("auto refreshing working")
+          // <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-center gap-2 text-sm text-blue-700">
+          //   <Loader2 className="w-4 h-4 animate-spin" />
+          //   <span>Auto-refreshing every 3 seconds while cards are processing...</span>
+          // </div>
+     }
+
+        {/* Desktop: Table Layout */}
         <div className="hidden sm:block rounded-xl border border-gray-100 shadow-sm bg-white overflow-x-auto">
           <table className="min-w-full text-left text-gray-700">
             <thead className="bg-gray-100 sticky top-0 z-10">
               <tr>
-                <th className="px-4 py-3 border-b text-sm font-semibold text-muted-foreground whitespace-nowrap">Sr.</th>
+                <th className="px-4 py-3 border-b text-sm font-semibold text-muted-foreground whitespace-nowrap">Unique ID</th>
                 <th className="px-4 py-3 border-b text-sm font-semibold text-muted-foreground whitespace-nowrap">Batch</th>
                 <th className="px-4 py-3 border-b text-sm font-semibold text-muted-foreground whitespace-nowrap">Name</th>
                 {project?.additionalFields?.map((field: any, idx: number) => (

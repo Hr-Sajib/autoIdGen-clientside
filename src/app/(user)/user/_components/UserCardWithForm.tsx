@@ -334,7 +334,7 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({
               <Button
                 onClick={() => window.open(finalImageUrl, "_blank")}
                 variant="outline"
-                className="border-2 border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold py-2.5 px-6 rounded-lg shadow-sm transition duration-300"
+                className="border-2 border-gray-300 hover:bg-gray-50 hover:text-black text-gray-700 font-semibold py-2.5 px-6 rounded-lg shadow-sm transition duration-300"
               >
                 View Full Size
               </Button>

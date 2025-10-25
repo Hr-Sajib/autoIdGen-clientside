@@ -82,12 +82,15 @@ const StudentCard: React.FC<StudentCardProps> = ({
               className="rounded-md object-cover w-[60px] h-[60px] bg-white shadow-md"
             />
           )}
-          <p className="text-center absolute top-[62px] pt-1 text-[15px] font-bold text-white max-w-[300px]">
+          <div className="absolute top-[62px] flex flex-col items-center justify-center">
+
+          <p className="text-center  pt-1 text-[15px] font-bold text-white max-w-[300px]">
             {instituteName}
           </p>
-          <p className="absolute top-[110px] mt-1 text-center text-[12px] text-gray-200">
+          <p className="mt-1 text-center text-[12px] text-gray-200">
             {address}
           </p>
+          </div>
 
           {/* ID Type
           <p className="absolute top-[140px] rounded border border-gray-300 px-2 py-[2px] text-[11px] text-gray-100 bg-black/30">

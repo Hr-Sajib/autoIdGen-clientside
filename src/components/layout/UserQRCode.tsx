@@ -20,7 +20,7 @@ const UserQRCode: React.FC<Props> = ({ batchId }) => {
         level="H"
         includeMargin={true}
       />
-      <p className="text-[10px] text-gray-500">Scan or tap to create id</p>
+      <p className="text-[10px] text-gray-500">Scan or tap to create new ID</p>
     </div>
   );
 };

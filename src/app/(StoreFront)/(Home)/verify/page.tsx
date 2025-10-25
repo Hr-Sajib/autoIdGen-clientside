@@ -241,10 +241,10 @@ export default function VerifyPage() {
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
                   <FileText className="h-4 w-4" />
-                  Batch ID - Unique ID
+                  Batch Code - Unique ID
                 </label>
                 <Input
-                  placeholder="Enter Batch ID-Unique ID from card's QR or Barcode"
+                  placeholder="2134-3859"
                   value={payload}
                   onChange={(e) => setPayload(e.target.value)}
                   className="h-10 sm:h-12 bg-gray-50 border-gray-300 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500/20"

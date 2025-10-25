@@ -415,10 +415,10 @@ export default function InstituteTemplateSetupPage() {
     <div className="min-h-screen bg-background">
       <DashboardHeader />
 
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-2">
         <div className="max-w-full mx-auto">
-          <h1 className="text-xl bg-blue-500 p-4 rounded-md text-center lg:text-start text-white sm:text-2xl font-bold lg:bg-white lg:text-gray-900 mb-6 sm:mb-8">
-            User Information Form 
+          <h1 className="text-xl bg-[#4A61E4] p-2 rounded-lg text-center lg:text-start text-white sm:text-2xl font-semibold lg:bg-white lg:text-gray-900 mb-6 sm:mb-8">
+            Contact Info Form 
           </h1>
 
           <div className="flex flex-col-reverse gap-10 lg:flex-row lg:gap-8">
@@ -540,12 +540,12 @@ export default function InstituteTemplateSetupPage() {
             </div>
 
             {/* Right Preview Section */}
-            <div className="w-full lg:w-1/2 space-y-6 mt-6 lg:mt-0">
+            <div className="w-full lg:w-1/2 space-y-6 lg:mt-0">
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 text-center mb-4">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 text-center ">
                   Preview
                 </h2>
-                <div className="flex justify-center mb-4">
+                <div className="flex justify-center mb-0">
                   {/* <div className="bg-gray-100 p-1 rounded-lg flex">
                     <button
                       className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-all ${cardOrientation === "horizontal"
@@ -569,7 +569,7 @@ export default function InstituteTemplateSetupPage() {
                 </div>
               </div>
 
-              <Card className="p-4 bg-white border-none shadow-none">
+              <Card className="p-0 bg-white border-none shadow-none">
                 <div className="w-full flex justify-center">
                   <div className={cardOrientation === "vertical" ? "scale-[0.85] sm:scale-90" : "scale-100"}>
                     {renderCard()}
@@ -591,22 +591,24 @@ export default function InstituteTemplateSetupPage() {
         <Dialog open={successModal.open} onOpenChange={() => setSuccessModal({ open: false })}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle className="text-green-600 text-lg font-bold">
-                🎉 Project Created Successfully!
+              <DialogTitle className="text-green-500 text-lg font-bold">
+                🎉 Congratulations 
               </DialogTitle>
             </DialogHeader>
-            <div className="space-y-3 text-center">
+            <div className="space-y-2 text-center">
               <p className="text-gray-700">Your project has been created successfully.</p>
               <p className="text-lg font-semibold text-blue-600">
                 Batch Code: <span className="text-foreground">{successModal.batchId}</span>
               </p>
+
+              <span className="text-xs text-blue-400 text-center">https://autoidgen.com</span>
               <Link href={`/user?batchCode=${successModal.batchId}`} className="flex flex-col items-center gap-2 text-indigo-600 hover:text-indigo-800">
                 <UserQRCode batchId={successModal.batchId || ""} />
               </Link>
             </div>
             <DialogFooter className="flex justify-center gap-4">
               <Button
-                className="bg-blue-600 text-white hover:bg-blue-700"
+                className="bg-[#4A61E4] text-white hover:bg-blue-700"
                 onClick={() => {
                   setSuccessModal({ open: false });
                   router.push("/dashboard");

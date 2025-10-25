@@ -10,15 +10,13 @@ import Cropper from "react-easy-crop";
 import { useSearchParams } from "next/navigation";
 import DownloadImage from "@/../public/images/download_icon.svg";
 import UploadImage from "@/../public/images/upload_icon.svg";
-import TripodImage from "@/../public/images/camera-tripod.svg";
 import Link from "next/link";
 import ErrorImage from "@/../public/images/error_id_card.png";
 import Loading from "@/app/loading";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
-import { IoCameraOutline, IoDocument } from "react-icons/io5";
-import { BiIdCard } from "react-icons/bi";
+import { IoCameraOutline } from "react-icons/io5";
 import ReceiptImage from "@/../public/images/placeholder-reciept.jpg";
-import { RiDownload2Fill, RiDownloadCloud2Fill } from "react-icons/ri";
+import { RiDownload2Fill } from "react-icons/ri";
 
 // ===========================
 // Type Definitions
@@ -1440,16 +1438,18 @@ const UserCardWithForm: React.FC = () => {
   return (
     <div className="bg-background">
       <div
-        className={`container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 ${
+        className={`container mx-auto px-3 sm:px-4 lg:px-8 pb-4 sm:py-2 ${
           isAnyLoading ? "blur-sm pointer-events-none" : ""
         }`}
       >
         <div className="flex flex-col sm:flex-row sm:items-center md:justify-between mb-1">
-          <h1 className="text-xl sm:text-2xl text-center font-bold p-4 rounded-lg bg-blue-500 md:bg-white text-white md:text-black mb-0 sm:mb-0">
-            {projectData.cardType === "Student"
+          <h1 className="text-xl sm:text-2xl text-center font-bold p-2 rounded-xl sm:w-full md:text-start bg-[#4A61E4] md:bg-white text-white md:text-black mb-0 sm:mb-0">
+            {/* {projectData.cardType === "Student"
               ? "Student"
               : projectData.cardType || "User"}{" "}
-            Information
+            Information */}
+
+            ID Info Form
           </h1>
         </div>
 
@@ -1464,7 +1464,7 @@ const UserCardWithForm: React.FC = () => {
 
         <div className="flex flex-col-reverse gap-10 lg:flex-row lg:gap-8">
           <div className="w-full lg:w-1/2 space-y-6">
-            <div className="flex flex-col sm:flex-row flex-wrap items-center gap-3 sm:gap-4 mt-6 sm:mt-8">
+            <div className="flex flex-col sm:flex-row flex-wrap items-center gap-3 sm:gap-4 mt-0 sm:mt-8">
               <label
                 className={`flex items-center justify-center border border-transparent hover:border-gray-300 rounded-xl px-4 sm:px-6 py-2 sm:py-3 cursor-pointer hover:bg-gray-50 transition ${
                   isAnyLoading ? "opacity-50 pointer-events-none" : ""
@@ -1636,8 +1636,8 @@ const UserCardWithForm: React.FC = () => {
             )}
           </div>
 
-          <div className="w-full lg:w-1/2 space-y-6 mt-6 lg:mt-0">
-            <div className="text-center mb-4 font-semibold text-gray-800 text-base sm:text-lg">
+          <div className="w-full lg:w-1/2 space-y-6 mt-2 lg:mt-0">
+            <div className="text-center mb-2 md:mb-4 font-semibold text-gray-800 text-base sm:text-lg">
               Live Preview
             </div>
             <div className="flex justify-center">

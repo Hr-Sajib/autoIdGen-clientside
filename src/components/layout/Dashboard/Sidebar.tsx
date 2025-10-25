@@ -58,12 +58,12 @@ export function Sidebar({ onToggle }: SidebarProps) {
       <Button
         variant="ghost"
         size="icon"
-        className="md:hidden fixed top-4 left-4 z-50 hover:bg-blue-600"
+        className="md:hidden fixed top-4 left-4 z-50 text-white bg-[#4A61E4] hover:bg-[*4A61E4] rounded-2xl "
         onClick={() => setIsMobileOpen(!isMobileOpen)}
       >
         {isMobileOpen ? (
           <svg
-            className="h-5 w-5"
+            className="h-10 w-10"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -74,10 +74,11 @@ export function Sidebar({ onToggle }: SidebarProps) {
               strokeWidth={2}
               d="M6 18L18 6M6 6l12 12"
             />
+            
           </svg>
         ) : (
           <svg
-            className="h-5 w-5"
+            className="h-10 w-10"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -98,6 +99,7 @@ export function Sidebar({ onToggle }: SidebarProps) {
         className="hidden md:block fixed top-4 left-4 z-50 hover:bg-blue-600"
         onClick={handleDesktopToggle}
       >
+  
         <div className="ml-2">
           <svg
             className="h-5 w-5"
@@ -158,7 +160,7 @@ export function Sidebar({ onToggle }: SidebarProps) {
                 <Button
                   variant="default"
                   className={cn(
-                    "w-full bg-blue-400 hover:bg-blue-700 text-white transition-all duration-200",
+                    "w-full bg-[#4A61E4] hover:bg-blue-700 text-white transition-all duration-200",
                     isDesktopCollapsed
                       ? "md:justify-center md:px-2"
                       : "justify-start  gap-3"
@@ -285,7 +287,7 @@ export function Sidebar({ onToggle }: SidebarProps) {
       {/* Overlay for mobile */}
       {isMobileOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+          className="fixed inset-0 bg-black/80 z-30 md:hidden"
           onClick={() => setIsMobileOpen(false)}
         />
       )}

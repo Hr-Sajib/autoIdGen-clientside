@@ -592,7 +592,7 @@ export default function InstituteTemplateSetupPage() {
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle className="text-green-500 text-lg font-bold">
-                🎉 Congratulations 
+                🎉 Congratulations !
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-2 text-center">

@@ -15,7 +15,7 @@ import ErrorImage from "@/../public/images/error_id_card.png";
 import Loading from "@/app/loading";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { IoCameraOutline } from "react-icons/io5";
-import ReceiptImage from "@/../public/images/placeholder-reciept.jpg";
+import ReceiptImage from "@/../public/images/placeholder-reciept.png";
 import { RiDownload2Fill } from "react-icons/ri";
 
 // ===========================
@@ -291,10 +291,10 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({
         {/* Success Header */}
         <div className="text-center mb-8 md:mb-10">
           <h1 className="text-2xl md:text-3xl font-bold text-green-600 mb-2">
-            🎉 ID Card Generated Successfully!
+            🎉 Congratulations !
           </h1>
           <p className="text-gray-600 text-sm md:text-base">
-            Your ID card is ready for download
+            Your ID card has been generated successfully.
           </p>
         </div>
 
@@ -441,7 +441,7 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({
   />
   <div className="absolute bottom-0">
 
-  <Image src='/pdf-download.png' alt="Receipt Placeholder" width={200} height={100} className="rounded-lg border border-gray-300 bg-white/95 w-50 h-40  shadow-sm mb-3 object-contain" unoptimized />
+  <Image src='/pdf-download.png' alt="Receipt Placeholder" width={200} height={100} className="rounded-lg border border-gray-300 bg-white/75 w-50 h-40  shadow-sm mb-3 object-contain" unoptimized />
 
   {/* Get Receipt Button */}
   <Button

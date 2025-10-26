@@ -155,6 +155,10 @@ export function Sidebar({ onToggle }: SidebarProps) {
 
           {/* Navigation */}
           <nav className="flex-1 p-4 pb-1">
+                     <Link href="/" className="flex items-center md:hidden my-5 text-[#4A61E4] space-x-2 font-bold text-lg">
+                <span><BiIdCard size={30} /></span>
+                <span className="text-[20px]">AutoIDGen</span>
+              </Link>
             {
               pathname.includes('/dashboard') && (
                 <Button

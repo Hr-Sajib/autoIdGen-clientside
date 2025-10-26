@@ -322,7 +322,7 @@ export default function ViewDetailsPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="relative w-full sm:w-64">
             <Input
-              placeholder="Search by ID serial, Name..."
+              placeholder="Search by Unique ID, Name..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-10 bg-gray-100 text-sm sm:text-base"
@@ -493,7 +493,7 @@ export default function ViewDetailsPage() {
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="font-medium text-sm text-gray-800">{card.name}</h3>
-                      <p className="text-xs text-gray-500">Sr. {card.serialStr} | Batch: {card.batchId}</p>
+                      <p className="text-xs text-gray-500">ID: {card.serialStr} | Batch: {card.batchId}</p>
                     </div>
                     <div className="flex gap-1">
                       <Button

@@ -17,7 +17,7 @@ export function DashboardHeader() {
 
   return (
     <>
-      <header className="bg-white/90 border-b sticky top-0 z-40 border-gray-200">
+      <header className="bg-[#4A61E4] md:bg-white/90 border-b sticky top-0 z-40 border-gray-200">
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Mobile: Show AutoIDGen branding */}
@@ -29,15 +29,17 @@ export function DashboardHeader() {
             </div>
 
             {/* Desktop: Show Dashboard title */}
+            <h1 className="md:hidden pl-10 text-white text-xl font-bold">Dashboard</h1>
             <h1 className="hidden md:block text-2xl font-bold text-gray-900">Dashboard</h1>
+
 
             {/* Mobile menu icon placeholder (handled by Sidebar component) */}
             <div className="md:hidden w-10"></div>
 
             <Button
               onClick={() => setIsModalOpen(true)}
-              className="bg-white hover:bg-blue-600 text-blue-600 hover:text-white text-xs md:text-base font-bold border md:border-2 border-blue-600 p-0 md:px-2 flex">
-              <Plus className="mr-0 h-2 w-2" />
+              className="hover:border-white bg-white flex items-center justify-center hover:bg-[#4A61E4] text-[#4A61E4] hover:text-white text-xs md:text-base font-bold border md:border-2 border-[#4A61E4] p-0 md:px-2">
+              <Plus className="mr-0 h-2 w-2 bg-[#4A61E4] hover:bg-white rounded-2xl text-white md:bg-transparent md:hover:bg-[#4A61E4] md:text-[#4A61E4]" />
               New Project
             </Button>
           </div>
@@ -49,6 +51,7 @@ export function DashboardHeader() {
               Dashboard
             </Button>
           </div> */}
+          
         </div>
       </header>
 

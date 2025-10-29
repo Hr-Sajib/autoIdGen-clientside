@@ -193,6 +193,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
        {/* Student Name */}
 <p className="absolute top-[315px] left-0 w-full text-center font-[700] text-[20px] text-blue-700">
   {studentName}
+  
 </p>
 
 {/* Dynamic Student Info */}

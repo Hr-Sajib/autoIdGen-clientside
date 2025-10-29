@@ -253,6 +253,7 @@ export default function SelectCardPage() {
                         src={style.image} 
                         alt={style.alt} 
                         fill
+                        loading="lazy"
                         className="rounded-lg object-contain"
                       />
                     </div>

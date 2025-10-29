@@ -20,7 +20,7 @@ md:shadow-[0_8px_25px_-5px_rgba(79,70,229,0.08)]
 md:hover:shadow-[0_8px_25px_-5px_rgba(79,70,229,0.18)] 
  inline-block w-full max-w-3xl mx-auto">
   <div className="text-[clamp(9px,1.5vw,18px)] text-gray-800 font-medium mb-8 sm:mb-12">
-    Your Unique Batch code
+    Your Batch code
   </div>
   <div className="relative inline-block mb-8 sm:mb-12 w-[clamp(160px,30vw,400px)] mx-auto">
     <div className="border-3 border-dashed border-[#4A61E480] rounded-2xl bg-white relative 

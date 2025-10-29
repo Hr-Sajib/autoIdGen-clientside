@@ -21,6 +21,7 @@ export default function Error({
             alt="Error illustration"
             width={600}
             height={400}
+            loading="lazy"
             className="rounded-lg object-cover"
             priority
           />

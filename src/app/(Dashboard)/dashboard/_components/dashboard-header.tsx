@@ -17,7 +17,11 @@ export function DashboardHeader() {
 
   return (
     <>
-      <header className="bg-[#4A61E4] md:bg-white/90 border-b sticky top-0 z-40 border-gray-200">
+      {/* <header className="bg-[#4A61E4] md:bg-white/90 border-b sticky top-0 z-40 border-gray-200"> */}
+      <header className="bg-[#4A61E4] md:bg-white/90  sticky top-0 z-30 md:z-40 ">
+
+
+
         <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Mobile: Show AutoIDGen branding */}

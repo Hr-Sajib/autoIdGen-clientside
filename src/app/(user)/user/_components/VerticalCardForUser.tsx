@@ -93,12 +93,12 @@ const VerticalCardForUser: React.FC<VerticalCardProps> = ({
         </div>
 
         {/* Student Name */}
-        <p className="absolute top-[30%] left-[40%] text-center font-bold text-[10px] md:text-[26px] lg:text-[22px] xl:text-[26px] text-cyan-400">
+        <p className="absolute top-[29%] left-[40%] text-center font-bold text-[11px] md:text-[26px] lg:text-[22px] xl:text-[26px] text-cyan-400">
           {studentName || "Student Name"}
         </p>
 
         {/* Dynamic Student Info */}
-        <div className="absolute top-[42%] left-[40%]  flex text-gray-200 text-[6.8px] md:text-[16px] lg:text-[13px] xl:text-[16px]">
+        <div className="absolute top-[41%] left-[40%]  flex text-gray-200 text-[7px] md:text-[16px] lg:text-[13px] xl:text-[16px]">
           <div className="flex w-max mx-auto">
    <div className="w-max space-y-1 md:space-y-0">
     {fields.map((field) => (
@@ -113,7 +113,7 @@ const VerticalCardForUser: React.FC<VerticalCardProps> = ({
   </div>
   <div className="w-max space-y-1 md:space-y-0">
      {fields.map((field) => (
-              <p className="pl-2" key={field}><span className="pr-2">:</span>  {values[field] || "-"}</p>
+              <p className="pl-1" key={field}><span className="pr-1">:</span>  {values[field] || "-"}</p>
             ))}
   </div>
  </div>

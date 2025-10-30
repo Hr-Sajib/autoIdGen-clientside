@@ -60,6 +60,11 @@ const [isResettingPassword, setIsResettingPassword] = useState(false);
     try {
       const res = await logIn({ email, password }).unwrap();
       const accessToken = res?.data?.accessToken || res?.accessToken;
+      const user = res?.data?.user || res?.user;
+      
+
+         localStorage.setItem('user', JSON.stringify(user));
+      console.log(user);
       
       if (!accessToken) {
         toast.error("Login failed: Token missing.");

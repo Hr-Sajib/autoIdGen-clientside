@@ -329,16 +329,16 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
         </p>
 
         {/* Details */}
-        <div className="absolute top-[42%] left-[29%] w-[50%] flex text-gray-200 text-[6.5px] md:text-[16px] lg:text-[13px] xl:text-[16px]">
+        <div className="absolute top-[42%] left-[29%] w-[50%] flex text-gray-200 text-[6.8px] md:text-[16px] lg:text-[13px] xl:text-[16px]">
           <div className="flex w-max mx-auto">
-            <div className="w-max space-y-0.5 md:space-y-0">
+            <div className="w-max space-y-1 md:space-y-0">
               <p>{customLabels.department}</p>
               <p>{customLabels?.employeeId || customLabels.rollNumber}</p>
               <p>{customLabels.bloodGroup}</p>
               <p>{customLabels.dateOfBirth}</p>
               <p>{customLabels.phone}</p>
             </div>
-            <div className="w-max space-y-0.5 md:space-y-0">
+            <div className="w-max space-y-1 md:space-y-0">
               <p className="pl-2"><span className="pr-2">:</span>{department}</p>
               <p className="pl-2"><span className="pr-2">:</span>{employeeId}</p>
               <p className="pl-2"><span className="pr-2">:</span>{bloodGroup}</p>
@@ -363,7 +363,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
         </div>
 
         {/* QR Code */}
-        <div className="absolute bottom-[7%] -right-30 md:-right-50 lg:-right-45 xl:-right-50 md:bottom-[7%] lg:bottom-[7%] left-[90%] lg:left-[91%] -translate-x-1/2 ">
+        <div className="absolute bottom-[3%] left-[65%]  md:bottom-[7%] lg:bottom-[7%]  -translate-x-1/2 ">
           {/* <QRCodeCanvas
             value={qrData}
             size={30} // will scale proportionally below
@@ -377,7 +377,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
   alt="QR Code"
   width={400}
   height={50}
-  className="!w-[90px] !h-[25px] md:!w-[170px] md:!h-[50px] lg:!w-[140px] lg:!h-[50px] xl:!w-[160px] xl:!h-[50px] object-fill"
+  className="!w-[90px] !h-[22px] md:!w-[170px] md:!h-[50px] lg:!w-[140px] lg:!h-[50px] xl:!w-[160px] xl:!h-[50px] object-fill"
   style={{ maxWidth: "none" }} // ✅ prevent Next.js intrinsic limit
 />
 

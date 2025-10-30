@@ -93,14 +93,14 @@ const VerticalCardForUser: React.FC<VerticalCardProps> = ({
         </div>
 
         {/* Student Name */}
-        <p className="absolute top-[30%] -left-3 md:left-[2%] right-0 text-center font-bold text-[10px] md:text-[26px] lg:text-[22px] xl:text-[26px] text-cyan-400">
+        <p className="absolute top-[30%] -left-6 md:left-[2%] right-0 text-center font-bold text-[10px] md:text-[26px] lg:text-[22px] xl:text-[26px] text-cyan-400">
           {studentName || "Student Name"}
         </p>
 
         {/* Dynamic Student Info */}
-        <div className="absolute top-[42%] left-[27%] w-[50%] flex text-gray-200 text-[6.5px] md:text-[16px] lg:text-[13px] xl:text-[16px]">
+        <div className="absolute top-[42%] left-[27%] w-[50%] flex text-gray-200 text-[6.8px] md:text-[16px] lg:text-[13px] xl:text-[16px]">
           <div className="flex w-max mx-auto">
-   <div className="w-max space-y-0.5 md:space-y-0">
+   <div className="w-max space-y-1 md:space-y-0">
     {fields.map((field) => (
     <div key={field} className="w-max">
       {/* Label */}
@@ -111,7 +111,7 @@ const VerticalCardForUser: React.FC<VerticalCardProps> = ({
     </div>
   ))}
   </div>
-  <div className="w-max space-y-0.5 md:space-y-0">
+  <div className="w-max space-y-1 md:space-y-0">
      {fields.map((field) => (
               <p className="pl-2" key={field}><span className="pr-2">:</span>  {values[field] || "-"}</p>
             ))}
@@ -150,7 +150,9 @@ const VerticalCardForUser: React.FC<VerticalCardProps> = ({
 
         {/* QR Code */}
          {/* QR Code */}
-        <div className="absolute bottom-[7%] -right-30 md:-right-50 lg:-right-45 xl:-right-50 md:bottom-[7%] lg:bottom-[7%] left-[90%] lg:left-[91%] -translate-x-1/2 ">
+        {/* <div className="absolute bottom-[7%] -right-30 md:-right-50 lg:-right-45 xl:-right-50 md:bottom-[7%] lg:bottom-[7%] left-[90%] lg:left-[91%] -translate-x-1/2 ">
+         */}
+         <div className="absolute bottom-[3%] left-[65%]  md:bottom-[7%] lg:bottom-[7%]  -translate-x-1/2 ">
           {/* <QRCodeCanvas
             value={qrData}
             size={30} // will scale proportionally below
@@ -164,7 +166,7 @@ const VerticalCardForUser: React.FC<VerticalCardProps> = ({
   alt="QR Code"
   width={400}
   height={50}
-  className="!w-[90px] !h-[25px] md:!w-[170px] md:!h-[50px] lg:!w-[140px] lg:!h-50px] xl:!w-[160px] xl:!h-[50px] object-fill"
+  className="!w-[90px] !h-[22px] md:!w-[170px] md:!h-[50px] lg:!w-[140px] lg:!h-50px] xl:!w-[160px] xl:!h-[50px] object-fill"
   style={{ maxWidth: "none" }} // ✅ prevent Next.js intrinsic limit
 />
         </div>

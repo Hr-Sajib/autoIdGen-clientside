@@ -1,3 +1,5 @@
+
+//? before real time image reflection 
 // "use client";
 
 // import React, { useState, useRef, useEffect, useCallback } from "react";
@@ -17,6 +19,7 @@
 // import { IoCameraOutline } from "react-icons/io5";
 // import ReceiptImage from "@/../public/images/placeholder-reciept.png";
 // import { RiDownload2Fill } from "react-icons/ri";
+// import { toast } from "sonner";
 
 // // ===========================
 // // Type Definitions
@@ -221,6 +224,7 @@
 //   const [zoom, setZoom] = useState(100);
 
 //   const downloadImage = async (imageUrl: string, filename: string) => {
+//     console.log("downloading rabbi madarchod");
 //     try {
 //       setIsDownloading(true);
 //       const link = document.createElement("a");
@@ -320,7 +324,7 @@
 //                 onClick={() =>
 //                   downloadImage(
 //                     finalImageUrl,
-//                     `${studentName || "Student"}_ID_Card.png`
+//                     `ID_${idNumber}_${studentName || "Student"}_Card.png`
 //                   )
 //                 }
 //                 disabled={isDownloading}
@@ -974,144 +978,168 @@
 //     streamRef.current = null;
 //   };
 
-  
-//   const handleSaveData = async () => {
-//     setIsSaving(true);
-//     setSaveSuccess(false);
-//     setFinalImageUrl(null);
+// /**
+//  * Shows a toast with the API error payload.
+//  * Works for both simple strings and the full error object you posted.
+//  */
+// const showApiError = (err: unknown) => {
+//   let title = "Something went wrong";
+//   let description = "Please try again later.";
 
-//     // Build field values array with correct setBy logic
-//     const additionalFieldValues =
-//       projectData?.additionalFields?.map((fieldObj) => {
-//         // Check if this field has existing data
-//         const existingField = existingCardData?.additionalfieldValues?.find(
-//           (existing) => existing.fieldName === fieldObj.fieldName
-//         );
-
-//         // Determine value and setBy
-//         let fieldValue: string;
-//         let setBy: "owner" | "user";
-
-//         if (existingField && existingField.setBy === "owner") {
-//           // Keep existing owner value
-//           fieldValue = existingField.fieldValue;
-//           setBy = "owner";
-//         } else if (fieldObj.defaultValue) {
-//           // Use project default value
-//           fieldValue = fieldObj.defaultValue;
-//           setBy = "owner";
-//         } else {
-//           // Use user input value
-//           fieldValue = values[fieldObj.fieldName] || "";
-//           setBy = "user";
-//         }
-
-//         return {
-//           fieldName: fieldObj.fieldName,
-//           fieldValue: fieldValue,
-//           setBy: setBy,
-//         };
-//       }) || [];
-
-//     const responseData = {
-//       batchId: parseInt(projectData?.batchId.toString() || "0"),
-//       serialOrRollNumber: parseInt(rollSerial || "0"),
-//       name: studentName,
-//       personalPhotoUrl: profileUrl,
-//       additionalfieldValues: additionalFieldValues,
+//   if (err instanceof Error) {
+//     // Network / fetch errors
+//     title = "Network error";
+//     description = err.message;
+//   } else if (typeof err === "object" && err !== null) {
+//     // API JSON error (the one you posted)
+//     const apiErr = err as {
+//       success?: boolean;
+//       message?: string;
+//       errorSources?: { path: string; message: string }[];
+//       err?: { statusCode?: number };
 //     };
 
-//     console.log("🔄 Generating ID card:", responseData);
-
-//     // If existing card found, show update message
-//     if (existingCardData) {
-//       console.log("🔄 Updating existing card:", existingCardData._id);
+//     if (apiErr.message) {
+//       title = apiErr.message;
 //     }
+//     if (apiErr.errorSources?.length) {
+//       description = apiErr.errorSources
+//         .map((e) => e.message)
+//         .join(" | ");
+//     }
+//     if (apiErr.err?.statusCode) {
+//       title = `${title} (Code ${apiErr.err.statusCode})`;
+//     }
+//   }
 
-//     try {
-//       const response = await fetch(
-//         `${process.env.NEXT_PUBLIC_API_URL}project/getMyId`,
-//         {
-//           method: "POST",
-//           headers: {
-//             "Content-Type": "application/json",
-//           },
-//           body: JSON.stringify(responseData),
-//         }
+//   toast.error(title, {
+//     description,
+//     duration: 8000,
+//     style: { whiteSpace: "pre-line" },
+//   });
+// };
+//   const handleSaveData = async () => {
+//   setIsSaving(true);
+//   setSaveSuccess(false);
+//   setFinalImageUrl(null);
+
+//   // ──────────────────────────────────────────────────────────────
+//   // Build additionalFieldValues (unchanged)
+//   // ──────────────────────────────────────────────────────────────
+//   const additionalFieldValues =
+//     projectData?.additionalFields?.map((fieldObj) => {
+//       const existingField = existingCardData?.additionalfieldValues?.find(
+//         (existing) => existing.fieldName === fieldObj.fieldName
 //       );
-//       console.log("====================================================");
-//       // Log all available headers for debugging
-//       console.log("📋 All Response Headers:");
-//       response.headers.forEach((value, key) => {
-//         console.log(`  ${key}: ${value}`);
-//       });
 
-//       // Get the card-number from response headers
-//       const cardNumber = response.headers.get("Card-Number");
-//       console.log("🎫 Card Number:", cardNumber);
-//       setIdNumber(cardNumber);
+//       let fieldValue: string;
+//       let setBy: "owner" | "user";
 
-//       if (!cardNumber) {
-//         console.warn(
-//           "⚠️ card-number header not found. The server may need to add 'Access-Control-Expose-Headers: card-number' to expose this header."
-//         );
-//       }
-
-//       console.log("response from geting my id =========>", response);
-
-//       if (!response.ok) {
-//         throw new Error(`HTTP error! status: ${response.status}`);
-//       }
-
-//       // Check response content type
-//       const contentType = response.headers.get("content-type");
-
-//       if (contentType && contentType.includes("image")) {
-//         // Direct image response
-//         const imageBlob = await response.blob();
-//         const imageUrl = URL.createObjectURL(imageBlob);
-//         setFinalImageUrl(imageUrl);
-//         console.log("✅ Generated image URL from blob");
+//       if (existingField && existingField.setBy === "owner") {
+//         fieldValue = existingField.fieldValue;
+//         setBy = "owner";
+//       } else if (fieldObj.defaultValue) {
+//         fieldValue = fieldObj.defaultValue;
+//         setBy = "owner";
 //       } else {
-//         // JSON response
-//         const result = await response.json();
-//         console.log("📄 Save data response:", result);
-
-//         // Check for different possible image URL fields
-//         if (result.imageUrl) {
-//           setFinalImageUrl(result.imageUrl);
-//         } else if (result.cardImageUrl) {
-//           setFinalImageUrl(result.cardImageUrl);
-//         } else if (result.finalImageUrl) {
-//           setFinalImageUrl(result.finalImageUrl);
-//         } else if (result.data && result.data.imageUrl) {
-//           setFinalImageUrl(result.data.imageUrl);
-//         } else if (result.imageData) {
-//           // Base64 image data
-//           const imageDataUrl = `data:image/png;base64,${result.imageData}`;
-//           setFinalImageUrl(imageDataUrl);
-//         }
+//         fieldValue = values[fieldObj.fieldName] || "";
+//         setBy = "user";
 //       }
 
-//       setSaveSuccess(true);
-//       // Show success page after successful generation
-//       setTimeout(() => {
-//         setShowSuccessPage(true);
-//         console.log(
-//           existingCardData
-//             ? "🎉 Card updated successfully"
-//             : "🎉 New card created successfully"
-//         );
-//       }, 1000); // Small delay to show success message
-//     } catch (error: unknown) {
-//       const errorMessage =
-//         error instanceof Error ? error.message : "Unknown error occurred";
-//       console.error(`❌ Failed to save data: ${errorMessage}`);
-//       alert(`Failed to save data. Error: ${errorMessage}`);
-//     } finally {
-//       setIsSaving(false);
-//     }
+//       return { fieldName: fieldObj.fieldName, fieldValue, setBy };
+//     }) || [];
+
+//   const responseData = {
+//     batchId: parseInt(projectData?.batchId.toString() || "0"),
+//     serialOrRollNumber: parseInt(rollSerial || "0"),
+//     name: studentName,
+//     personalPhotoUrl: profileUrl,
+//     additionalfieldValues : additionalFieldValues,
 //   };
+
+//   console.log("Generating ID card:", responseData);
+//   if (existingCardData) {
+//     console.log("Updating existing card:", existingCardData._id);
+//   }
+
+//   try {
+//     const response = await fetch(
+//       `${process.env.NEXT_PUBLIC_API_URL}project/getMyId`,
+//       {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify(responseData),
+//       }
+//     );
+
+//     // ──────────────────────────────────────────────────────────────
+//     // Header handling (card-number) – unchanged
+//     // ──────────────────────────────────────────────────────────────
+//     const cardNumber = response.headers.get("Card-Number");
+//     console.log("Card Number:", cardNumber);
+//     console.log(response);
+//     setIdNumber(cardNumber);
+
+//     if (!cardNumber) {
+//       console.warn(
+//         "card-number header not found. Server must expose it with Access-Control-Expose-Headers."
+//       );
+//     }
+
+//     // ──────────────────────────────────────────────────────────────
+//     // HTTP-level error → read JSON payload
+//     // ──────────────────────────────────────────────────────────────
+//     if (!response.ok) {
+//       let apiError: unknown = null;
+//       const contentType = response.headers.get("content-type");
+//       if (contentType?.includes("application/json")) {
+//         apiError = await response.json(); // <-- your full error object
+//       }
+//       throw apiError ?? new Error(`HTTP ${response.status}`);
+//     }
+
+//     // ──────────────────────────────────────────────────────────────
+//     // Success – image or JSON response
+//     // ──────────────────────────────────────────────────────────────
+//     const contentType = response.headers.get("content-type");
+
+//     if (contentType?.includes("image")) {
+//       const imageBlob = await response.blob();
+//       const imageUrl = URL.createObjectURL(imageBlob);
+//       setFinalImageUrl(imageUrl);
+//       console.log("Generated image URL from blob");
+//     } else {
+//       const result = await response.json();
+//       console.log("Save data response:", result);
+
+//       const possibleUrls = [
+//         result.imageUrl,
+//         result.cardImageUrl,
+//         result.finalImageUrl,
+//         result.data?.imageUrl,
+//         result.imageData ? `data:image/png;base64,${result.imageData}` : null,
+//       ].filter(Boolean)[0];
+
+//       if (possibleUrls) setFinalImageUrl(possibleUrls);
+//     }
+
+//     setSaveSuccess(true);
+//     setTimeout(() => {
+//       setShowSuccessPage(true);
+//       toast.success(
+//         existingCardData ? "Card updated successfully" : "New card created successfully"
+//       );
+//     }, 1000);
+//   } catch (error: unknown) {
+//     // ──────────────────────────────────────────────────────────────
+//     // All errors end up here → toast
+//     // ──────────────────────────────────────────────────────────────
+//     console.error("Failed to save data:", error);
+//     showApiError(error);
+//   } finally {
+//     setIsSaving(false);
+//   }
+// };
 
 //   const handleBackToForm = () => {
 //     console.log("🔄 Back to form");
@@ -2473,17 +2501,18 @@ const UserCardWithForm: React.FC = () => {
 
       croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
       console.log("✅ Image cropped successfully");
-      setPhotoPreview(croppedImage);
-      setIsCropping(false);
 
-      // Step 2: Background removal
-      setIsProcessingBackground(true);
-      console.log("🎨 Starting background removal...");
+      // INSTANT PREVIEW: Set cropped image immediately for instant feedback
+      setPhotoPreview(croppedImage);
+      setProfileUrl(croppedImage); // Use dataURL for instant template update
+      setIsCropping(false);
 
       // Clean up blob URLs after setting preview
       if (imageSrc.startsWith("blob:")) URL.revokeObjectURL(imageSrc);
-      if (photoPreview && photoPreview.startsWith("blob:"))
-        URL.revokeObjectURL(photoPreview);
+
+      // Step 2: Background removal (async, non-blocking for preview)
+      setIsProcessingBackground(true);
+      console.log("🎨 Starting background removal...");
 
       const blob = dataURLtoBlob(croppedImage);
       console.log("📦 Created blob:", `${(blob.size / 1024).toFixed(2)}KB`);
@@ -2571,10 +2600,11 @@ const UserCardWithForm: React.FC = () => {
 
         if (hostedUrl) {
           console.log("✅ HOSTED URL:", hostedUrl);
-          setProfileUrl(hostedUrl);
+          setProfileUrl(hostedUrl); // Update to hosted URL for persistence
           setPhotoPreview(hostedUrl);
         } else {
           console.log("❌ Failed to upload to imgbb");
+          // Keep cropped as fallback
         }
         setIsUploadingImage(false);
       } else {
@@ -2596,6 +2626,7 @@ const UserCardWithForm: React.FC = () => {
           }
         } catch (uploadError) {
           console.error("❌ Fallback upload failed:", uploadError);
+          // Keep cropped dataURL as fallback
         } finally {
           setIsUploadingImage(false);
         }
@@ -2613,10 +2644,11 @@ const UserCardWithForm: React.FC = () => {
       setIsProcessingBackground(false);
       setIsUploadingImage(false);
 
-      // Still set the cropped image as preview even if API fails
+      // Keep cropped image as preview/fallback even if API fails
       if (croppedImage) {
         console.log("🔄 Setting cropped image as fallback");
         setPhotoPreview(croppedImage);
+        setProfileUrl(croppedImage); // Ensure instant preview persists
 
         // Try to upload the cropped image to imgbb as fallback
         try {
@@ -2634,6 +2666,7 @@ const UserCardWithForm: React.FC = () => {
           }
         } catch (uploadError) {
           console.error("❌ Error fallback upload failed:", uploadError);
+          // Keep dataURL
         } finally {
           setIsUploadingImage(false);
         }

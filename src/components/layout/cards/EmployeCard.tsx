@@ -323,13 +323,13 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
         </div>
 
         {/* Name */}
-        <p className="absolute top-[30%] -left-13 md:left-[2%] right-0 text-center font-bold
+        <p className="absolute top-[30%] left-[40%]  text-center font-bold
                       text-[10px] md:text-[26px] lg:text-[22px] xl:text-[26px] text-cyan-400">
           {employeeName}
         </p>
 
         {/* Details */}
-        <div className="absolute top-[42%] left-[29%] w-[50%] flex text-gray-200 text-[6.8px] md:text-[16px] lg:text-[13px] xl:text-[16px]">
+        <div className="absolute top-[42%] left-[40%] flex text-gray-200 text-[6.8px] md:text-[16px] lg:text-[13px] xl:text-[16px]">
           <div className="flex w-max mx-auto">
             <div className="w-max space-y-1 md:space-y-0">
               <p>{customLabels.department}</p>

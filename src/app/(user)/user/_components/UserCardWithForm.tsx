@@ -2745,13 +2745,11 @@ const UserCardWithForm: React.FC = () => {
  * Works for both simple strings and the full error object you posted.
  */
 const showApiError = (err: unknown) => {
-  let title = "Something went wrong";
-  let description = "Please try again later.";
+  let message = "Something went wrong. Please try again later.";
 
   if (err instanceof Error) {
     // Network / fetch errors
-    title = "Network error";
-    description = err.message;
+    message = err.message;
   } else if (typeof err === "object" && err !== null) {
     // API JSON error (the one you posted)
     const apiErr = err as {
@@ -2762,22 +2760,12 @@ const showApiError = (err: unknown) => {
     };
 
     if (apiErr.message) {
-      title = apiErr.message;
-    }
-    if (apiErr.errorSources?.length) {
-      description = apiErr.errorSources
-        .map((e) => e.message)
-        .join(" | ");
-    }
-    if (apiErr.err?.statusCode) {
-      title = `${title} (Code ${apiErr.err.statusCode})`;
+      message = apiErr.message;
     }
   }
 
-  toast.error(title, {
-    description,
+  toast.error(message, {
     duration: 8000,
-    style: { whiteSpace: "pre-line" },
   });
 };
   const handleSaveData = async () => {

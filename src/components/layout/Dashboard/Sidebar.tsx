@@ -381,14 +381,14 @@ export function Sidebar({ onToggle }: SidebarProps) {
       <Button
         variant="ghost"
         size="icon"
-        className="md:hidden fixed top-4 left-4 z-50 text-white bg-[#4A61E4] hover:bg-[#4A61E4] rounded-2xl"
+        className="md:hidden fixed top-4 left-4 z-50 text-white bg-[#4A61E4] hover:bg-[#4A61E4] font-extrabold! rounded-2xl"
         onClick={() => setIsMobileOpen(!isMobileOpen)}
       >
         {isMobileOpen ? (
-          <HiOutlineX className="h-20 w-20" />
-        ) : (
-          <HiOutlineMenu className="h-20 w-20" />
-        )}
+          <HiOutlineX className="h-9! w-9! font-bold!" />
+        ) : ( 
+          <HiOutlineMenu className="h-9! w-9! font-bold!" />
+        )} 
       </Button>
 
       {/* Desktop toggle button */}
@@ -399,7 +399,7 @@ export function Sidebar({ onToggle }: SidebarProps) {
         onClick={handleDesktopToggle}
       >
         <div className="ml-2">
-          <HiOutlineMenu className="h-10 w-10" />
+          <HiOutlineMenu size={40} className="h-10 w-10" />
         </div>
       </Button>
 

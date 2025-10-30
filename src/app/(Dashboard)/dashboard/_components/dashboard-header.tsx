@@ -33,7 +33,7 @@ export function DashboardHeader() {
             </div>
 
             {/* Desktop: Show Dashboard title */}
-            <h1 className="md:hidden pl-10 text-white text-xl font-bold">Dashboard</h1>
+            <h1 className="md:hidden pl-12 text-white text-xl font-bold">Dashboard</h1>
             <h1 className="hidden md:block text-2xl font-bold text-gray-900">Dashboard</h1>
 
 

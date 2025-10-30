@@ -3,10 +3,15 @@
 // import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 // import { Button } from "@/components/ui/button"
 // import { Input } from "@/components/ui/input"
-// import { Loader2, LucideCopy, LucideFolderOpen, Trash2 } from "lucide-react"
+// import { Loader2, LucideCopy, Trash2 } from "lucide-react"
 // import Link from "next/link"
 // import { useState } from "react"
-// import { projectApi, useCreateProjectMutation, useDeleteProjectMutation, useGetMyProjectQuery, useGetSpecificProjectQuery } from "@/lib/feature/Project/projectApi"
+// import {
+//   projectApi,
+//   useCreateProjectMutation,
+//   useDeleteProjectMutation,
+//   useGetMyProjectQuery,
+// } from "@/lib/feature/Project/projectApi"
 // import { Project } from "@/types/inedx"
 // import { useAppDispatch } from "@/lib/hooks"
 // import { toast } from "sonner"
@@ -15,7 +20,7 @@
 
 // export function ProjectOverview() {
 //   const router = useRouter()
-//   const { data, isLoading, isError } = useGetMyProjectQuery(undefined)
+//   const { data, isLoading, isError, refetch } = useGetMyProjectQuery(undefined)
 //   const [copiedId, setCopiedId] = useState<string | null>(null)
 //   const [deletingId, setDeletingId] = useState<string | null>(null)
 //   const [copyingId, setCopyingId] = useState<string | null>(null)
@@ -27,7 +32,7 @@
 
 //   const projects = data?.data ?? []
 
-//   // Filter projects based on search term
+//   // 🔹 Filter projects by search term
 //   const filteredProjects = projects.filter((project: Project) => {
 //     if (!searchTerm) return true
 
@@ -36,24 +41,22 @@
 //     const institutionName = project.institutionName?.toLowerCase() || ""
 //     const batchCode = project.batchId?.toString().toLowerCase() || ""
 
-//     return projectName.includes(searchLower) ||
+//     return (
+//       projectName.includes(searchLower) ||
 //       institutionName.includes(searchLower) ||
 //       batchCode.includes(searchLower)
+//     )
 //   })
 
 //   const handleCopy = async (text: string, id: string) => {
-//     if (typeof window === "undefined" || !navigator?.clipboard) {
-//       console.error("Clipboard API not available")
-//       return
-//     }
+//     if (typeof window === "undefined" || !navigator?.clipboard) return
 
 //     try {
 //       await navigator.clipboard.writeText(text)
 //       setCopiedId(id)
 //       setTimeout(() => setCopiedId(null), 2000)
-//       console.log("Copied successfully:", text)
 //     } catch (err) {
-//       console.error("❌ Failed to copy text:", err)
+//       console.error("❌ Failed to copy:", err)
 //       toast.error("Failed to copy batch ID")
 //     }
 //   }
@@ -90,6 +93,7 @@
 
 //       await createProject(payload).unwrap()
 //       toast.success("Project copied successfully")
+//       refetch() // ✅ refresh after copy
 //     } catch (err) {
 //       console.error("Failed to copy project:", err)
 //       toast.error("Failed to copy project. Please try again.")
@@ -106,6 +110,7 @@
 //       setDeletingId(id)
 //       await deleteProject(id).unwrap()
 //       toast.success("Project deleted successfully")
+//       refetch() // ✅ Immediately reload projects after delete
 //     } catch (err) {
 //       console.error("Failed to delete project:", err)
 //       toast.error("Failed to delete project. Please try again.")
@@ -114,24 +119,22 @@
 //     }
 //   }
 
-
-
-
-
-
-//   if (isLoading) {
-//     return <Loading />
-//   }
-
-//   if (isError) {
-//     return <p className="p-4 sm:p-6 text-red-500 text-center text-sm sm:text-base">Failed to load projects</p>
-//   }
+//   // ✅ Don't show error message if cached data exists
+//   if (isLoading) return <Loading />
+//   if (isError && (!data || data?.data?.length === 0))
+//     return (
+//       <p className="p-4 sm:p-6 text-red-500 text-center text-sm sm:text-base">
+//         Failed to load projects
+//       </p>
+//     )
 
 //   return (
 //     <Card className="bg-background border-border w-full">
 //       <CardHeader>
 //         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-//           <CardTitle className="text-lg sm:text-xl font-bold text-foreground">All Projects</CardTitle>
+//           <CardTitle className="text-lg sm:text-xl font-bold text-foreground">
+//             All Projects
+//           </CardTitle>
 //           <div className="relative w-full sm:w-64">
 //             <svg
 //               className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground"
@@ -155,18 +158,31 @@
 //           </div>
 //         </div>
 //       </CardHeader>
+
 //       <CardContent>
-//         {/* Desktop: Table Layout */}
+//         {/* 🖥 Desktop Table View */}
 //         <div className="hidden sm:block overflow-x-hidden">
 //           <table className="w-full table-auto">
 //             <thead>
 //               <tr className="border-b-2 border-blue-600">
-//                 <th className="text-left py-3 px-4 font-semibold text-muted-foreground text-sm">Project Name</th>
-//                 <th className="text-left py-3 px-4 font-semibold text-muted-foreground text-sm">Institution</th>
-//                 <th className="text-left py-3 px-4 font-semibold text-muted-foreground text-sm">Card Type</th>
-//                 <th className="text-left py-3 px-4 font-semibold text-muted-foreground text-sm">Total Cards</th>
-//                 <th className="text-left py-3 px-4 font-semibold text-muted-foreground text-sm">Batch Code</th>
-//                 <th className="text-left py-3 px-4 font-semibold text-muted-foreground text-sm">Actions</th>
+//                 <th className="text-left py-3 px-4 font-semibold text-muted-foreground text-sm">
+//                   Project Name
+//                 </th>
+//                 <th className="text-left py-3 px-4 font-semibold text-muted-foreground text-sm">
+//                   Institution
+//                 </th>
+//                 <th className="text-left py-3 px-4 font-semibold text-muted-foreground text-sm">
+//                   Card Type
+//                 </th>
+//                 <th className="text-left py-3 px-4 font-semibold text-muted-foreground text-sm">
+//                   Total Cards
+//                 </th>
+//                 <th className="text-left py-3 px-4 font-semibold text-muted-foreground text-sm">
+//                   Batch Code
+//                 </th>
+//                 <th className="text-left py-3 px-4 font-semibold text-muted-foreground text-sm">
+//                   Actions
+//                 </th>
 //               </tr>
 //             </thead>
 //             <tbody>
@@ -174,21 +190,33 @@
 //                 <tr
 //                   key={project._id}
 //                   className="border-b border-border hover:bg-muted/50 cursor-pointer"
-//                   onClick={() => router.push(`/dashboard/projects/${project._id}/edit`)}
+//                   onClick={() =>
+//                     router.push(`/dashboard/projects/${project._id}/edit`)
+//                   }
 //                 >
-//                   <td className="py-4 px-4 text-sm text-foreground">{project.projectName}</td>
-//                   <td className="py-4 px-4 text-sm text-foreground">{project.institutionName}</td>
-//                   <td className="py-4 px-4 text-sm text-foreground">{project.cardType}</td>
-//                   <td className="py-4 px-4 text-sm text-foreground">{project.cardQuantity}</td>
+//                   <td className="py-4 px-4 text-sm text-foreground">
+//                     {project.projectName}
+//                   </td>
+//                   <td className="py-4 px-4 text-sm text-foreground">
+//                     {project.institutionName}
+//                   </td>
+//                   <td className="py-4 px-4 text-sm text-foreground">
+//                     {project.cardType}
+//                   </td>
+//                   <td className="py-4 px-4 text-sm text-foreground">
+//                     {project.cardQuantity}
+//                   </td>
 //                   <td className="py-4 px-4">
 //                     <div className="flex items-center gap-2">
-//                       <span className="font-medium text-sm text-foreground">{project.batchId}</span>
+//                       <span className="font-medium text-sm text-foreground">
+//                         {project.batchId}
+//                       </span>
 //                       <Button
 //                         variant="ghost"
 //                         size="sm"
 //                         className="h-9 w-9 p-0"
 //                         onClick={(e) => {
-//                           e.stopPropagation() // prevent row click
+//                           e.stopPropagation()
 //                           handleCopy(project.batchId.toString(), project._id)
 //                         }}
 //                       >
@@ -228,7 +256,12 @@
 //                         }}
 //                         disabled={deletingId === project._id}
 //                       >
-//                         <Trash2 size={16} className={deletingId === project._id ? "animate-pulse" : ""} />
+//                         <Trash2
+//                           size={16}
+//                           className={
+//                             deletingId === project._id ? "animate-pulse" : ""
+//                           }
+//                         />
 //                       </Button>
 //                     </div>
 //                   </td>
@@ -238,7 +271,7 @@
 //           </table>
 //         </div>
 
-//         {/* Mobile: Card Layout */}
+//         {/* 📱 Mobile Card View */}
 //         <div className="sm:hidden space-y-4">
 //           {filteredProjects.map((project: Project) => (
 //             <Card key={project._id} className="border-border bg-white">
@@ -247,11 +280,14 @@
 //                   <div className="space-y-2">
 //                     <div className="flex justify-between items-start">
 //                       <div>
-//                         <h3 className="font-bold text-sm text-foreground">{project.projectName}</h3>
-//                         <p className="text-xs text-muted-foreground">{project.institutionName}</p>
+//                         <h3 className="font-bold text-sm text-foreground">
+//                           {project.projectName}
+//                         </h3>
+//                         <p className="text-xs text-muted-foreground">
+//                           {project.institutionName}
+//                         </p>
 //                       </div>
-//                       <div className="flex gap-1"> 
-
+//                       <div className="flex gap-1">
 //                         <Button
 //                           variant="ghost"
 //                           size="sm"
@@ -272,24 +308,34 @@
 //                           onClick={() => handleDelete(project._id)}
 //                           disabled={deletingId === project._id}
 //                         >
-//                           <Trash2 size={14} className={deletingId === project._id ? "animate-pulse" : ""} />
+//                           <Trash2
+//                             size={14}
+//                             className={
+//                               deletingId === project._id ? "animate-pulse" : ""
+//                             }
+//                           />
 //                         </Button>
 //                       </div>
 //                     </div>
 //                     <div className="grid grid-cols-2 gap-2 text-xs text-foreground">
 //                       <div>
-//                         <span className="font-medium">Card Type:</span> {project.cardType}
+//                         <span className="font-medium">Card Type:</span>{" "}
+//                         {project.cardType}
 //                       </div>
 //                       <div>
-//                         <span className="font-medium">Total Cards:</span> {project.cardQuantity}
+//                         <span className="font-medium">Total Cards:</span>{" "}
+//                         {project.cardQuantity}
 //                       </div>
 //                       <div className="flex items-center gap-1">
-//                         <span className="font-medium">Batch Code:</span> {project.batchId}
+//                         <span className="font-medium">Batch Code:</span>{" "}
+//                         {project.batchId}
 //                         <Button
 //                           variant="ghost"
 //                           size="sm"
 //                           className="h-6 w-6 p-0"
-//                           onClick={() => handleCopy(project.batchId.toString(), project._id)}
+//                           onClick={() =>
+//                             handleCopy(project.batchId.toString(), project._id)
+//                           }
 //                         >
 //                           {copiedId === project._id ? (
 //                             <span className="text-green-600 text-xs">✔</span>
@@ -306,11 +352,16 @@
 //           ))}
 //         </div>
 
-//         {/* Empty State: No Search Results */}
+//         {/* 🔹 Empty States */}
 //         {filteredProjects.length === 0 && projects.length > 0 && (
 //           <div className="text-center py-8 sm:py-12">
 //             <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-muted rounded-full flex items-center justify-center mb-4">
-//               <svg className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//               <svg
+//                 className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground"
+//                 fill="none"
+//                 stroke="currentColor"
+//                 viewBox="0 0 24 24"
+//               >
 //                 <path
 //                   strokeLinecap="round"
 //                   strokeLinejoin="round"
@@ -319,16 +370,24 @@
 //                 />
 //               </svg>
 //             </div>
-//             <h3 className="text-base sm:text-lg font-medium text-foreground mb-2">No projects found</h3>
-//             <p className="text-sm text-muted-foreground mb-4">Try adjusting your search terms</p>
+//             <h3 className="text-base sm:text-lg font-medium text-foreground mb-2">
+//               No projects found
+//             </h3>
+//             <p className="text-sm text-muted-foreground mb-4">
+//               Try adjusting your search terms
+//             </p>
 //           </div>
 //         )}
 
-//         {/* Empty State: No Projects */}
 //         {projects.length === 0 && (
 //           <div className="text-center py-8 sm:py-12">
 //             <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-muted rounded-full flex items-center justify-center mb-4">
-//               <svg className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//               <svg
+//                 className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground"
+//                 fill="none"
+//                 stroke="currentColor"
+//                 viewBox="0 0 24 24"
+//               >
 //                 <path
 //                   strokeLinecap="round"
 //                   strokeLinejoin="round"
@@ -343,20 +402,20 @@
 //                 />
 //               </svg>
 //             </div>
-//             <h3 className="text-base sm:text-lg font-medium text-foreground mb-2">No projects yet</h3>
-//             <p className="text-sm text-muted-foreground mb-4">Get started by creating your first ID card project</p>
-//             {/* <Button className="bg-blue-600 text-white hover:bg-blue-700 text-sm px-3 py-1 sm:px-4 sm:py-2">
-//               <svg className="mr-1 sm:mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-//                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-//               </svg>
-//               Create Project
-//             </Button> */}
+//             <h3 className="text-base sm:text-lg font-medium text-foreground mb-2">
+//               No projects yet
+//             </h3>
+//             <p className="text-sm text-muted-foreground mb-4">
+//               Get started by creating your first ID card project
+//             </p>
 //           </div>
 //         )}
 //       </CardContent>
 //     </Card>
 //   )
 // }
+
+
 
 
 
@@ -483,8 +542,8 @@ export function ProjectOverview() {
   }
 
   // ✅ Don't show error message if cached data exists
-  if (isLoading) return <Loading />
-  if (isError && (!data || data?.data?.length === 0))
+  if (isLoading && !data) return <Loading />
+  if (isError && !data)
     return (
       <p className="p-4 sm:p-6 text-red-500 text-center text-sm sm:text-base">
         Failed to load projects
@@ -655,7 +714,10 @@ export function ProjectOverview() {
                           variant="ghost"
                           size="sm"
                           className="h-8 w-8 p-0"
-                          onClick={() => handleCopyProject(project._id)}
+                          onClick={(e) => {
+                            e.preventDefault()
+                            handleCopyProject(project._id)
+                          }}
                           disabled={copyingId === project._id}
                         >
                           {copyingId === project._id ? (
@@ -668,7 +730,10 @@ export function ProjectOverview() {
                           variant="ghost"
                           size="sm"
                           className="h-8 w-8 p-0"
-                          onClick={() => handleDelete(project._id)}
+                          onClick={(e) => {
+                            e.preventDefault()
+                            handleDelete(project._id)
+                          }}
                           disabled={deletingId === project._id}
                         >
                           <Trash2
@@ -696,9 +761,10 @@ export function ProjectOverview() {
                           variant="ghost"
                           size="sm"
                           className="h-6 w-6 p-0"
-                          onClick={() =>
+                          onClick={(e) => {
+                            e.preventDefault()
                             handleCopy(project.batchId.toString(), project._id)
-                          }
+                          }}
                         >
                           {copiedId === project._id ? (
                             <span className="text-green-600 text-xs">✔</span>

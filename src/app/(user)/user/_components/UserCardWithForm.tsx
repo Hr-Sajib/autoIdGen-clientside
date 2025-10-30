@@ -2053,7 +2053,7 @@ const IDCardSuccessPage: React.FC<IDCardSuccessPageProps> = ({
                 onClick={() =>
                   downloadImage(
                     finalImageUrl,
-                    `${studentName || "Student"}_ID_Card.png`
+                    `ID_${idNumber}_${studentName || "Student"}_Card.png`
                   )
                 }
                 disabled={isDownloading}

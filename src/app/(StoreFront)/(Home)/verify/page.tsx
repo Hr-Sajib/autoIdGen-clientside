@@ -475,13 +475,13 @@ export default function VerifyPage() {
                             <div className="flex items-center gap-2 text-gray-700">
                               <Hash className="h-4 w-4 text-blue-600" />
                               <span className="text-sm">
-                                Batch ID: <strong>{verifyStatus.data.batchId}</strong>
+                                Batch Code: <strong>{verifyStatus.data.batchId}</strong>
                               </span>
                             </div>
                             <div className="flex items-center gap-2 text-gray-700">
                               <Hash className="h-4 w-4 text-blue-600" />
                               <span className="text-sm">
-                                Unique Number: <strong>{verifyStatus.data.uniqueNumber}</strong>
+                                Unique ID: <strong>{verifyStatus.data.uniqueNumber}</strong>
                               </span>
                             </div>
                             <div className="flex items-center gap-2 text-gray-700">

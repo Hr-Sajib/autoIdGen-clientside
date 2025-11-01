@@ -137,7 +137,7 @@ export function EditProject({ isOpen, onClose, onSubmit, initialData }: EditProj
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Batch ID */}
           <div className="space-y-1">
-            <label htmlFor="batchId" className="text-sm font-medium text-gray-700">Batch ID</label>
+            <label htmlFor="batchId" className="text-sm font-medium text-gray-700">Batch Code</label>
             <Input
               id="batchId"
               name="batchId"

@@ -479,7 +479,7 @@ export function ProjectOverview() {
       setTimeout(() => setCopiedId(null), 2000)
     } catch (err) {
       console.error("❌ Failed to copy:", err)
-      toast.error("Failed to copy batch ID")
+      toast.error("Failed to copy batch Code")
     }
   }
 

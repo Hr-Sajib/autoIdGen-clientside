@@ -1,5 +1,7 @@
 
-//? before real time image reflection 
+
+
+
 // "use client";
 
 // import React, { useState, useRef, useEffect, useCallback } from "react";
@@ -744,17 +746,18 @@
 
 //       croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
 //       console.log("✅ Image cropped successfully");
-//       setPhotoPreview(croppedImage);
-//       setIsCropping(false);
 
-//       // Step 2: Background removal
-//       setIsProcessingBackground(true);
-//       console.log("🎨 Starting background removal...");
+//       // INSTANT PREVIEW: Set cropped image immediately for instant feedback
+//       setPhotoPreview(croppedImage);
+//       setProfileUrl(croppedImage); // Use dataURL for instant template update
+//       setIsCropping(false);
 
 //       // Clean up blob URLs after setting preview
 //       if (imageSrc.startsWith("blob:")) URL.revokeObjectURL(imageSrc);
-//       if (photoPreview && photoPreview.startsWith("blob:"))
-//         URL.revokeObjectURL(photoPreview);
+
+//       // Step 2: Background removal (async, non-blocking for preview)
+//       setIsProcessingBackground(true);
+//       console.log("🎨 Starting background removal...");
 
 //       const blob = dataURLtoBlob(croppedImage);
 //       console.log("📦 Created blob:", `${(blob.size / 1024).toFixed(2)}KB`);
@@ -842,10 +845,11 @@
 
 //         if (hostedUrl) {
 //           console.log("✅ HOSTED URL:", hostedUrl);
-//           setProfileUrl(hostedUrl);
+//           setProfileUrl(hostedUrl); // Update to hosted URL for persistence
 //           setPhotoPreview(hostedUrl);
 //         } else {
 //           console.log("❌ Failed to upload to imgbb");
+//           // Keep cropped as fallback
 //         }
 //         setIsUploadingImage(false);
 //       } else {
@@ -867,6 +871,7 @@
 //           }
 //         } catch (uploadError) {
 //           console.error("❌ Fallback upload failed:", uploadError);
+//           // Keep cropped dataURL as fallback
 //         } finally {
 //           setIsUploadingImage(false);
 //         }
@@ -884,10 +889,11 @@
 //       setIsProcessingBackground(false);
 //       setIsUploadingImage(false);
 
-//       // Still set the cropped image as preview even if API fails
+//       // Keep cropped image as preview/fallback even if API fails
 //       if (croppedImage) {
 //         console.log("🔄 Setting cropped image as fallback");
 //         setPhotoPreview(croppedImage);
+//         setProfileUrl(croppedImage); // Ensure instant preview persists
 
 //         // Try to upload the cropped image to imgbb as fallback
 //         try {
@@ -905,6 +911,7 @@
 //           }
 //         } catch (uploadError) {
 //           console.error("❌ Error fallback upload failed:", uploadError);
+//           // Keep dataURL
 //         } finally {
 //           setIsUploadingImage(false);
 //         }
@@ -983,13 +990,11 @@
 //  * Works for both simple strings and the full error object you posted.
 //  */
 // const showApiError = (err: unknown) => {
-//   let title = "Something went wrong";
-//   let description = "Please try again later.";
+//   let message = "Something went wrong. Please try again later.";
 
 //   if (err instanceof Error) {
 //     // Network / fetch errors
-//     title = "Network error";
-//     description = err.message;
+//     message = err.message;
 //   } else if (typeof err === "object" && err !== null) {
 //     // API JSON error (the one you posted)
 //     const apiErr = err as {
@@ -1000,22 +1005,12 @@
 //     };
 
 //     if (apiErr.message) {
-//       title = apiErr.message;
-//     }
-//     if (apiErr.errorSources?.length) {
-//       description = apiErr.errorSources
-//         .map((e) => e.message)
-//         .join(" | ");
-//     }
-//     if (apiErr.err?.statusCode) {
-//       title = `${title} (Code ${apiErr.err.statusCode})`;
+//       message = apiErr.message;
 //     }
 //   }
 
-//   toast.error(title, {
-//     description,
+//   toast.error(message, {
 //     duration: 8000,
-//     style: { whiteSpace: "pre-line" },
 //   });
 // };
 //   const handleSaveData = async () => {
@@ -1753,6 +1748,12 @@
 // };
 
 // export default UserCardWithForm;
+
+
+
+
+
+
 
 
 
@@ -2749,7 +2750,11 @@ const showApiError = (err: unknown) => {
 
   if (err instanceof Error) {
     // Network / fetch errors
-    message = err.message;
+    if (err.message === "Failed to fetch") {
+      message = "Please try again.";
+    } else {
+      message = err.message;
+    }
   } else if (typeof err === "object" && err !== null) {
     // API JSON error (the one you posted)
     const apiErr = err as {

@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+
 // "use client";
 
 // import { useState, useEffect } from "react";
@@ -170,14 +173,19 @@
 //   const [createProject] = useCreateProjectMutation();
 
 //   const handleAddField = () => {
+//     if (additionalFields.length >= 5) {
+//       toast.error("Cannot add more fields. Maximum limit of 5 additional fields reached.");
+//       return;
+//     }
 //     const newField = { fieldName: "New Field", defaultValue: "" };
+//     const newFields = [...additionalFields, newField];
 //     const newKey = `customField${additionalFields.length}`;
-//     setAdditionalFields((prev: any) => [...prev, newField]);
+//     setAdditionalFields(newFields);
 //     setFormData((prev: any) => ({
 //       ...prev,
 //       [newKey]: "",
 //     }));
-//     sessionStorage.setItem("additionalFields", JSON.stringify([...additionalFields, newField]));
+//     sessionStorage.setItem("additionalFields", JSON.stringify(newFields));
 //     sessionStorage.setItem("formData", JSON.stringify({ ...formData, [newKey]: "" }));
 //     toast.success("New field added successfully!");
 //   };
@@ -517,6 +525,7 @@
 //                   size="sm"
 //                   className="h-9 sm:h-10 text-sm w-full sm:w-auto mt-4"
 //                   onClick={handleAddField}
+//                   disabled={additionalFields.length >= 5}
 //                 >
 //                   Add Field
 //                 </Button>
@@ -629,7 +638,6 @@
 
 
 
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -647,7 +655,6 @@ import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { parse } from "path";
 import UserQRCode from "@/components/layout/UserQRCode";
 import Link from "next/link";
 
@@ -664,8 +671,6 @@ export default function InstituteTemplateSetupPage() {
     const queryProject = searchParams.get("project");
     const savedFormData = sessionStorage.getItem("formData");
 
-    console.log ("id card type =========>",  idCardType);
-
     if (queryProject) {
       setProjectName(queryProject);
     } else if (savedFormData) {
@@ -674,9 +679,6 @@ export default function InstituteTemplateSetupPage() {
         if (parsed.project) {
           setProjectName(parsed.project);
         }
-        // if (parsed.idCardType){
-        //   console.log("parsed id card type =========>", parsed.idCardType);
-        // }
       } catch (err) {
         console.error("❌ Error parsing formData:", err);
       }
@@ -782,7 +784,6 @@ export default function InstituteTemplateSetupPage() {
         if (parsed.idCardType) {
           setIdCardType(parsed.idCardType);
         }
-        console.log("🔄 Loaded formData from sessionStorage:", parsed);
       }
     } catch (err) {
       console.error("❌ Error reading formData from sessionStorage:", err);
@@ -875,7 +876,6 @@ export default function InstituteTemplateSetupPage() {
       idCardType,
     };
     sessionStorage.setItem("formData", JSON.stringify(sessionData));
-    console.log("💾 Saved formData before going back:", sessionData);
 
     const project = formData.project || "Project";
     router.push(`/dashboard/card-template-setup?project=${encodeURIComponent(project)}`);
@@ -918,7 +918,6 @@ export default function InstituteTemplateSetupPage() {
 
       toast.dismiss(toastId);
 
-      // ✅ Open success modal instead of redirecting immediately
       setSuccessModal({ open: true, batchId: res.data.batchId });
 
       sessionStorage.removeItem("formData");
@@ -936,51 +935,51 @@ export default function InstituteTemplateSetupPage() {
     }
   };
 
-  const fieldLabels = {
-    studentName: "Name",
-    department: additionalFields[0]?.fieldName,
-    rollNumber: additionalFields[1]?.fieldName,
-    employeeId: additionalFields[1]?.fieldName,
-    bloodGroup: additionalFields[2]?.fieldName,
-    dateOfBirth: additionalFields[3]?.fieldName,
-    phone: additionalFields[4]?.fieldName,
+  // ✅ Dynamic field mapping based on additionalFields
+  const getDynamicFieldLabels = () => {
+    const labels: any = {
+      studentName: "Name",
+    };
+    
+    additionalFields.forEach((field: any, index: number) => {
+      labels[`field${index}`] = field.fieldName;
+    });
+    
+    return labels;
+  };
+
+  const getDynamicFieldValues = () => {
+    const fieldKeys = ["department", "rollNumber", "bloodGroup", "dateOfBirth", "phone"];
+    const values: any = {};
+    
+    additionalFields.forEach((field: any, index: number) => {
+      const key = fieldKeys[index] || `customField${index}`;
+      values[`field${index}`] = formData[key] || field.defaultValue || "";
+    });
+    
+    return values;
   };
 
   const renderCard = () => {
+    const dynamicLabels = getDynamicFieldLabels();
+    const dynamicValues = getDynamicFieldValues();
+
     const cardProps = {
       name: formData.studentName,
       instituteName: formData.instituteName,
       address: formData.address,
       idCardType: formData.idCardType,
-      department: formData.department,
-      bloodGroup: formData.bloodGroup,
-      dob: formData.dateOfBirth,
-      phone: formData.phone,
       logoUrl: formData.logoUrl,
       signatureUrl: formData.signatureUrl,
       profileUrl: formData.profileUrl,
       bgColor: formData.bgColor,
       qrData: formData.qrData,
       whoseSign: formData.whoseSign,
-    };
-
-    const studentCustomLabels = {
-      studentName: fieldLabels.studentName,
-      department: fieldLabels.department,
-      rollNumber: fieldLabels.rollNumber,
-      bloodGroup: fieldLabels.bloodGroup,
-      dateOfBirth: fieldLabels.dateOfBirth,
-      phone: fieldLabels.phone,
-    };
-
-    const employeeCustomLabels = {
-      studentName: fieldLabels.studentName,
-      department: fieldLabels.department,
-      rollNumber: fieldLabels.rollNumber,
-      employeeId: fieldLabels.employeeId,
-      bloodGroup: fieldLabels.bloodGroup,
-      dateOfBirth: fieldLabels.dateOfBirth,
-      phone: fieldLabels.phone,
+      // ✅ Pass dynamic fields
+      dynamicFields: additionalFields.map((field: any, index: number) => ({
+        label: field.fieldName,
+        value: dynamicValues[`field${index}`]
+      }))
     };
 
     if (selectedCard === "Student") {
@@ -989,12 +988,10 @@ export default function InstituteTemplateSetupPage() {
           <EmployeeCard
             {...cardProps}
             employeeName={formData.studentName}
-            employeeId={formData.rollNumber}
             companyName={formData.instituteName}
             personImage={formData.profileUrl}
             logo={formData.logoUrl}
             signature={formData.signatureUrl}
-            customLabels={employeeCustomLabels}
             orientation={cardOrientation}
           />
         );
@@ -1003,8 +1000,6 @@ export default function InstituteTemplateSetupPage() {
           <StudentCard
             {...cardProps}
             studentName={formData.studentName}
-            roll={formData.rollNumber}
-            customLabels={studentCustomLabels}
             orientation={cardOrientation}
           />
         );
@@ -1015,12 +1010,10 @@ export default function InstituteTemplateSetupPage() {
           <EmployeeCard
             {...cardProps}
             employeeName={formData.studentName}
-            employeeId={formData.rollNumber}
             companyName={formData.instituteName}
             personImage={formData.profileUrl}
             logo={formData.logoUrl}
             signature={formData.signatureUrl}
-            customLabels={employeeCustomLabels}
             orientation={cardOrientation}
           />
         );
@@ -1029,8 +1022,6 @@ export default function InstituteTemplateSetupPage() {
           <StudentCard
             {...cardProps}
             studentName={formData.studentName}
-            roll={formData.rollNumber}
-            customLabels={studentCustomLabels}
             orientation={cardOrientation}
           />
         );
@@ -1041,8 +1032,6 @@ export default function InstituteTemplateSetupPage() {
       <StudentCard
         {...cardProps}
         studentName={formData.studentName}
-        roll={formData.rollNumber}
-        customLabels={studentCustomLabels}
         orientation={cardOrientation}
       />
     );
@@ -1183,28 +1172,6 @@ export default function InstituteTemplateSetupPage() {
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-900 text-center ">
                   Preview
                 </h2>
-                <div className="flex justify-center mb-0">
-                  {/* <div className="bg-gray-100 p-1 rounded-lg flex">
-                    <button
-                      className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-all ${cardOrientation === "horizontal"
-                        ? "bg-white text-gray-900 shadow-sm"
-                        : "text-gray-600 hover:text-gray-900"
-                        }`}
-                      onClick={() => setCardOrientation("horizontal")}
-                    >
-                      Horizontal
-                    </button>
-                    <button
-                      className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-all ${cardOrientation === "vertical"
-                        ? "bg-white text-gray-900 shadow-sm"
-                        : "text-gray-600 hover:text-gray-900"
-                        }`}
-                      onClick={() => setCardOrientation("vertical")}
-                    >
-                      Vertical
-                    </button>
-                  </div> */}
-                </div>
               </div>
 
               <Card className="p-0 bg-white border-none shadow-none">
@@ -1259,6 +1226,5 @@ export default function InstituteTemplateSetupPage() {
         </Dialog>
       )}
     </div>
-
   );
 }

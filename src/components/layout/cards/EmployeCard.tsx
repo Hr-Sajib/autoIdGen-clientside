@@ -1,5 +1,7 @@
 
 
+
+
 // "use client";
 // import React from "react";
 // // import { QRCodeCanvas } from "qrcode.react";
@@ -66,6 +68,10 @@
 //     phone: "Phone"
 //   },
 // }) => {
+//   // Effective sources to handle empty strings (fallback to defaults)
+//   const effectiveLogo = logo || "https://i.postimg.cc/hthwhxwy/uni-logo.avif";
+//   const effectiveSignature = signature || "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png";
+
 //   const qrData = `${companyName}/${department}/${employeeId}/${bloodGroup}/${dob}/${phone}`;
 
 //   return (
@@ -86,7 +92,7 @@
 //         {/* Institution Info */}
 //         <div className="flex items-center ml-[33%] mt-[5%] md:mt-[4%] w-[60%]">
 //           <Image
-//             src={logo}
+//             src={effectiveLogo}
 //             alt="Company Logo"
 //             width={50}
 //             height={50}
@@ -125,22 +131,22 @@
 //         </div>
 
 //         {/* Name */}
-//         <p className="absolute top-[30%] -left-13 md:left-[2%] right-0 text-center font-bold
+//         <p className="absolute top-[30%] left-[40%]  text-center font-bold
 //                       text-[10px] md:text-[26px] lg:text-[22px] xl:text-[26px] text-cyan-400">
 //           {employeeName}
 //         </p>
 
 //         {/* Details */}
-//         <div className="absolute top-[42%] left-[29%] w-[50%] flex text-gray-200 text-[6.5px] md:text-[16px] lg:text-[13px] xl:text-[16px]">
+//         <div className="absolute top-[42%] left-[40%] flex text-gray-200 text-[6.8px] md:text-[16px] lg:text-[13px] xl:text-[16px]">
 //           <div className="flex w-max mx-auto">
-//             <div className="w-max space-y-0.5 md:space-y-0">
+//             <div className="w-max space-y-1 md:space-y-0">
 //               <p>{customLabels.department}</p>
 //               <p>{customLabels?.employeeId || customLabels.rollNumber}</p>
 //               <p>{customLabels.bloodGroup}</p>
 //               <p>{customLabels.dateOfBirth}</p>
 //               <p>{customLabels.phone}</p>
 //             </div>
-//             <div className="w-max space-y-0.5 md:space-y-0">
+//             <div className="w-max space-y-1 md:space-y-0">
 //               <p className="pl-2"><span className="pr-2">:</span>{department}</p>
 //               <p className="pl-2"><span className="pr-2">:</span>{employeeId}</p>
 //               <p className="pl-2"><span className="pr-2">:</span>{bloodGroup}</p>
@@ -153,7 +159,7 @@
 //         {/* Principal Signature */}
 //         <div className="absolute bottom-[5%] left-[10%] text-center">
 //           <Image
-//             src={signature}
+//             src={effectiveSignature}
 //             alt="Chairman Signature"
 //             width={60}
 //             height={30}
@@ -165,7 +171,7 @@
 //         </div>
 
 //         {/* QR Code */}
-//         <div className="absolute bottom-[7%] -right-30 md:-right-50 lg:-right-45 xl:-right-50 md:bottom-[7%] lg:bottom-[7%] left-[90%] lg:left-[91%] -translate-x-1/2 ">
+//         <div className="absolute bottom-[3%] left-[65%]  md:bottom-[7%] lg:bottom-[7%]  -translate-x-1/2 ">
 //           {/* <QRCodeCanvas
 //             value={qrData}
 //             size={30} // will scale proportionally below
@@ -179,7 +185,7 @@
 //   alt="QR Code"
 //   width={400}
 //   height={50}
-//   className="!w-[90px] !h-[25px] md:!w-[170px] md:!h-[50px] lg:!w-[140px] lg:!h-[50px] xl:!w-[160px] xl:!h-[50px] object-fill"
+//   className="!w-[90px] !h-[22px] md:!w-[170px] md:!h-[50px] lg:!w-[140px] lg:!h-[50px] xl:!w-[160px] xl:!h-[50px] object-fill"
 //   style={{ maxWidth: "none" }} // ✅ prevent Next.js intrinsic limit
 // />
 
@@ -193,10 +199,8 @@
 // export default EmployeeCard;
 
 
-
 "use client";
 import React from "react";
-// import { QRCodeCanvas } from "qrcode.react";
 import background from "@/../public/image/shapes/studentId/potrait_id_card_bg.svg";
 import Image from "next/image";
 import qrCode from "@/../public/images/barcode image.png";
@@ -230,11 +234,11 @@ interface EmployeeCardProps {
     dateOfBirth: string;
     phone: string;
   };
-  orientation?: string
+  dynamicFields?: Array<{ label: string; value: string }>;
+  orientation?: string;
 }
 
 const EmployeeCard: React.FC<EmployeeCardProps> = ({
-  // name = "Name",
   department = "",
   employeeId = "",
   bloodGroup = "",
@@ -250,26 +254,40 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
   signature = "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png",
   whoseSign = "",
   bgColor = "",
-  customLabels = {
-    studentName: "Name",
-    department: "Department",
-    rollNumber: "Roll Number",
-    employeeId: "Employee ID",
-    bloodGroup: "Blood Group",
-    dateOfBirth: "Date of Birth",
-    phone: "Phone"
-  },
+  customLabels,
+  dynamicFields = [],
+  orientation
 }) => {
-  // Effective sources to handle empty strings (fallback to defaults)
   const effectiveLogo = logo || "https://i.postimg.cc/hthwhxwy/uni-logo.avif";
   const effectiveSignature = signature || "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png";
 
-  const qrData = `${companyName}/${department}/${employeeId}/${bloodGroup}/${dob}/${phone}`;
+  // ✅ Use dynamicFields if provided, otherwise fall back to old props
+  const fieldsToDisplay = dynamicFields.length > 0 
+    ? dynamicFields 
+    : [
+        { label: customLabels?.department || "Department", value: department },
+        { label: customLabels?.employeeId || customLabels?.rollNumber || "Employee ID", value: employeeId },
+        { label: customLabels?.bloodGroup || "Blood Group", value: bloodGroup },
+        { label: customLabels?.dateOfBirth || "Date of Birth", value: dob },
+        { label: customLabels?.phone || "Phone", value: phone }
+      ].filter(field => field.value); // Filter out empty values for backward compatibility
+
+  // If using old props system and all fields have values, show them all
+  const shouldShowAllFields = dynamicFields.length === 0 && (department || employeeId || bloodGroup || dob || phone);
+
+  const finalFields = shouldShowAllFields 
+    ? [
+        { label: customLabels?.department || "Department", value: department },
+        { label: customLabels?.employeeId || customLabels?.rollNumber || "Employee ID", value: employeeId },
+        { label: customLabels?.bloodGroup || "Blood Group", value: bloodGroup },
+        { label: customLabels?.dateOfBirth || "Date of Birth", value: dob },
+        { label: customLabels?.phone || "Phone", value: phone }
+      ]
+    : fieldsToDisplay;
 
   return (
     <div
       className="calibri relative min-w-[300px] h-[180px]
-                 
                  md:min-w-[650px] md:h-[408px]
                  lg:min-w-[560px] lg:h-[345px]
                  xl:min-w-[650px] xl:h-[408px] rounded-[3px]
@@ -286,6 +304,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
           <Image
             src={effectiveLogo}
             alt="Company Logo"
+            loading="lazy"
             width={50}
             height={50}
             className="object-contain bg-white rounded lg:rounded-lg w-[25px] h-[25px]
@@ -299,7 +318,6 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
             </p>
             <p className="text-center text-gray-300 text-[5px] md:text-[14px] lg:text-[12px] xl:text-[14px] mt-1">
               {address}
-      
             </p>
           </div>
         </div>
@@ -311,11 +329,12 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
 
         {/* Person Image */}
         <div className="absolute top-[20%] left-[5%] rounded-full"
-          style={{ backgroundColor: bgColor || "#ffffff" }} // fallback if null
+          style={{ backgroundColor: bgColor || "#ffffff" }}
         >
           <Image
             src={personImage}
             alt="Employee Photo"
+            loading="lazy"
             width={100}
             height={100}
             className="w-[85px] h-[85px] md:w-[180px] md:h-[180px] lg:w-[160px] lg:h-[160px] xl:w-[180px] xl:h-[180px] rounded-full border-[3px] md:border-[6px] lg:border-[6px] xl:border-[6px] border-white object-cover object-center"
@@ -323,27 +342,25 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
         </div>
 
         {/* Name */}
-        <p className="absolute top-[30%] left-[40%]  text-center font-bold
+        <p className="absolute top-[30%] left-[40%] text-center font-bold
                       text-[10px] md:text-[26px] lg:text-[22px] xl:text-[26px] text-cyan-400">
           {employeeName}
         </p>
 
-        {/* Details */}
+        {/* Dynamic Details */}
         <div className="absolute top-[42%] left-[40%] flex text-gray-200 text-[6.8px] md:text-[16px] lg:text-[13px] xl:text-[16px]">
           <div className="flex w-max mx-auto">
             <div className="w-max space-y-1 md:space-y-0">
-              <p>{customLabels.department}</p>
-              <p>{customLabels?.employeeId || customLabels.rollNumber}</p>
-              <p>{customLabels.bloodGroup}</p>
-              <p>{customLabels.dateOfBirth}</p>
-              <p>{customLabels.phone}</p>
+              {finalFields.map((field, index) => (
+                <p key={`label-${index}`}>{field.label}</p>
+              ))}
             </div>
             <div className="w-max space-y-1 md:space-y-0">
-              <p className="pl-2"><span className="pr-2">:</span>{department}</p>
-              <p className="pl-2"><span className="pr-2">:</span>{employeeId}</p>
-              <p className="pl-2"><span className="pr-2">:</span>{bloodGroup}</p>
-              {dob && <p className="pl-2"><span className="pr-2">:</span>{dob}</p>}
-              {phone && <p className="pl-2"><span className="pr-2">:</span>{phone}</p>}
+              {finalFields.map((field, index) => (
+                <p key={`value-${index}`} className="pl-2">
+                  <span className="pr-2">:</span>{field.value || ""}
+                </p>
+              ))}
             </div>
           </div>
         </div>
@@ -352,7 +369,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
         <div className="absolute bottom-[5%] left-[10%] text-center">
           <Image
             src={effectiveSignature}
-            alt="Chairman Signature"
+            alt={`${whoseSign} Signature`}
             width={60}
             height={30}
             className="object-contain w-[60px] h-[30px] md:w-[90px] md:h-[45px] lg:w-[80px] lg:h-[40px] xl:w-[90px] xl:h-[45px]"
@@ -363,25 +380,16 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
         </div>
 
         {/* QR Code */}
-        <div className="absolute bottom-[3%] left-[65%]  md:bottom-[7%] lg:bottom-[7%]  -translate-x-1/2 ">
-          {/* <QRCodeCanvas
-            value={qrData}
-            size={30} // will scale proportionally below
-            className="!w-[20px] !h-[20px] md:!w-[35px] p-[1px] md:p-[2px] rounded-[2px] bg-white md:!h-[35px] lg:!w-[60px] lg:!h-[60px] xl:!w-[70px] xl:!h-[70px]"
-            bgColor="#ffffff"
-            fgColor="#000000"
-            level="H"
-          /> */}
-        <Image
-  src={qrCode}
-  alt="QR Code"
-  width={400}
-  height={50}
-  className="!w-[90px] !h-[22px] md:!w-[170px] md:!h-[50px] lg:!w-[140px] lg:!h-[50px] xl:!w-[160px] xl:!h-[50px] object-fill"
-  style={{ maxWidth: "none" }} // ✅ prevent Next.js intrinsic limit
-/>
-
-
+        <div className="absolute bottom-[3%] left-[65%] md:bottom-[7%] lg:bottom-[7%] -translate-x-1/2">
+          <Image
+            src={qrCode}
+            alt="QR Code"
+            loading="lazy"
+            width={400}
+            height={50}
+            className="!w-[90px] !h-[22px] md:!w-[170px] md:!h-[50px] lg:!w-[140px] lg:!h-[50px] xl:!w-[160px] xl:!h-[50px] object-fill"
+            style={{ maxWidth: "none" }}
+          />
         </div>
       </div>
     </div>

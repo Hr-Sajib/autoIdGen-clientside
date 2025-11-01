@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 
 
 // "use client"
@@ -189,37 +191,6 @@
 //   const [isLogoUploaded, setIsLogoUploaded] = useState(false);
 //   const [isSignatureUploaded, setIsSignatureUploaded] = useState(false);
 
-//   // useEffect(() => {
-//   //   const savedFormData = sessionStorage.getItem("formData");
-//   //   const parsedData = savedFormData ? JSON.parse(savedFormData) : {};
-
-//   //   // Initialize form with saved data or defaults
-//   //   setForm({
-//   //     project: parsedData.project || projectName || "",
-//   //     instituteName: parsedData.instituteName || "",
-//   //     idCardType: parsedData.idCardType || "",
-//   //     address: parsedData.address || "",
-//   //     department: parsedData.department || "",
-//   //     roll: parsedData.roll || "",
-//   //     employeeId: parsedData.employeeId || "",
-//   //     bloodGroup: parsedData.bloodGroup || "",
-//   //     dob: parsedData.dob || "",
-//   //     phone: parsedData.phone || "",
-//   //     logoUrl: parsedData.logoUrl || "",
-//   //     signatureUrl: parsedData.signatureUrl || "",
-//   //     profileUrl: parsedData.profileUrl,
-//   //     bgColor: parsedData.bgColor || "#0f172a",
-//   //     qrData: parsedData.qrData,
-//   //     whoseSign: parsedData.whoseSign || "",
-//   //     cardOrientation: cardOrientation, // Set from URL
-//   //   });
-//   //   // Set upload states based on saved data
-//   //   setIsLogoUploaded(!!parsedData.logoUrl);
-//   //   setIsSignatureUploaded(!!parsedData.signatureUrl);
-//   // }, [projectName, cardOrientation]);
-
-
-
 //   useEffect(() => {
 //   const savedFormData = sessionStorage.getItem("formData");
 //   const parsedData = savedFormData ? JSON.parse(savedFormData) : {};
@@ -261,46 +232,50 @@
 //     if (e.target.files && e.target.files[0]) {
 //       const file = e.target.files[0]
 
-//       if (field === "signatureUrl") {
-//         const reader = new FileReader();
-//         reader.onload = (event) => {
-//           setTempSignatureImage(event.target?.result as string);
+//       const reader = new FileReader();
+//       reader.onload = async (event) => {
+//         const dataUrl = event.target?.result as string;
+
+//         if (field === "signatureUrl") {
+//           setForm((prev: any) => ({ ...prev, signatureUrl: dataUrl }));
+//           setIsSignatureUploaded(true);
+//           setTempSignatureImage(dataUrl);
 //           setShowSignatureModal(true);
-//         };
-//         reader.readAsDataURL(file);
-//         return;
-//       }
+//           return;
+//         }
 
-//       try {
-//         toast.loading("Uploading image...")
+//         // For logo
+//         setForm((prev: any) => ({ ...prev, [field]: dataUrl }));
+//         setIsLogoUploaded(true);
+//         toast.loading("Uploading image...");
 
-//         const uploadedUrl = await imageUpload(file)
-
-//         toast.dismiss()
-//         if (uploadedUrl) {
-//           setForm({ ...form, [field]: uploadedUrl })
-//           // Update upload state for logo
-//           if (field === "logoUrl") {
-//             setIsLogoUploaded(true);
+//         try {
+//           const uploadedUrl = await imageUpload(file);
+//           toast.dismiss();
+//           if (uploadedUrl) {
+//             setForm((prev: any) => ({ ...prev, [field]: uploadedUrl }));
+//             toast.success("Image uploaded successfully!", { duration: 4000 });
+//           } else {
+//             toast.error("Failed to upload image", {
+//               duration: 6000,
+//               className: "bg-red-600 text-white font-semibold shadow-lg",
+//             });
+//             // Keep dataUrl for preview
 //           }
-//           toast.success("Image uploaded successfully!", { duration: 4000 })
-//         } else {
-//           toast.error("Failed to upload image", {
+//         } catch (error) {
+//           toast.dismiss();
+//           let message = "Error uploading image!";
+//           if (error instanceof Error) {
+//             message = error.message;
+//           }
+//           toast.error(message, {
 //             duration: 6000,
 //             className: "bg-red-600 text-white font-semibold shadow-lg",
-//           })
+//           });
+//           // Keep dataUrl for preview
 //         }
-//       } catch (error) {
-//         let message = "Error uploading image!"
-//         if (error instanceof Error) {
-//           message = error.message
-//         }
-//         toast.dismiss()
-//         toast.error(message, {
-//           duration: 6000,
-//           className: "bg-red-600 text-white font-semibold shadow-lg",
-//         })
-//       }
+//       };
+//       reader.readAsDataURL(file);
 //     }
 //   }
 
@@ -339,6 +314,10 @@
 //   }
 
 //   const colors = ["#ffffff", "#0f172a", "#10b981", "#3b82f6", "#06b6d4", "#a855f7"]
+
+//   // Defaults for cards
+//   const defaultLogo = "https://i.postimg.cc/hthwhxwy/uni-logo.avif";
+//   const defaultSignature = "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png";
 
 //   return (
 //     <div className="min-h-screen bg-white">
@@ -503,8 +482,8 @@
 //                     bloodGroup="B+"
 //                     dob="12-12-2000"
 //                     phone="+65-2131-XXXX"
-//                     logoUrl={form.logoUrl}
-//                     signatureUrl={form.signatureUrl || "https://i.ibb.co.com/"}
+//                     logoUrl={form.logoUrl || defaultLogo}
+//                     signatureUrl={form.signatureUrl || defaultSignature}
 //                     profileUrl={form.profileUrl}
 //                     bgColor={form.bgColor}
 //                     qrData={form.qrData}
@@ -549,6 +528,9 @@
 //     </div>
 //   )
 // }
+
+
+
 
 
 
@@ -724,55 +706,50 @@ export default function InstituteTemplateSetupPage() {
 
   const searchParams = useSearchParams()
   const queryProjectName = searchParams.get("project")
-  const queryStyle = searchParams.get("style") // Get style from URL
+  const queryStyle = searchParams.get("style")
   const savedFormData = sessionStorage.getItem("formData")
   const parsedFormData = savedFormData ? JSON.parse(savedFormData) : {}
   const sessionProjectName = parsedFormData.project || null
   const projectName = queryProjectName || sessionProjectName || ""
 
-  // Determine card orientation from URL style parameter
   const cardOrientation = queryStyle || "horizontal"
-  // console.log("card oriantation ========================>",queryStyle);
 
   const [form, setForm] = useState<any>({});
   const [showSignatureModal, setShowSignatureModal] = useState(false);
   const [tempSignatureImage, setTempSignatureImage] = useState<string | null>(null);
-  // New state to track file uploads
   const [isLogoUploaded, setIsLogoUploaded] = useState(false);
   const [isSignatureUploaded, setIsSignatureUploaded] = useState(false);
 
   useEffect(() => {
-  const savedFormData = sessionStorage.getItem("formData");
-  const parsedData = savedFormData ? JSON.parse(savedFormData) : {};
+    const savedFormData = sessionStorage.getItem("formData");
+    const parsedData = savedFormData ? JSON.parse(savedFormData) : {};
 
-  // Default values based on card orientation
-  const defaultType = cardOrientation === "vertical" ? "Employee" : "Student";
-  const defaultSign = cardOrientation === "vertical" ? "Chairman" : "Principal";
+    const defaultType = cardOrientation === "vertical" ? "Employee" : "Student";
+    const defaultSign = cardOrientation === "vertical" ? "Chairman" : "Principal";
 
-  setForm({
-    project: parsedData.project || projectName || "",
-    instituteName: parsedData.instituteName || "",
-    idCardType: parsedData.idCardType || defaultType,
-    address: parsedData.address || "",
-    department: parsedData.department || "",
-    roll: parsedData.roll || "",
-    employeeId: parsedData.employeeId || "",
-    bloodGroup: parsedData.bloodGroup || "",
-    dob: parsedData.dob || "",
-    phone: parsedData.phone || "",
-    logoUrl: parsedData.logoUrl || "",
-    signatureUrl: parsedData.signatureUrl || "",
-    profileUrl: parsedData.profileUrl,
-    bgColor: parsedData.bgColor || "#0f172a",
-    qrData: parsedData.qrData,
-    whoseSign: parsedData.whoseSign || defaultSign,
-    cardOrientation: cardOrientation,
-  });
+    setForm({
+      project: parsedData.project || projectName || "",
+      instituteName: parsedData.instituteName || "",
+      idCardType: parsedData.idCardType || defaultType,
+      address: parsedData.address || "",
+      department: parsedData.department || "",
+      roll: parsedData.roll || "",
+      employeeId: parsedData.employeeId || "",
+      bloodGroup: parsedData.bloodGroup || "",
+      dob: parsedData.dob || "",
+      phone: parsedData.phone || "",
+      logoUrl: parsedData.logoUrl || "",
+      signatureUrl: parsedData.signatureUrl || "",
+      profileUrl: parsedData.profileUrl,
+      bgColor: parsedData.bgColor || "#0f172a",
+      qrData: parsedData.qrData,
+      whoseSign: parsedData.whoseSign || defaultSign,
+      cardOrientation: cardOrientation,
+    });
 
-  // Set upload states based on saved data
-  setIsLogoUploaded(!!parsedData.logoUrl);
-  setIsSignatureUploaded(!!parsedData.signatureUrl);
-}, [projectName, cardOrientation]);
+    setIsLogoUploaded(!!parsedData.logoUrl);
+    setIsSignatureUploaded(!!parsedData.signatureUrl);
+  }, [projectName, cardOrientation]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -794,7 +771,6 @@ export default function InstituteTemplateSetupPage() {
           return;
         }
 
-        // For logo
         setForm((prev: any) => ({ ...prev, [field]: dataUrl }));
         setIsLogoUploaded(true);
         toast.loading("Uploading image...");
@@ -810,7 +786,6 @@ export default function InstituteTemplateSetupPage() {
               duration: 6000,
               className: "bg-red-600 text-white font-semibold shadow-lg",
             });
-            // Keep dataUrl for preview
           }
         } catch (error) {
           toast.dismiss();
@@ -822,7 +797,6 @@ export default function InstituteTemplateSetupPage() {
             duration: 6000,
             className: "bg-red-600 text-white font-semibold shadow-lg",
           });
-          // Keep dataUrl for preview
         }
       };
       reader.readAsDataURL(file);
@@ -832,7 +806,7 @@ export default function InstituteTemplateSetupPage() {
   const handleSignatureSave = (processedImageUrl: string) => {
     setForm({ ...form, signatureUrl: processedImageUrl });
     setTempSignatureImage(null);
-    setIsSignatureUploaded(true); // Update signature upload state
+    setIsSignatureUploaded(true);
   };
 
   const requiredFields = [
@@ -865,9 +839,17 @@ export default function InstituteTemplateSetupPage() {
 
   const colors = ["#ffffff", "#0f172a", "#10b981", "#3b82f6", "#06b6d4", "#a855f7"]
 
-  // Defaults for cards
   const defaultLogo = "https://i.postimg.cc/hthwhxwy/uni-logo.avif";
   const defaultSignature = "https://i.postimg.cc/TYfbfv1Q/principal-Sign.png";
+
+  // ✅ Default fields for preview
+  const defaultFields = [
+    { label: "Department", value: "CSE" },
+    { label: "Roll Number", value: "1233" },
+    { label: "Blood Group", value: "B+" },
+    { label: "Date of Birth", value: "12-12-2000" },
+    { label: "Phone", value: "+65-2131-XXXX" }
+  ];
 
   return (
     <div className="min-h-screen bg-white">
@@ -876,8 +858,8 @@ export default function InstituteTemplateSetupPage() {
       <main className="container mx-auto px-3 sm:px-5 lg:px-8 py-2 sm:py-3">
         <div className="max-w-full mx-auto">
           <h1 className="text-xl lg:hidden text-center bg-[#4A61E4] p-2 rounded-xl text-white sm:text-2xl font-bold lg:text-gray-900 mb-0">
-                Template Setup
-              </h1>
+            Template Setup
+          </h1>
           <div className="flex flex-col-reverse gap-10  lg:flex-row lg:gap-8">
             {/* Left Form Section */}
             <div className="w-full lg:w-1/2 space-y-6">
@@ -900,8 +882,6 @@ export default function InstituteTemplateSetupPage() {
                   />
                 </div>
 
-               
-
                 {/* Address */}
                 <div className="space-y-2">
                   <Label className="text-sm sm:text-base font-medium text-gray-700">Address</Label>
@@ -913,7 +893,8 @@ export default function InstituteTemplateSetupPage() {
                     className="h-12 sm:h-14 bg-gray-50 border-0 rounded-lg text-sm sm:text-base text-gray-900 placeholder:text-gray-500"
                   />
                 </div>
-                 {/* ID Card Type */}
+
+                {/* ID Card Type */}
                 <div className="space-y-2">
                   <Label className="text-sm sm:text-base font-medium text-gray-700">ID Card Type</Label>
                   <Input
@@ -1020,6 +1001,7 @@ export default function InstituteTemplateSetupPage() {
                     personImage={form.profileUrl}
                     logo={form.logoUrl}
                     signature={form.signatureUrl}
+                    dynamicFields={defaultFields}
                   />
                 ) : (
                   <StudentCard
@@ -1038,6 +1020,7 @@ export default function InstituteTemplateSetupPage() {
                     bgColor={form.bgColor}
                     qrData={form.qrData}
                     whoseSign={form.whoseSign || "Principal"}
+                    dynamicFields={defaultFields}
                   />
                 )}
               </div>
